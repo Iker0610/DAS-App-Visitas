@@ -1,7 +1,6 @@
 package das.omegaterapia.visits.ui.screens.add
 
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,16 +11,18 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import das.omegaterapia.visits.model.Client
+import das.omegaterapia.visits.model.Direction
 import das.omegaterapia.visits.model.VisitCard
 import das.omegaterapia.visits.ui.components.FormSection
 import das.omegaterapia.visits.ui.components.FormSubsection
+import das.omegaterapia.visits.ui.components.OutlinedDateTimeField
+import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.components.generic.OutlinedChoiceChip
 import das.omegaterapia.visits.ui.components.generic.ValidatorOutlinedTextField
 import das.omegaterapia.visits.ui.components.generic.rememberMutableStateListOf
-import das.omegaterapia.visits.ui.components.selectDateTime
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.*
 import java.time.LocalDateTime
@@ -37,21 +38,16 @@ fun VisitForm(
 
     // Variables para guardar los datos
     val (isVIP, setIsVIP) = rememberSaveable { mutableStateOf(initialVisitCard?.isVIP ?: false) }
+    val (visitDate, setVisitDate) = rememberSaveable { mutableStateOf(initialVisitCard?.visitDate ?: LocalDateTime.now()) }
 
     val (clientNameText, setClientNameText) = rememberSaveable { mutableStateOf(initialVisitCard?.mainClient?.name ?: "") }
     val (clientSurnameText, setClientSurnameText) = rememberSaveable { mutableStateOf(initialVisitCard?.mainClient?.surname ?: "") }
-
     val clientCompanions = rememberMutableStateListOf(*(initialVisitCard?.companions?.toTypedArray() ?: arrayOf("")))
-
 
     val (addressText, setAddressText) = rememberSaveable { mutableStateOf(initialVisitCard?.mainClient?.direction?.address ?: "") }
     val (townText, setTownText) = rememberSaveable { mutableStateOf(initialVisitCard?.mainClient?.direction?.town ?: "") }
     val (zipCodeText, setZIPCodeText) = rememberSaveable { mutableStateOf(initialVisitCard?.mainClient?.direction?.zip ?: "") }
-
     val (phoneText, setPhoneText) = rememberSaveable { mutableStateOf(initialVisitCard?.mainClient?.phoneNum ?: "") }
-
-    // TODO - Formatear la fecha
-    val (dateText, setDateText) = rememberSaveable { mutableStateOf(initialVisitCard?.visitDate ?: LocalDateTime.now()) }
 
     val (observationText, setObservationText) = rememberSaveable { mutableStateOf(initialVisitCard?.observations ?: "") }
 
@@ -63,12 +59,10 @@ fun VisitForm(
     val isAddressValid by remember(addressText) { derivedStateOf { addressText.isNotBlank() } }
     val isTownValid by remember(townText) { derivedStateOf { townText.isNotBlank() } }
     val isZIPValid by remember(zipCodeText) { derivedStateOf { isZIP(zipCodeText) } }
-
     val isPhoneValid by remember(phoneText) { derivedStateOf { isValidPhoneNumber(phoneText) } }
 
     val areAllValid = isNameValid && isSurnameValid && isAddressValid && isTownValid && isZIPValid && isPhoneValid
 
-    val context = LocalContext.current
     // UI
     Column(
         modifier
@@ -76,49 +70,38 @@ fun VisitForm(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        FormSection(
-            title = "Visit Data",
-            trailingContent = {
-                val iconSize = 20.dp
+        FormSection(title = "Visit Data") {
+            CenteredRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                val iconSize = 32.dp
                 OutlinedChoiceChip(
+                    modifier = Modifier.height(IntrinsicSize.Max),
                     onClick = { setIsVIP(!isVIP) },
                     selected = isVIP,
                     leadingIcon = {
                         if (isVIP) {
-                            Icon(Icons.Filled.Star, contentDescription = "VIP Client", Modifier.size(iconSize))
+                            Icon(Icons.Filled.Star, contentDescription = "VIP Client",
+                                Modifier
+                                    .size(iconSize)
+                                    .padding(start = 8.dp))
                         } else {
-                            Icon(Icons.Filled.StarOutline, contentDescription = "Not VIP Client", Modifier.size(iconSize))
+                            Icon(Icons.Filled.StarOutline, contentDescription = "Not VIP Client",
+                                Modifier
+                                    .size(iconSize)
+                                    .padding(start = 8.dp))
                         }
                     },
                 ) {
-                    Text(text = "VIP", style = MaterialTheme.typography.body2)
+                    Text(text = "VIP", style = MaterialTheme.typography.body1, modifier = Modifier.padding(end = 8.dp))
                 }
-            }) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
+
+                OutlinedDateTimeField(
                     modifier = Modifier.weight(2f),
 
+                    date = visitDate,
+                    onDateTimeSelected = setVisitDate,
+                    requireFutureDateTime = initialVisitCard == null,
+
                     label = { Text(text = "Date*") },
-                    leadingIcon = {
-                        IconButton(onClick = {
-                            selectDateTime(context) {
-                                Toast
-                                    .makeText(context, it.toString(), Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        }) {
-                            Icon(Icons.Default.Event, contentDescription = "Visit Date")
-                        }
-                    },
-                    placeholder = { Text(text = "dd/mm/yyyy") },
-
-                    value = dateText.toString(),
-                    onValueChange = {},
-
-                    readOnly = true,
-
-                    singleLine = true,
-                    maxLines = 1
                 )
             }
         }
@@ -258,7 +241,36 @@ fun VisitForm(
 
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { /*TODO*/ },
+            onClick = {
+                val clientData = Client(
+                    name = clientNameText,
+                    surname = clientSurnameText,
+                    phoneNum = phoneText,
+                    direction = Direction(addressText, townText, zipCodeText)
+                )
+
+                val visitCard: VisitCard
+
+                if (initialVisitCard != null) {
+                    visitCard = initialVisitCard.copy(
+                        mainClient = clientData,
+                        companions = clientCompanions,
+                        visitDate = visitDate,
+                        isVIP = isVIP,
+                        observations = observationText
+                    )
+                } else {
+                    visitCard = VisitCard(
+                        mainClient = clientData,
+                        companions = clientCompanions,
+                        visitDate = visitDate,
+                        isVIP = isVIP,
+                        observations = observationText
+                    )
+                }
+
+                onSubmitForm(visitCard)
+            },
             enabled = areAllValid
         ) {
             Text(text = "Add new Visit Card")
@@ -269,7 +281,7 @@ fun VisitForm(
 
 //-----------------------------------------------------------------------------------------
 
-@Preview()
+@Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun AddVisitCardScreenPreview() {

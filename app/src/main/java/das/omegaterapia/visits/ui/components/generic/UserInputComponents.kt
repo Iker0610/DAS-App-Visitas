@@ -1,11 +1,15 @@
 package das.omegaterapia.visits.ui.components.generic
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
@@ -29,44 +33,49 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import das.omegaterapia.visits.utils.canBePassword
 
 @Composable
 fun PasswordField(
     value: String,
     onValueChange: (String) -> Unit,
-    label: @Composable (() -> Unit)? = { Text("Password") },
+    modifier: Modifier = Modifier,
+    label: @Composable (() -> Unit) = { Text("Password") },
     placeholder: @Composable (() -> Unit)? = { Text("Password") },
     leadingIcon: @Composable (() -> Unit)? = { Icon(Icons.Filled.VpnKey, contentDescription = "Password") },
-    isError: Boolean = false,
+    isValid: Boolean = true,
+    ignoreFirstTime: Boolean = false,
 ) {
-    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var passwordVisible by remember { mutableStateOf(false) }
 
-    OutlinedTextField(
+    ValidatorOutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = { if (canBePassword(it)) onValueChange(it) },
 
-        singleLine = true,
-        maxLines = 1,
+        modifier = modifier,
 
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
 
         label = label,
         placeholder = placeholder,
-        isError = isError,
+        isValid = isValid,
+        ignoreFirstTime = ignoreFirstTime,
 
         leadingIcon = leadingIcon,
         trailingIcon = {
             val description = if (passwordVisible) "Password visible" else "Password hid"
 
             IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                if (passwordVisible) {
+                AnimatedVisibility(passwordVisible, enter = fadeIn(), exit = fadeOut()) {
                     Icon(imageVector = Icons.Filled.Visibility, description, tint = MaterialTheme.colors.secondary)
-                } else {
+                }
+                AnimatedVisibility(!passwordVisible, enter = fadeIn(), exit = fadeOut()) {
                     Icon(imageVector = Icons.Filled.VisibilityOff, description)
                 }
             }
@@ -94,6 +103,10 @@ fun ValidatorOutlinedTextField(
 
     enabled: Boolean = true,
     readOnly: Boolean = false,
+
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     var isFirstTime: Boolean by rememberSaveable { mutableStateOf(true) }
     if (ignoreFirstTime) isFirstTime = false
@@ -116,6 +129,10 @@ fun ValidatorOutlinedTextField(
 
         enabled = enabled,
         readOnly = readOnly,
+
+        visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
     )
 }
 

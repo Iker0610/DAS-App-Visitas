@@ -3,16 +3,20 @@ package das.omegaterapia.visits
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.biometric.BiometricPrompt
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import das.omegaterapia.visits.ui.screens.add.VisitForm
+import das.omegaterapia.visits.ui.screens.authorization.AuthScreen
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
+import das.omegaterapia.visits.utils.rememberWindowSizeClass
+import das.omegaterapia.visits.viewmodel.AuthViewModel
 import java.util.concurrent.Executor
 
-class LoginActivity : FragmentActivity() {
+class AuthActivity : FragmentActivity() {
+
+    // Activity ViewModel
+    private val authViewModel by viewModels<AuthViewModel>()
 
     // Activity Cycle functions:
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,11 +27,11 @@ class LoginActivity : FragmentActivity() {
         biometricPrompt = BiometricPrompt(this, executor, authenticationCallback)
 
         setContent {
+            val windowSizeClass = rememberWindowSizeClass()
+
             OmegaterapiaTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    VisitForm({})
-                }
+                AuthScreen(authViewModel, windowSizeClass)
+
             }
         }
     }

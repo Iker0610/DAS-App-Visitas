@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -92,7 +93,7 @@ fun ChoiceChip(
     enabled: Boolean = true,
     selected: Boolean = false,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
+    shape: Shape = RoundedCornerShape(50),
     colors: ChipColors = if (selected) selectedChoiceChipColors() else ChipDefaults.chipColors(),
     leadingIcon: @Composable (() -> Unit)? = null,
     content: @Composable RowScope.() -> Unit,
@@ -117,7 +118,7 @@ fun OutlinedChoiceChip(
     modifier: Modifier = Modifier,
     selected: Boolean = false,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
+    shape: Shape = RoundedCornerShape(50),
     colors: ChipColors = if (selected) selectedOutlinedChoiceChipColors() else unselectedOutlinedChoiceChipColors(),
     leadingIcon: @Composable (() -> Unit)? = null,
     content: @Composable RowScope.() -> Unit,

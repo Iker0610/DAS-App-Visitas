@@ -14,7 +14,6 @@
         <activity
             android:name=".AuthActivity"
             android:exported="true"
-            android:label="@string/title_activity_login"
             android:theme="@style/Theme.OmegaterapiaTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,8 +23,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:label="@string/title_activity_main"
             android:theme="@style/Theme.OmegaterapiaTheme" />
     </application>
-
 </manifest>

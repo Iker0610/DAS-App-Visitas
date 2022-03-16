@@ -36,13 +36,15 @@ import androidx.window.layout.WindowMetricsCalculator
  *
  * More info: https://material.io/archive/guidelines/layout/responsive-ui.html
  */
-enum class WindowSize { Compact, Medium, Expanded }
+enum class WindowSizeFormat { Compact, Medium, Expanded }
+
+data class WindowsSize(val width: WindowSizeFormat, val height: WindowSizeFormat, val isLandscape: Boolean)
 
 /**
- * Remembers the [WindowSize] class for the window corresponding to the current window metrics.
+ * Remembers the [WindowSizeFormat] class for the window corresponding to the current window metrics.
  */
 @Composable
-fun Activity.rememberWindowSizeClass(): WindowSize {
+fun Activity.rememberWindowSizeClass(): WindowsSize {
     // Get the size (in pixels) of the window
     val windowSize = rememberWindowSize()
 
@@ -52,7 +54,11 @@ fun Activity.rememberWindowSizeClass(): WindowSize {
     }
 
     // Calculate the window size class
-    return getWindowSizeClass(windowDpSize)
+    return WindowsSize(
+        getWindowWidthSizeClass(windowDpSize),
+        getWindowHeightSizeClass(windowDpSize),
+        windowDpSize.width > windowDpSize.height
+    )
 }
 
 /**
@@ -70,20 +76,28 @@ private fun Activity.rememberWindowSize(): Size {
 }
 
 /**
- * Partitions a [DpSize] into a enumerated [WindowSize] class.
+ * Partitions a [DpSize] into a enumerated [WindowSizeFormat] class.
  */
 @VisibleForTesting
-fun getWindowSizeClass(windowDpSize: DpSize): WindowSize = when {
+fun getWindowWidthSizeClass(windowDpSize: DpSize): WindowSizeFormat = when {
     /*
-        En este caso solo se tiene en cuenta el ancho de pantalla disponible, tal como se suele hacer.
-        Se podría tener en cuenta el alto con windowDpSize.height si el diseño lo requiriese.
-        También se puede indicar nuevos tipos de WindowSize editando la clase WindowSize
-
         Los breakpoint y nombres están establecidos según:
         https://developer.android.com/guide/topics/large-screens/support-different-screen-sizes#window_size_classes
     */
     windowDpSize.width < 0.dp -> throw IllegalArgumentException("Dp value cannot be negative")
-    windowDpSize.width < 600.dp -> WindowSize.Compact
-    windowDpSize.width < 840.dp -> WindowSize.Medium
-    else -> WindowSize.Expanded
+    windowDpSize.width < 600.dp -> WindowSizeFormat.Compact
+    windowDpSize.width < 840.dp -> WindowSizeFormat.Medium
+    else -> WindowSizeFormat.Expanded
+}
+
+@VisibleForTesting
+fun getWindowHeightSizeClass(windowDpSize: DpSize): WindowSizeFormat = when {
+    /*
+        Los breakpoint y nombres están establecidos según:
+        https://developer.android.com/guide/topics/large-screens/support-different-screen-sizes#window_size_classes
+    */
+    windowDpSize.height < 0.dp -> throw IllegalArgumentException("Dp value cannot be negative")
+    windowDpSize.height < 600.dp -> WindowSizeFormat.Compact
+    windowDpSize.height < 840.dp -> WindowSizeFormat.Medium
+    else -> WindowSizeFormat.Expanded
 }

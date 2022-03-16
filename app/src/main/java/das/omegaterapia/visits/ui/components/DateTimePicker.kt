@@ -1,16 +1,20 @@
 package das.omegaterapia.visits.ui.components
 
 import android.content.Context
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.unit.dp
 import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.ModalDialog
@@ -50,7 +54,7 @@ fun OutlinedDateTimeField(
 
     label: @Composable () -> Unit = { Text(text = "Date-Time") },
     placeholder: @Composable (() -> Unit)? = { Text(text = dateFormatPattern) },
-    leadingIcon: @Composable (() -> Unit)? = { Icon(Icons.Default.Event, contentDescription = "Visit Date") },
+    leadingIcon: @Composable (() -> Unit)? = { Icon(Icons.Default.Event, contentDescription = "Date and Time") },
     trailingIcon: @Composable (() -> Unit)? = null,
 
     enabled: Boolean = true,
@@ -84,4 +88,65 @@ fun OutlinedDateTimeField(
 
         enabled = enabled
     )
+}
+
+
+@Composable
+fun AlternativeOutlinedDateTimeField(
+    modifier: Modifier = Modifier,
+
+    date: LocalDateTime = LocalDateTime.now(),
+    onDateTimeSelected: (LocalDateTime) -> Unit = {},
+    dateFormatPattern: String = "dd/MM/yyyy",
+    timeFormatPattern: String = "hh:mm",
+    requireFutureDateTime: Boolean = false,
+
+    dateLabel: @Composable () -> Unit = { Text(text = "Date") },
+    datePlaceholder: @Composable (() -> Unit)? = { Text(text = dateFormatPattern) },
+    dateLeadingIcon: @Composable (() -> Unit)? = { Icon(Icons.Default.Event, contentDescription = "Date") },
+    dateTrailingIcon: @Composable (() -> Unit)? = null,
+
+    timeLabel: @Composable () -> Unit = { Text(text = "Time") },
+    timePlaceholder: @Composable (() -> Unit)? = { Text(text = timeFormatPattern) },
+    timeLeadingIcon: @Composable (() -> Unit)? = { Icon(Icons.Default.Schedule, contentDescription = "Time") },
+    timeTrailingIcon: @Composable (() -> Unit)? = null,
+
+    enabled: Boolean = true,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        OutlinedDateTimeField(
+            modifier = Modifier.weight(1f),
+
+            date = date,
+            onDateTimeSelected = onDateTimeSelected,
+            dateFormatPattern = dateFormatPattern,
+            requireFutureDateTime = requireFutureDateTime,
+
+            label = dateLabel,
+            placeholder = datePlaceholder,
+            leadingIcon = dateLeadingIcon,
+            trailingIcon = dateTrailingIcon,
+
+            enabled = enabled,
+        )
+
+        OutlinedDateTimeField(
+            modifier = Modifier.weight(1f),
+
+            date = date,
+            onDateTimeSelected = onDateTimeSelected,
+            dateFormatPattern = timeFormatPattern,
+            requireFutureDateTime = requireFutureDateTime,
+
+            label = timeLabel,
+            placeholder = timePlaceholder,
+            leadingIcon = timeLeadingIcon,
+            trailingIcon = timeTrailingIcon,
+
+            enabled = enabled,
+        )
+    }
 }

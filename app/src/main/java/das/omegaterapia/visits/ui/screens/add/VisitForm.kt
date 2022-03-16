@@ -16,9 +16,9 @@ import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.model.Client
 import das.omegaterapia.visits.model.Direction
 import das.omegaterapia.visits.model.VisitCard
-import das.omegaterapia.visits.ui.components.FormSection
-import das.omegaterapia.visits.ui.components.FormSubsection
-import das.omegaterapia.visits.ui.components.OutlinedDateTimeField
+import das.omegaterapia.visits.ui.components.AlternativeOutlinedDateTimeField
+import das.omegaterapia.visits.ui.components.form.FormSection
+import das.omegaterapia.visits.ui.components.form.FormSubsection
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.components.generic.OutlinedChoiceChip
 import das.omegaterapia.visits.ui.components.generic.ValidatorOutlinedTextField
@@ -35,6 +35,11 @@ fun VisitForm(
     modifier: Modifier = Modifier,
     initialVisitCard: VisitCard? = null,
 ) {
+    /*
+    * TODO:
+    * - Añadir on IME action
+    * - Mejorar el botón VIP y el de calendario / hora
+    */
 
     // Variables para guardar los datos
     val (isVIP, setIsVIP) = rememberSaveable { mutableStateOf(initialVisitCard?.isVIP ?: false) }
@@ -94,14 +99,15 @@ fun VisitForm(
                     Text(text = "VIP", style = MaterialTheme.typography.body1, modifier = Modifier.padding(end = 8.dp))
                 }
 
-                OutlinedDateTimeField(
+                AlternativeOutlinedDateTimeField(
                     modifier = Modifier.weight(2f),
 
                     date = visitDate,
                     onDateTimeSelected = setVisitDate,
                     requireFutureDateTime = initialVisitCard == null,
 
-                    label = { Text(text = "Date*") },
+                    dateLabel = { Text(text = "Date*") },
+                    timeLabel = { Text(text = "Time*") },
                 )
             }
         }

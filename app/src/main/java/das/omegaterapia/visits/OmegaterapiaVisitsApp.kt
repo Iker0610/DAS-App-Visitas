@@ -15,9 +15,6 @@ import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 enum class OmegaterapiaVisitsScreen(
     val icon: ImageVector,
 ) {
-    Login(
-        icon = Icons.Filled.PieChart,
-    ),
     TodaysVisits(
         icon = Icons.Filled.AttachMoney,
     ),
@@ -28,7 +25,6 @@ enum class OmegaterapiaVisitsScreen(
     companion object {
         fun fromRoute(route: String?): OmegaterapiaVisitsScreen =
             when (route?.substringBefore("/")) {
-                Login.name -> Login
                 TodaysVisits.name -> TodaysVisits
                 AllVisits.name -> AllVisits
                 null -> TodaysVisits

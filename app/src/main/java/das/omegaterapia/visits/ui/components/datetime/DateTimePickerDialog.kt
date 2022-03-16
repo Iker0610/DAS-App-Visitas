@@ -18,11 +18,13 @@ class DateTimeDialogBehavior(val onDismissAction: () -> Unit) : DialogBehavior b
 
 fun openDateTimePickerDialog(
     context: Context,
+    title: String,
     requireFutureDateTime: Boolean = false,
     onDismissAction: () -> Unit = {},
     onDateTimeSelected: (LocalDateTime) -> Unit,
 ) {
     MaterialDialog(context, DateTimeDialogBehavior(onDismissAction)).show {
+        title(text = title)
         dateTimePicker(requireFutureDateTime = requireFutureDateTime) { _, dateTime ->
             onDateTimeSelected(LocalDateTime.ofInstant(dateTime.toInstant(), dateTime.timeZone.toZoneId()))
         }

@@ -1,13 +1,43 @@
 package das.omegaterapia.visits.ui.screens.add
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.ContactPhone
+import androidx.compose.material.icons.filled.MapsHomeWork
+import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PinDrop
+import androidx.compose.material.icons.filled.RemoveCircle
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarOutline
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +46,7 @@ import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.model.Client
 import das.omegaterapia.visits.model.Direction
 import das.omegaterapia.visits.model.VisitCard
-import das.omegaterapia.visits.ui.components.AlternativeOutlinedDateTimeField
+import das.omegaterapia.visits.ui.components.datetime.AlternativeOutlinedDateTimeField
 import das.omegaterapia.visits.ui.components.form.FormSection
 import das.omegaterapia.visits.ui.components.form.FormSubsection
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
@@ -24,7 +54,13 @@ import das.omegaterapia.visits.ui.components.generic.OutlinedChoiceChip
 import das.omegaterapia.visits.ui.components.generic.ValidatorOutlinedTextField
 import das.omegaterapia.visits.ui.components.generic.rememberMutableStateListOf
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
-import das.omegaterapia.visits.utils.*
+import das.omegaterapia.visits.utils.canBePhoneNumber
+import das.omegaterapia.visits.utils.canBeZIP
+import das.omegaterapia.visits.utils.formatPhoneNumber
+import das.omegaterapia.visits.utils.isNonEmptyText
+import das.omegaterapia.visits.utils.isText
+import das.omegaterapia.visits.utils.isValidPhoneNumber
+import das.omegaterapia.visits.utils.isZIP
 import java.time.LocalDateTime
 
 
@@ -108,6 +144,8 @@ fun VisitForm(
 
                     dateLabel = { Text(text = "Date*") },
                     timeLabel = { Text(text = "Time*") },
+
+                    dialogTitle = "Select your visit's Date and Hour"
                 )
             }
         }

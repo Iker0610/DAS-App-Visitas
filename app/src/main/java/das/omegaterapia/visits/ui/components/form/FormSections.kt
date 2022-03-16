@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.ui.components
+package das.omegaterapia.visits.ui.components.form
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider

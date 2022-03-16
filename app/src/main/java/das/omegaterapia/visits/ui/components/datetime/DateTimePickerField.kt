@@ -1,6 +1,5 @@
-package das.omegaterapia.visits.ui.components
+package das.omegaterapia.visits.ui.components.datetime
 
-import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Icon
@@ -15,33 +14,8 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import com.afollestad.materialdialogs.DialogBehavior
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.ModalDialog
-import com.afollestad.materialdialogs.datetime.dateTimePicker
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-
-class DateTimeDialogBehavior(val onDismissAction: () -> Unit) : DialogBehavior by ModalDialog {
-    override fun onDismiss(): Boolean {
-        this.onDismissAction()
-        return false
-    }
-}
-
-
-fun selectDateTime(
-    context: Context,
-    requireFutureDateTime: Boolean = false,
-    onDismissAction: () -> Unit = {},
-    onDateTimeSelected: (LocalDateTime) -> Unit,
-) {
-    MaterialDialog(context, DateTimeDialogBehavior(onDismissAction)).show {
-        dateTimePicker(requireFutureDateTime = requireFutureDateTime) { _, dateTime ->
-            onDateTimeSelected(LocalDateTime.ofInstant(dateTime.toInstant(), dateTime.timeZone.toZoneId()))
-        }
-    }
-}
 
 @Composable
 fun OutlinedDateTimeField(
@@ -66,7 +40,7 @@ fun OutlinedDateTimeField(
     OutlinedTextField(
         modifier = modifier.onFocusChanged {
             if (it.isFocused) {
-                selectDateTime(context, requireFutureDateTime, onDismissAction = { focusManager.clearFocus() }) { dateTime ->
+                openDateTimePickerDialog(context, requireFutureDateTime, onDismissAction = { focusManager.clearFocus() }) { dateTime ->
                     onDateTimeSelected(dateTime)
                     focusManager.clearFocus()
                 }

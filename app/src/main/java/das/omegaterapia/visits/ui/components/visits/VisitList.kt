@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.ui.components
+package das.omegaterapia.visits.ui.components.visits
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp

@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.ui.components
+package das.omegaterapia.visits.ui.components.visits
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
@@ -24,9 +24,7 @@ import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.components.generic.TextIconButton
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
-import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
-import java.util.*
 import kotlin.random.Random
 
 

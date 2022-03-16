@@ -85,7 +85,7 @@ fun VisitCardItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 CenteredRow(horizontalArrangement = Arrangement.Start) {
-                    CenteredColumn() {
+                    CenteredColumn {
                         if (visitCard.isVIP) {
                             Icon(Icons.Filled.StarOutline, "VIP Client", Modifier.height(16.dp))
                             Spacer(modifier = Modifier.height(3.dp))

@@ -40,7 +40,7 @@ enum class OmegaterapiaVisitsScreen(
 
 @Composable
 fun OmegaterapiaVisitsApp() {
-    OmegaterapiaTheme() {
+    OmegaterapiaTheme {
         val navController = rememberNavController()
 
         val allScreens = OmegaterapiaVisitsScreen.values().toList()

@@ -1,7 +1,8 @@
 package das.omegaterapia.visits.data
 
-import das.omegaterapia.visits.model.Client
-import das.omegaterapia.visits.model.Direction
+import das.omegaterapia.visits.model.entities.Client
+import das.omegaterapia.visits.model.entities.Direction
+
 
 val clients = mutableListOf(
 

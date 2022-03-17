@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.data.visitList
-import das.omegaterapia.visits.model.VisitCard
+import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 
 @OptIn(ExperimentalFoundationApi::class)

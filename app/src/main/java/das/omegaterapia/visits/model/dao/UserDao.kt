@@ -3,17 +3,16 @@ package das.omegaterapia.visits.model.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import das.omegaterapia.visits.model.User
+import das.omegaterapia.visits.model.entities.User
 
 
-// User DAO
 @Dao
 interface UserDao {
     @Insert
     suspend fun createUser(user: User)
 
     @Query("SELECT hashedPassword FROM user WHERE username = :username ")
-    fun getUserPassword(username: String): String
+    suspend fun getUserPassword(username: String): String
 
 
     @Query("DELETE FROM user where username = :username")

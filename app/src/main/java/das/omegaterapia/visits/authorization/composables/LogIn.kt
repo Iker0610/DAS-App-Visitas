@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.ui.screens.authorization
+package das.omegaterapia.visits.authorization.composables
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -23,12 +23,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.PasswordField
 import das.omegaterapia.visits.ui.components.generic.ValidatorOutlinedTextField
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.isValidUsername
-import das.omegaterapia.visits.viewmodel.AuthViewModel
+import das.omegaterapia.visits.authorization.AuthViewModel
 
 @Composable
 fun LogInCard(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
@@ -93,7 +94,7 @@ fun LogInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
 fun LoginCardPreview() {
     OmegaterapiaTheme {
         Surface() {
-            LogInCard(AuthViewModel())
+            LogInCard(viewModel())
         }
     }
 }

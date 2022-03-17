@@ -1,4 +1,4 @@
-package das.omegaterapia.visits
+package das.omegaterapia.visits.authorization
 
 import android.os.Bundle
 import android.widget.Toast
@@ -7,17 +7,14 @@ import androidx.activity.viewModels
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import das.omegaterapia.visits.ui.screens.authorization.AuthScreen
+import dagger.hilt.android.AndroidEntryPoint
+import das.omegaterapia.visits.authorization.composables.AuthScreen
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.rememberWindowSizeClass
-import das.omegaterapia.visits.viewmodel.AuthViewModel
 import java.util.concurrent.Executor
 
+@AndroidEntryPoint
 class AuthActivity : FragmentActivity() {
-
-    // Activity ViewModel
-    private val authViewModel by viewModels<AuthViewModel>()
-
     // Activity Cycle functions:
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +27,7 @@ class AuthActivity : FragmentActivity() {
             val windowSizeClass = rememberWindowSizeClass()
 
             OmegaterapiaTheme {
-                AuthScreen(authViewModel, windowSizeClass)
-
+                AuthScreen(windowSizeFormatClass = windowSizeClass)
             }
         }
     }

@@ -1,8 +1,7 @@
 package das.omegaterapia.visits.data
 
-import das.omegaterapia.visits.model.VisitCard
+import das.omegaterapia.visits.model.entities.VisitCard
 import java.time.LocalDateTime
-import java.util.Calendar
 import kotlin.random.Random
 
 val getYear = { Random.nextInt(2018, 2022) }

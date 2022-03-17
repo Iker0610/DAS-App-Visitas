@@ -1,10 +1,9 @@
-package das.omegaterapia.visits.ui.screens.authorization
+package das.omegaterapia.visits.authorization.composables
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,15 +14,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.WindowSizeFormat
 import das.omegaterapia.visits.utils.WindowsSize
-import das.omegaterapia.visits.viewmodel.AuthViewModel
+import das.omegaterapia.visits.authorization.AuthViewModel
 
 @Composable
-fun AuthScreen(authViewModel: AuthViewModel, windowSizeFormatClass: WindowsSize) {
+fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass: WindowsSize) {
     Scaffold { padding ->
         Box(
             contentAlignment = Alignment.Center,
@@ -93,7 +93,7 @@ fun AuthScreen(authViewModel: AuthViewModel, windowSizeFormatClass: WindowsSize)
 @Composable
 fun AuthScreenPreview() {
     OmegaterapiaTheme {
-        AuthScreen(AuthViewModel(), WindowsSize(WindowSizeFormat.Compact, WindowSizeFormat.Compact, isLandscape = false))
+        AuthScreen(windowSizeFormatClass = WindowsSize(WindowSizeFormat.Compact, WindowSizeFormat.Compact, isLandscape = false))
     }
 }
 
@@ -102,6 +102,6 @@ fun AuthScreenPreview() {
 @Composable
 fun AuthScreenLandscapePreview() {
     OmegaterapiaTheme {
-        AuthScreen(AuthViewModel(), WindowsSize(WindowSizeFormat.Compact, WindowSizeFormat.Compact, isLandscape = true))
+        AuthScreen(windowSizeFormatClass = WindowsSize(WindowSizeFormat.Compact, WindowSizeFormat.Compact, isLandscape = true))
     }
 }

@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.model
+package das.omegaterapia.visits.model.entities
 
 import java.time.LocalDateTime
 import java.util.*

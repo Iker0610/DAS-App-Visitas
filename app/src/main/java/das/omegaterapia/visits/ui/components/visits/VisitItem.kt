@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.data.visitList
-import das.omegaterapia.visits.model.VisitCard
+import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.components.generic.TextIconButton

@@ -1,8 +1,9 @@
-package das.omegaterapia.visits.model
+package das.omegaterapia.visits.model.entities
 
 import java.util.*
 
 data class Client(
+    // @PrimaryKey(autoGenerate = true)
     val id: String = UUID.randomUUID().toString(),
     var name: String,
     var surname: String,

@@ -43,9 +43,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import das.omegaterapia.visits.model.Client
-import das.omegaterapia.visits.model.Direction
-import das.omegaterapia.visits.model.VisitCard
+import das.omegaterapia.visits.model.entities.Client
+import das.omegaterapia.visits.model.entities.Direction
+import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.ui.components.datetime.AlternativeOutlinedDateTimeField
 import das.omegaterapia.visits.ui.components.form.FormSection
 import das.omegaterapia.visits.ui.components.form.FormSubsection

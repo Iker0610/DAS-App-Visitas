@@ -1,11 +1,19 @@
-package das.omegaterapia.visits.viewmodel
+package das.omegaterapia.visits.authorization
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import das.omegaterapia.visits.model.repositories.UserRepository
+import javax.inject.Inject
 
-class AuthViewModel : ViewModel() {
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val repository: UserRepository,
+) : ViewModel() {
 
     // Screen States
     var isLogin: Boolean by mutableStateOf(true)
@@ -34,17 +42,17 @@ class AuthViewModel : ViewModel() {
     //-------------------------------------------------------------------
     // Login Events
 
-    fun submitLogin(){
+    fun submitLogin() {
         // TODO
     }
 
-    fun submitBiometricLogin(){
+    fun submitBiometricLogin() {
         //  TODO
     }
 
     //-------------------------------------------------------------------
     // Sign-In Events
-    fun submitSignIn(){
+    fun submitSignIn() {
         // TODO
     }
 }

@@ -2,8 +2,12 @@ package das.omegaterapia.visits.activities.authorization.composables
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -27,8 +31,8 @@ import das.omegaterapia.visits.ui.theme.getButtonShape
 fun AuthScreen(
     authViewModel: AuthViewModel = viewModel(),
     windowSizeFormatClass: WindowsSize,
-    onSuccessfulLogin: (String)-> Unit = {},
-    onSuccessfulSignIn: (String)-> Unit = {}
+    onSuccessfulLogin: (String) -> Unit = {},
+    onSuccessfulSignIn: (String) -> Unit = {},
 ) {
     Scaffold { padding ->
         Box(
@@ -58,8 +62,25 @@ fun AuthScreen(
                 }
 
             } else {
+                val animationTime = 275
 
-                AnimatedVisibility(authViewModel.isLogin, enter = fadeIn(), exit = fadeOut()) {
+                AnimatedVisibility(
+                    authViewModel.isLogin,
+                    enter = slideInHorizontally(
+                        initialOffsetX = { -2*it },
+                        animationSpec = tween(
+                            durationMillis = animationTime,
+                            easing = LinearEasing
+                        )
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { -2*it },
+                        animationSpec = tween(
+                            durationMillis = animationTime,
+                            easing = LinearEasing
+                        )
+                    )
+                ) {
                     CenteredColumn(Modifier.width(IntrinsicSize.Max)
                     ) {
                         LoginCard(authViewModel, onLoginSuccessful = onSuccessfulLogin)
@@ -74,7 +95,24 @@ fun AuthScreen(
 
                 }
 
-                AnimatedVisibility(!authViewModel.isLogin, enter = fadeIn(), exit = fadeOut()) {
+                AnimatedVisibility(
+                    !authViewModel.isLogin,
+                    modifier = Modifier.fillMaxSize(),
+                    enter = slideInHorizontally(
+                        initialOffsetX = { 2*it },
+                        animationSpec = tween(
+                            durationMillis = animationTime,
+                            easing = LinearEasing
+                        )
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { 2*it },
+                        animationSpec = tween(
+                            durationMillis = animationTime,
+                            easing = LinearEasing
+                        )
+                    )
+                ) {
                     CenteredColumn(Modifier.width(IntrinsicSize.Max)
                     ) {
                         SignInCard(authViewModel, onSignInSuccessful = onSuccessfulSignIn)

@@ -69,7 +69,7 @@ fun LoginSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, on
         AlertDialog(
             onDismissRequest = { showLoginErrorDialog = false },
             confirmButton = { TextButton(onClick = { showLoginErrorDialog = false }) { Text(text = "OK") } },
-            text = { Text(text = "Incorrect username or password.") },
+            text = { Text(text = "Incorrect username or password.", style = MaterialTheme.typography.body1) },
             shape = MaterialTheme.getButtonShape()
         )
     }

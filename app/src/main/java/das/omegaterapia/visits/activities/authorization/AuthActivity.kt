@@ -5,9 +5,13 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.biometric.BiometricPrompt
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.AndroidEntryPoint
+import das.omegaterapia.visits.NotificationID
+import das.omegaterapia.visits.R
 import das.omegaterapia.visits.activities.authorization.composables.AuthScreen
 import das.omegaterapia.visits.activities.main.MainActivity
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
@@ -16,7 +20,10 @@ import java.util.concurrent.Executor
 
 @AndroidEntryPoint
 class AuthActivity : FragmentActivity() {
-    // Activity Cycle functions:
+
+    /*--------------------------------------------------
+    |            Activity Lifecycle Methods            |
+    --------------------------------------------------*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -33,7 +40,22 @@ class AuthActivity : FragmentActivity() {
         }
     }
 
+
+    /*-------------------------------------------------
+    |              Login Sign In actions              |
+    -------------------------------------------------*/
+
     private fun onSuccessfulSignIn(username: String){
+        val builder = NotificationCompat.Builder(this, "AUTH_CHANNEL")
+            .setSmallIcon(R.drawable.ic_stat_name)
+            .setContentTitle("User created")
+            .setContentText("The User $username has been successfully created.")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+
+        with(NotificationManagerCompat.from(this)) {
+            notify(NotificationID.USER_CREATED.id, builder.build())
+        }
 
         openMainScreen(username)
     }
@@ -47,9 +69,9 @@ class AuthActivity : FragmentActivity() {
     }
 
 
-    //----------------------------------------------------------------------------------------------------------------
-    // BIOMETRICS
-
+    /*--------------------------------------------------
+    |                    BIOMETRICS                    |
+    --------------------------------------------------*/
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
 

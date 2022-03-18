@@ -69,7 +69,7 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, o
         AlertDialog(
             onDismissRequest = { showSignInErrorDialog = false },
             confirmButton = { TextButton(onClick = { showSignInErrorDialog = false }) { Text(text = "OK") } },
-            text = { Text(text = "This account username already exists.") },
+            text = { Text(text = "This account username already exists.", style = MaterialTheme.typography.body1) },
             shape = MaterialTheme.getButtonShape()
         )
     }

@@ -23,7 +23,7 @@ import das.omegaterapia.visits.utils.WindowsSize
 import das.omegaterapia.visits.authorization.AuthViewModel
 
 @Composable
-fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass: WindowsSize) {
+fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass: WindowsSize, onSuccessfulLogin: (String)-> Unit = {}) {
     Scaffold { padding ->
         Box(
             contentAlignment = Alignment.Center,
@@ -39,7 +39,7 @@ fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass
                         .height(IntrinsicSize.Max)
                         .padding(horizontal = 32.dp, vertical = 16.dp)
                     ) {
-                        LogInSection(authViewModel)
+                        LoginSection(authViewModel, onLoginSuccessful = onSuccessfulLogin)
 
                         Divider(modifier = Modifier
                             .padding(horizontal = 64.dp)
@@ -47,7 +47,7 @@ fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass
                             .width(1.dp)
                         )
 
-                        SignInSection(authViewModel)
+                        SignInSection(authViewModel, onSignInSuccessful = onSuccessfulLogin)
                     }
                 }
 
@@ -56,7 +56,7 @@ fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass
                 AnimatedVisibility(authViewModel.isLogin, enter = fadeIn(), exit = fadeOut()) {
                     CenteredColumn(Modifier.width(IntrinsicSize.Max)
                     ) {
-                        LogInCard(authViewModel)
+                        LoginCard(authViewModel, onLoginSuccessful = onSuccessfulLogin)
 
                         Divider(modifier = Modifier.padding(top = 32.dp, bottom = 24.dp))
 
@@ -71,7 +71,7 @@ fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass
                 AnimatedVisibility(!authViewModel.isLogin, enter = fadeIn(), exit = fadeOut()) {
                     CenteredColumn(Modifier.width(IntrinsicSize.Max)
                     ) {
-                        SignInCard(authViewModel)
+                        SignInCard(authViewModel, onSignInSuccessful = onSuccessfulLogin)
 
                         Divider(modifier = Modifier.padding(top = 32.dp, bottom = 24.dp))
 

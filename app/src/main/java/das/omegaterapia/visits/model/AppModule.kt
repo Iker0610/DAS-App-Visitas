@@ -26,5 +26,5 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideYourDao(db: OmegaterapiaVisitsDatabase) = db.userDao()
+    fun provideYourDao(db: OmegaterapiaVisitsDatabase) = db.authDao()
 }

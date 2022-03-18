@@ -13,15 +13,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val username = intent.getStringExtra("LOGED_USERNAME") ?: "NOT USERNAME GIVEN"
+
+
         setContent {
             OmegaterapiaTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    Greeting(username)
                 }
             }
         }

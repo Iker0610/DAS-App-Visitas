@@ -18,6 +18,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,19 +27,29 @@ import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.PasswordField
 import das.omegaterapia.visits.ui.components.generic.ValidatorOutlinedTextField
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
-import das.omegaterapia.visits.utils.isValidPassword
-import das.omegaterapia.visits.utils.isValidUsername
+import das.omegaterapia.visits.utils.canBeValidUsername
 import das.omegaterapia.visits.authorization.AuthViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-fun SignInCard(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
+fun SignInCard(authViewModel: AuthViewModel, modifier: Modifier = Modifier, onSignInSuccessful: (String) -> Unit = {}) {
     Card(modifier = modifier, elevation = 8.dp) {
-        SignInSection(authViewModel, Modifier.padding(horizontal = 32.dp, vertical = 16.dp))
+        SignInSection(authViewModel, Modifier.padding(horizontal = 32.dp, vertical = 16.dp), onSignInSuccessful)
     }
 }
 
 @Composable
-fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
+fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, onSignInSuccessful: (String) -> Unit = {}) {
+    val coroutineScope = rememberCoroutineScope()
+    val onSignIn: () -> Unit = {
+        coroutineScope.launch(Dispatchers.IO) {
+            val username = authViewModel.checkSignIn()
+            if (username != null) {
+                onSignInSuccessful(username)
+            }
+        }
+    }
 
     CenteredColumn(
         modifier = modifier.width(IntrinsicSize.Min)
@@ -51,9 +62,10 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
             modifier = Modifier.widthIn(max = 280.dp),
 
             value = authViewModel.signInUsername,
-            onValueChange = { if (isValidUsername(it)) authViewModel.signInUsername = it },
+            onValueChange = { if (canBeValidUsername(it)) authViewModel.signInUsername = it },
             leadingIcon = { Icon(Icons.Filled.Person, contentDescription = "person") },
-            label = { Text(text = "Username") }
+            label = { Text(text = "Username") },
+            isValid = authViewModel.isSignInUsernameValid && !authViewModel.signInUserExists
         )
 
         PasswordField(
@@ -61,8 +73,7 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
 
             value = authViewModel.signInPassword,
             onValueChange = authViewModel::signInPassword::set,
-
-            isValid = isValidPassword(authViewModel.signInPassword)
+            isValid = authViewModel.isSignInPasswordValid
         )
 
         PasswordField(
@@ -70,17 +81,17 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
 
             value = authViewModel.signInConfirmationPassword,
             onValueChange = authViewModel::signInConfirmationPassword::set,
+            isValid = authViewModel.isSignInPasswordConfirmationValid,
+
             label = { Text(text = "Confirm Password") },
             placeholder = { Text(text = "Confirm Password") },
-
-            isValid = isValidPassword(authViewModel.signInConfirmationPassword) && authViewModel.signInPassword == authViewModel.signInConfirmationPassword
         )
 
         Divider(Modifier.padding(top = 24.dp, bottom = 16.dp))
 
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = authViewModel::submitSignIn
+            onClick = onSignIn
         ) {
             Text(text = "Sign In")
         }

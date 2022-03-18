@@ -20,26 +20,39 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import das.omegaterapia.visits.authorization.AuthViewModel
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.PasswordField
 import das.omegaterapia.visits.ui.components.generic.ValidatorOutlinedTextField
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
-import das.omegaterapia.visits.utils.isValidUsername
-import das.omegaterapia.visits.authorization.AuthViewModel
+import das.omegaterapia.visits.utils.canBeValidUsername
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-fun LogInCard(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
+fun LoginCard(authViewModel: AuthViewModel, modifier: Modifier = Modifier, onLoginSuccessful: (String) -> Unit = {}) {
     Card(modifier = modifier, elevation = 8.dp) {
-        LogInSection(authViewModel, Modifier.padding(horizontal = 32.dp, vertical = 16.dp))
+        LoginSection(authViewModel, Modifier.padding(horizontal = 32.dp, vertical = 16.dp), onLoginSuccessful)
     }
 }
 
 @Composable
-fun LogInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
+fun LoginSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, onLoginSuccessful: (String) -> Unit = {}) {
+
+    val coroutineScope = rememberCoroutineScope()
+    val onLogin: () -> Unit = {
+        coroutineScope.launch(Dispatchers.IO) {
+            val username = authViewModel.checkLogin()
+            if (username != null) {
+                onLoginSuccessful(username)
+            }
+        }
+    }
 
     CenteredColumn(
         modifier = modifier.width(IntrinsicSize.Min)
@@ -49,24 +62,26 @@ fun LogInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
         Spacer(Modifier.height(8.dp))
 
         ValidatorOutlinedTextField(
-            modifier= Modifier.widthIn(max = 280.dp),
+            modifier = Modifier.widthIn(max = 280.dp),
             value = authViewModel.loginUsername,
-            onValueChange = { if (isValidUsername(it)) authViewModel.loginUsername = it },
+            onValueChange = { if (canBeValidUsername(it)) authViewModel.loginUsername = it },
             leadingIcon = { Icon(Icons.Filled.Person, contentDescription = "person") },
-            label = { Text(text = "Username") }
+            label = { Text(text = "Username") },
+            isValid = authViewModel.isLoginCorrect
         )
 
         PasswordField(
-            modifier= Modifier.widthIn(max = 280.dp),
+            modifier = Modifier.widthIn(max = 280.dp),
             value = authViewModel.loginPassword,
             onValueChange = authViewModel::loginPassword::set,
+            isValid = authViewModel.isLoginCorrect
         )
 
         Divider(Modifier.padding(top = 24.dp, bottom = 16.dp))
 
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = authViewModel::submitLogin
+            onClick = onLogin
         ) {
             Text(text = "Login")
         }
@@ -75,7 +90,7 @@ fun LogInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
 
         TextButton(
             modifier = Modifier.fillMaxWidth(),
-            onClick = authViewModel::submitBiometricLogin
+            onClick = { /*TODO*/ }
         ) {
             Icon(
                 Icons.Filled.Fingerprint,
@@ -94,7 +109,7 @@ fun LogInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier) {
 fun LoginCardPreview() {
     OmegaterapiaTheme {
         Surface() {
-            LogInCard(viewModel())
+            LoginCard(viewModel())
         }
     }
 }

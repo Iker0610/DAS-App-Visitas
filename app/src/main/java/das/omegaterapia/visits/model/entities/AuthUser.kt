@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 //------------------------------------------------------------------------------
 // User entity
 @Entity(tableName = "user")
-data class User(
+data class AuthUser(
     @PrimaryKey val username: String,
     val hashedPassword: String,
 )

@@ -21,6 +21,7 @@ import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.WindowSizeFormat
 import das.omegaterapia.visits.utils.WindowsSize
 import das.omegaterapia.visits.authorization.AuthViewModel
+import das.omegaterapia.visits.ui.theme.getButtonShape
 
 @Composable
 fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass: WindowsSize, onSuccessfulLogin: (String)-> Unit = {}) {
@@ -33,7 +34,7 @@ fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass
                 .verticalScroll(rememberScrollState())
                 .horizontalScroll(rememberScrollState())
         ) {
-            if (windowSizeFormatClass.width == WindowSizeFormat.Expanded) {
+            if (windowSizeFormatClass.width != WindowSizeFormat.Compact) {
                 Card(elevation = 8.dp) {
                     CenteredRow(Modifier
                         .height(IntrinsicSize.Max)
@@ -61,7 +62,7 @@ fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass
                         Divider(modifier = Modifier.padding(top = 32.dp, bottom = 24.dp))
 
                         Text(text = "Don't have an account?", style = MaterialTheme.typography.body2)
-                        TextButton(onClick = authViewModel::switchScreen) {
+                        TextButton(onClick = authViewModel::switchScreen, shape = MaterialTheme.getButtonShape()) {
                             Text(text = "Sign In")
                         }
                     }
@@ -76,7 +77,7 @@ fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass
                         Divider(modifier = Modifier.padding(top = 32.dp, bottom = 24.dp))
 
                         Text(text = "Already have an account?", style = MaterialTheme.typography.body2)
-                        TextButton(onClick = authViewModel::switchScreen) {
+                        TextButton(onClick = authViewModel::switchScreen, shape = MaterialTheme.getButtonShape()) {
                             Text(text = "Login")
                         }
                     }

@@ -1,10 +1,12 @@
 package das.omegaterapia.visits.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 
 private val DarkColorPalette = darkColors(
     primary = BlueGrey200,
@@ -42,3 +44,6 @@ fun OmegaterapiaTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Comp
         content = content
     )
 }
+
+@Composable
+fun MaterialTheme.getButtonShape() = CutCornerShape(0.dp)

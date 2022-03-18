@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
@@ -20,7 +21,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,6 +35,7 @@ import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.PasswordField
 import das.omegaterapia.visits.ui.components.generic.ValidatorOutlinedTextField
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
+import das.omegaterapia.visits.ui.theme.getButtonShape
 import das.omegaterapia.visits.utils.canBeValidUsername
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,17 +49,33 @@ fun LoginCard(authViewModel: AuthViewModel, modifier: Modifier = Modifier, onLog
 
 @Composable
 fun LoginSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, onLoginSuccessful: (String) -> Unit = {}) {
-
+    // States
     val coroutineScope = rememberCoroutineScope()
+    var showLoginErrorDialog by rememberSaveable { mutableStateOf(false) }
+
+    // On login clicked action
     val onLogin: () -> Unit = {
         coroutineScope.launch(Dispatchers.IO) {
             val username = authViewModel.checkLogin()
             if (username != null) {
                 onLoginSuccessful(username)
-            }
+            } else showLoginErrorDialog = !authViewModel.isLoginCorrect
         }
     }
 
+    //--------------------------------------------------------------------------------------------------------------
+    // DIALOGS
+    if (showLoginErrorDialog) {
+        AlertDialog(
+            onDismissRequest = { showLoginErrorDialog = false },
+            confirmButton = { TextButton(onClick = { showLoginErrorDialog = false }) { Text(text = "OK") } },
+            text = { Text(text = "Incorrect username or password.") },
+            shape = MaterialTheme.getButtonShape()
+        )
+    }
+
+    //--------------------------------------------------------------------------------------------------------------
+    // MAIN UI
     CenteredColumn(
         modifier = modifier.width(IntrinsicSize.Min)
     ) {
@@ -67,21 +89,25 @@ fun LoginSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, on
             onValueChange = { if (canBeValidUsername(it)) authViewModel.loginUsername = it },
             leadingIcon = { Icon(Icons.Filled.Person, contentDescription = "person") },
             label = { Text(text = "Username") },
-            isValid = authViewModel.isLoginCorrect
+            isValid = authViewModel.isLoginCorrect,
+            ignoreFirstTime = true
         )
 
         PasswordField(
             modifier = Modifier.widthIn(max = 280.dp),
             value = authViewModel.loginPassword,
             onValueChange = authViewModel::loginPassword::set,
-            isValid = authViewModel.isLoginCorrect
+            isValid = authViewModel.isLoginCorrect,
+            ignoreFirstTime = true
         )
 
         Divider(Modifier.padding(top = 24.dp, bottom = 16.dp))
 
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = onLogin
+            onClick = onLogin,
+            shape = MaterialTheme.getButtonShape(),
+            enabled = authViewModel.loginUsername.isNotBlank() && authViewModel.loginPassword.isNotBlank()
         ) {
             Text(text = "Login")
         }
@@ -90,7 +116,8 @@ fun LoginSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, on
 
         TextButton(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { /*TODO*/ }
+            onClick = { /*TODO*/ },
+            shape = MaterialTheme.getButtonShape()
         ) {
             Icon(
                 Icons.Filled.Fingerprint,

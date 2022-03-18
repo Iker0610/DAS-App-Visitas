@@ -42,7 +42,6 @@ class AuthViewModel @Inject constructor(
     val isSignInPasswordConfirmationValid by derivedStateOf { isSignInPasswordValid && signInPassword == signInConfirmationPassword }
 
     var signInUserExists by mutableStateOf(false)
-        private set
 
 
     //-------------------------------------------------------------------

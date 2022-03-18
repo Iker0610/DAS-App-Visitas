@@ -28,9 +28,8 @@ fun formatPhoneNumber(phoneNumber: String, country: String = Locale.getDefault()
     PhoneNumberUtils.formatNumberToE164(phoneNumber, country) ?: phoneNumber
 
 
-val passwordMatcher = Regex("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{4,}$")
-fun isValidPassword(password: String): Boolean = password.length in 5..30 && passwordMatcher.containsMatchIn(password)
-fun canBePassword(password: String): Boolean = password.length <= 30 && password.all { it != ' ' }
+fun isValidPassword(password: String): Boolean = password.length in 5..100 && canBePassword(password)
+fun canBePassword(password: String): Boolean = password.length <= 100 && password.all { it != ' ' }
 
 fun canBeValidUsername(username: String): Boolean = username.length <= 20 && isAlphaNumeric(username)
 fun isValidUsername(username: String): Boolean = username.isNotBlank() && canBeValidUsername(username)

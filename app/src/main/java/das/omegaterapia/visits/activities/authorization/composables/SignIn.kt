@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.authorization.composables
+package das.omegaterapia.visits.activities.authorization.composables
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Card
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -31,10 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import das.omegaterapia.visits.authorization.AuthViewModel
+import das.omegaterapia.visits.activities.authorization.AuthViewModel
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
-import das.omegaterapia.visits.ui.components.generic.PasswordField
-import das.omegaterapia.visits.ui.components.generic.ValidatorOutlinedTextField
+import das.omegaterapia.visits.ui.components.form.PasswordField
+import das.omegaterapia.visits.ui.components.form.ValidatorOutlinedTextField
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.ui.theme.getButtonShape
 import das.omegaterapia.visits.utils.canBeValidUsername

@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.main
+package das.omegaterapia.visits.activities.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

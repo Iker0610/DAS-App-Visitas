@@ -51,7 +51,7 @@ import das.omegaterapia.visits.ui.components.form.FormSection
 import das.omegaterapia.visits.ui.components.form.FormSubsection
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.components.generic.OutlinedChoiceChip
-import das.omegaterapia.visits.ui.components.generic.ValidatorOutlinedTextField
+import das.omegaterapia.visits.ui.components.form.ValidatorOutlinedTextField
 import das.omegaterapia.visits.ui.components.generic.rememberMutableStateListOf
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.canBePhoneNumber

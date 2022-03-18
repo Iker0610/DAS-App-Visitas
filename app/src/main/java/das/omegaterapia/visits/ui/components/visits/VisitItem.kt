@@ -22,7 +22,7 @@ import das.omegaterapia.visits.data.visitList
 import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
-import das.omegaterapia.visits.ui.components.generic.TextIconButton
+import das.omegaterapia.visits.ui.components.form.TextIconButton
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import java.time.format.DateTimeFormatter
 import kotlin.random.Random

@@ -1,16 +1,15 @@
-package das.omegaterapia.visits.authorization
+package das.omegaterapia.visits.activities.authorization
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.AndroidEntryPoint
-import das.omegaterapia.visits.authorization.composables.AuthScreen
-import das.omegaterapia.visits.main.MainActivity
+import das.omegaterapia.visits.activities.authorization.composables.AuthScreen
+import das.omegaterapia.visits.activities.main.MainActivity
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.rememberWindowSizeClass
 import java.util.concurrent.Executor
@@ -29,9 +28,14 @@ class AuthActivity : FragmentActivity() {
             val windowSizeClass = rememberWindowSizeClass()
 
             OmegaterapiaTheme {
-                AuthScreen(windowSizeFormatClass = windowSizeClass, onSuccessfulLogin = this::openMainScreen)
+                AuthScreen(windowSizeFormatClass = windowSizeClass, onSuccessfulLogin = this::openMainScreen, onSuccessfulSignIn = this::onSuccessfulSignIn)
             }
         }
+    }
+
+    private fun onSuccessfulSignIn(username: String){
+
+        openMainScreen(username)
     }
 
     private fun openMainScreen(username: String) {

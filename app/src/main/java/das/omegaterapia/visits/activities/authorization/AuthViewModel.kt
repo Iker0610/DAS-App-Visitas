@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.authorization
+package das.omegaterapia.visits.activities.authorization
 
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue

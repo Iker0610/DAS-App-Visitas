@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OmegaterapiaTheme">
         <activity
-            android:name=".authorization.AuthActivity"
+            android:name=".activities.authorization.AuthActivity"
             android:exported="true"
             android:theme="@style/Theme.OmegaterapiaTheme">
             <intent-filter>
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".main.MainActivity"
+            android:name=".activities.main.MainActivity"
             android:exported="false"
             android:theme="@style/Theme.OmegaterapiaTheme" />
     </application>

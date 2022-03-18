@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.authorization.composables
+package das.omegaterapia.visits.activities.authorization.composables
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
@@ -20,11 +20,16 @@ import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.WindowSizeFormat
 import das.omegaterapia.visits.utils.WindowsSize
-import das.omegaterapia.visits.authorization.AuthViewModel
+import das.omegaterapia.visits.activities.authorization.AuthViewModel
 import das.omegaterapia.visits.ui.theme.getButtonShape
 
 @Composable
-fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass: WindowsSize, onSuccessfulLogin: (String)-> Unit = {}) {
+fun AuthScreen(
+    authViewModel: AuthViewModel = viewModel(),
+    windowSizeFormatClass: WindowsSize,
+    onSuccessfulLogin: (String)-> Unit = {},
+    onSuccessfulSignIn: (String)-> Unit = {}
+) {
     Scaffold { padding ->
         Box(
             contentAlignment = Alignment.Center,
@@ -48,7 +53,7 @@ fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass
                             .width(1.dp)
                         )
 
-                        SignInSection(authViewModel, onSignInSuccessful = onSuccessfulLogin)
+                        SignInSection(authViewModel, onSignInSuccessful = onSuccessfulSignIn)
                     }
                 }
 
@@ -72,7 +77,7 @@ fun AuthScreen(authViewModel: AuthViewModel = viewModel(), windowSizeFormatClass
                 AnimatedVisibility(!authViewModel.isLogin, enter = fadeIn(), exit = fadeOut()) {
                     CenteredColumn(Modifier.width(IntrinsicSize.Max)
                     ) {
-                        SignInCard(authViewModel, onSignInSuccessful = onSuccessfulLogin)
+                        SignInCard(authViewModel, onSignInSuccessful = onSuccessfulSignIn)
 
                         Divider(modifier = Modifier.padding(top = 32.dp, bottom = 24.dp))
 

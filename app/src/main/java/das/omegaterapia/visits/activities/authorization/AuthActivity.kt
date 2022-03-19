@@ -1,20 +1,28 @@
 package das.omegaterapia.visits.activities.authorization
 
+
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.FragmentActivity
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 import das.omegaterapia.visits.NotificationID
 import das.omegaterapia.visits.R
+import das.omegaterapia.visits.activities.authorization.composables.AnimatedSplashScreen
 import das.omegaterapia.visits.activities.authorization.composables.AuthScreen
 import das.omegaterapia.visits.activities.main.MainActivity
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.rememberWindowSizeClass
-import java.util.concurrent.Executor
 
 @AndroidEntryPoint
 class AuthActivity : FragmentActivity() {
@@ -25,6 +33,7 @@ class AuthActivity : FragmentActivity() {
     /*--------------------------------------------------
     |            Activity Lifecycle Methods            |
     --------------------------------------------------*/
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,18 +46,39 @@ class AuthActivity : FragmentActivity() {
             )
 
         setContent {
-            val windowSizeClass = rememberWindowSizeClass()
-
             OmegaterapiaTheme {
-                AuthScreen(
-                    authViewModel = authViewModel,
-                    windowSizeFormatClass = windowSizeClass,
-                    biometricSupportChecker = biometricAuthManager::checkBiometricSupport,
-                    onSuccessfulLogin = this::onSuccessfulLogin,
-                    onSuccessfulSignIn = this::onSuccessfulSignIn,
-                    onSuccessfulBiometricLogin = biometricAuthManager::submitBiometricAuthorization
-                )
+                val windowSizeClass = rememberWindowSizeClass()
+
+                val navController = rememberAnimatedNavController()
+                AnimatedNavHost(
+                    navController = navController,
+                    startDestination = "splash_screen"
+                ) {
+                    composable(
+                        route = "splash_screen",
+                        exitTransition = { fadeOut(animationSpec = tween(500)) }
+                    ) {
+                        AnimatedSplashScreen {
+                            navController.popBackStack()
+                            navController.navigate("auth_screen")
+                        }
+                    }
+                    composable(
+                        route = "auth_screen",
+                        enterTransition = { fadeIn(animationSpec = tween(500)) }
+                    ) {
+                        AuthScreen(
+                            authViewModel = authViewModel,
+                            windowSizeFormatClass = windowSizeClass,
+                            biometricSupportChecker = biometricAuthManager::checkBiometricSupport,
+                            onSuccessfulLogin = ::onSuccessfulLogin,
+                            onSuccessfulSignIn = ::onSuccessfulSignIn,
+                            onSuccessfulBiometricLogin = biometricAuthManager::submitBiometricAuthorization
+                        )
+                    }
+                }
             }
+
         }
     }
 

@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
+import das.omegaterapia.visits.data.visitList
+import das.omegaterapia.visits.ui.components.visits.VisitList
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 
 
@@ -20,12 +22,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val username = intent.getStringExtra("LOGED_USERNAME") ?: "NOT USERNAME GIVEN"
 
-
         setContent {
             OmegaterapiaTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    Greeting(username)
+                    val groupedVisits = mapOf(
+                        "Lunes" to visitList.subList(0, 2),
+                        "Martes" to visitList.subList(1, 5),
+                        "Miércoles" to emptyList(),
+                        "Jueves" to visitList.subList(3, 5),
+                        "Viernes" to visitList,
+                    )
+                    OmegaterapiaTheme {
+                        Surface {
+                            VisitList(groupedVisitCards = groupedVisits)
+                        }
+                    }
                 }
             }
         }

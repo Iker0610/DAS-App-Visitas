@@ -4,35 +4,47 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import das.omegaterapia.visits.activities.authorization.AuthViewModel
+import das.omegaterapia.visits.activities.authorization.DeviceBiometricsSupport
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
+import das.omegaterapia.visits.ui.theme.getMaterialRectangleShape
 import das.omegaterapia.visits.utils.WindowSizeFormat
 import das.omegaterapia.visits.utils.WindowsSize
-import das.omegaterapia.visits.activities.authorization.AuthViewModel
-import das.omegaterapia.visits.ui.theme.getButtonShape
 
 @Composable
 fun AuthScreen(
     authViewModel: AuthViewModel = viewModel(),
     windowSizeFormatClass: WindowsSize,
+    biometricSupportChecker: () -> DeviceBiometricsSupport = { DeviceBiometricsSupport.UNSUPPORTED },
     onSuccessfulLogin: (String) -> Unit = {},
     onSuccessfulSignIn: (String) -> Unit = {},
+    onSuccessfulBiometricLogin: () -> Unit = {},
 ) {
     Scaffold { padding ->
         Box(
@@ -49,7 +61,12 @@ fun AuthScreen(
                         .height(IntrinsicSize.Max)
                         .padding(horizontal = 32.dp, vertical = 16.dp)
                     ) {
-                        LoginSection(authViewModel, onLoginSuccessful = onSuccessfulLogin)
+                        LoginSection(
+                            authViewModel,
+                            biometricSupportChecker = biometricSupportChecker,
+                            onLoginSuccessful = onSuccessfulLogin,
+                            onSuccessfulBiometricLogin = onSuccessfulBiometricLogin
+                        )
 
                         Divider(modifier = Modifier
                             .padding(horizontal = 64.dp)
@@ -67,14 +84,14 @@ fun AuthScreen(
                 AnimatedVisibility(
                     authViewModel.isLogin,
                     enter = slideInHorizontally(
-                        initialOffsetX = { -2*it },
+                        initialOffsetX = { -2 * it },
                         animationSpec = tween(
                             durationMillis = animationTime,
                             easing = LinearEasing
                         )
                     ),
                     exit = slideOutHorizontally(
-                        targetOffsetX = { -2*it },
+                        targetOffsetX = { -2 * it },
                         animationSpec = tween(
                             durationMillis = animationTime,
                             easing = LinearEasing
@@ -83,12 +100,17 @@ fun AuthScreen(
                 ) {
                     CenteredColumn(Modifier.width(IntrinsicSize.Max)
                     ) {
-                        LoginCard(authViewModel, onLoginSuccessful = onSuccessfulLogin)
+                        LoginCard(
+                            authViewModel,
+                            biometricSupportChecker = biometricSupportChecker,
+                            onLoginSuccessful = onSuccessfulLogin,
+                            onSuccessfulBiometricLogin = onSuccessfulBiometricLogin
+                        )
 
                         Divider(modifier = Modifier.padding(top = 32.dp, bottom = 24.dp))
 
                         Text(text = "Don't have an account?", style = MaterialTheme.typography.body2)
-                        TextButton(onClick = authViewModel::switchScreen, shape = MaterialTheme.getButtonShape()) {
+                        TextButton(onClick = authViewModel::switchScreen, shape = getMaterialRectangleShape()) {
                             Text(text = "Sign In")
                         }
                     }
@@ -99,14 +121,14 @@ fun AuthScreen(
                     !authViewModel.isLogin,
                     modifier = Modifier.fillMaxSize(),
                     enter = slideInHorizontally(
-                        initialOffsetX = { 2*it },
+                        initialOffsetX = { 2 * it },
                         animationSpec = tween(
                             durationMillis = animationTime,
                             easing = LinearEasing
                         )
                     ),
                     exit = slideOutHorizontally(
-                        targetOffsetX = { 2*it },
+                        targetOffsetX = { 2 * it },
                         animationSpec = tween(
                             durationMillis = animationTime,
                             easing = LinearEasing
@@ -120,7 +142,7 @@ fun AuthScreen(
                         Divider(modifier = Modifier.padding(top = 32.dp, bottom = 24.dp))
 
                         Text(text = "Already have an account?", style = MaterialTheme.typography.body2)
-                        TextButton(onClick = authViewModel::switchScreen, shape = MaterialTheme.getButtonShape()) {
+                        TextButton(onClick = authViewModel::switchScreen, shape = getMaterialRectangleShape()) {
                             Text(text = "Login")
                         }
                     }

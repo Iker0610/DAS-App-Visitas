@@ -2,12 +2,10 @@ package das.omegaterapia.visits.activities.authorization
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.biometric.BiometricPrompt
+import androidx.activity.viewModels
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.AndroidEntryPoint
 import das.omegaterapia.visits.NotificationID
@@ -20,6 +18,9 @@ import java.util.concurrent.Executor
 
 @AndroidEntryPoint
 class AuthActivity : FragmentActivity() {
+    private val authViewModel: AuthViewModel by viewModels()
+    private lateinit var biometricAuthManager: BiometricAuthManager
+
 
     /*--------------------------------------------------
     |            Activity Lifecycle Methods            |
@@ -28,14 +29,25 @@ class AuthActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
 
         // Inicializamos la autenticación biométrica
-        executor = ContextCompat.getMainExecutor(this)
-        biometricPrompt = BiometricPrompt(this, executor, authenticationCallback)
+        biometricAuthManager =
+            BiometricAuthManager(
+                context = this,
+                authUser = authViewModel.lastLoggedUser ?: "",
+                onAuthenticationSucceeded = this::onSuccessfulLogin
+            )
 
         setContent {
             val windowSizeClass = rememberWindowSizeClass()
 
             OmegaterapiaTheme {
-                AuthScreen(windowSizeFormatClass = windowSizeClass, onSuccessfulLogin = this::openMainScreen, onSuccessfulSignIn = this::onSuccessfulSignIn)
+                AuthScreen(
+                    authViewModel = authViewModel,
+                    windowSizeFormatClass = windowSizeClass,
+                    biometricSupportChecker = biometricAuthManager::checkBiometricSupport,
+                    onSuccessfulLogin = this::onSuccessfulLogin,
+                    onSuccessfulSignIn = this::onSuccessfulSignIn,
+                    onSuccessfulBiometricLogin = biometricAuthManager::submitBiometricAuthorization
+                )
             }
         }
     }
@@ -45,7 +57,9 @@ class AuthActivity : FragmentActivity() {
     |              Login Sign In actions              |
     -------------------------------------------------*/
 
-    private fun onSuccessfulSignIn(username: String){
+    private fun onSuccessfulSignIn(username: String) {
+
+        // Show user created notification
         val builder = NotificationCompat.Builder(this, "AUTH_CHANNEL")
             .setSmallIcon(R.drawable.ic_stat_name)
             .setContentTitle("User created")
@@ -57,53 +71,19 @@ class AuthActivity : FragmentActivity() {
             notify(NotificationID.USER_CREATED.id, builder.build())
         }
 
-        openMainScreen(username)
+        // Log the new user
+        onSuccessfulLogin(username)
     }
 
-    private fun openMainScreen(username: String) {
+    private fun onSuccessfulLogin(username: String) {
+        // Set the last logged user
+        authViewModel.updateLastLoggedUsername(username)
+
+        // Open the amin activity
         val intent = Intent(this, MainActivity::class.java).apply {
             putExtra("LOGED_USERNAME", username)
         }
         startActivity(intent)
         finish()
     }
-
-
-    /*--------------------------------------------------
-    |                    BIOMETRICS                    |
-    --------------------------------------------------*/
-    private lateinit var executor: Executor
-    private lateinit var biometricPrompt: BiometricPrompt
-
-
-    private val authenticationCallback: BiometricPrompt.AuthenticationCallback =
-        // Con "object" definimos un singleton que hereda de BiometricPrompt.AuthenticationCallback
-        object : BiometricPrompt.AuthenticationCallback() {
-
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                super.onAuthenticationSucceeded(result)
-                Toast.makeText(applicationContext, "Authentication succeeded!", Toast.LENGTH_SHORT).show()
-                // TODO
-            }
-
-            override fun onAuthenticationFailed() {
-                super.onAuthenticationFailed()
-                Toast.makeText(applicationContext, "Authentication Failed. Try again.", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                super.onAuthenticationError(errorCode, errString)
-                Toast.makeText(applicationContext, "Authentication error: $errString", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-
-    private val biometricPromptInfo: BiometricPrompt.PromptInfo =
-        BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Allow Biometric Authentication")
-            .setSubtitle("You will no longer required username and password during login")
-            .setDescription("We use biometric authentication to protect your data")
-            .setNegativeButtonText("Cancel")
-            .build()
 }
-

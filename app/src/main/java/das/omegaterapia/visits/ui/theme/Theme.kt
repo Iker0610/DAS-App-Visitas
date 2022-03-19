@@ -46,4 +46,4 @@ fun OmegaterapiaTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Comp
 }
 
 @Composable
-fun MaterialTheme.getButtonShape() = CutCornerShape(0.dp)
+fun getMaterialRectangleShape() = CutCornerShape(0.dp)

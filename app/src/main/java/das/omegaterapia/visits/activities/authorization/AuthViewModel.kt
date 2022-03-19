@@ -8,16 +8,26 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import das.omegaterapia.visits.model.entities.AuthUser
 import das.omegaterapia.visits.model.repositories.UserRepository
+import das.omegaterapia.visits.preferences.ILoginSettingsRepository
 import das.omegaterapia.visits.utils.compareHash
 import das.omegaterapia.visits.utils.hash
 import das.omegaterapia.visits.utils.isValidPassword
 import das.omegaterapia.visits.utils.isValidUsername
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val repository: UserRepository,
+    private val userRepository: UserRepository,
+    private val loginSettingsRepository: ILoginSettingsRepository,
 ) : ViewModel() {
+    val lastLoggedUser: String? =
+        runBlocking { return@runBlocking loginSettingsRepository.getLastLoggedUser() }
+            .let {
+                if (it != null && runBlocking { return@runBlocking userRepository.getUserPassword(it) } != null) {
+                    it
+                } else null
+            }
 
     // Screen States
     var isLogin: Boolean by mutableStateOf(true)
@@ -28,7 +38,7 @@ class AuthViewModel @Inject constructor(
     var isLoginCorrect by mutableStateOf(true)
         private set
 
-    var loginUsername by mutableStateOf("")
+    var loginUsername by mutableStateOf(lastLoggedUser ?: "")
     var loginPassword by mutableStateOf("")
 
 
@@ -52,11 +62,16 @@ class AuthViewModel @Inject constructor(
     }
 
 
+    fun updateLastLoggedUsername(username: String) = runBlocking {
+        loginSettingsRepository.setLastLoggedUser(username)
+    }
+
+
     //-------------------------------------------------------------------
     // Login Events
     suspend fun checkLogin(): String? {
         val username = loginUsername
-        isLoginCorrect = loginPassword.compareHash(repository.getUserPassword(username))
+        isLoginCorrect = loginPassword.compareHash(userRepository.getUserPassword(username))
         return if (isLoginCorrect) username else null
     }
 
@@ -66,7 +81,7 @@ class AuthViewModel @Inject constructor(
     suspend fun checkSignIn(): String? {
         if (isSignInUsernameValid && isSignInPasswordConfirmationValid) {
             val newUser = AuthUser(signInUsername, signInPassword.hash())
-            val signInCorrect = repository.createUser(newUser)
+            val signInCorrect = userRepository.createUser(newUser)
             signInUserExists = !signInCorrect
             return if (signInCorrect) newUser.username else null
         }

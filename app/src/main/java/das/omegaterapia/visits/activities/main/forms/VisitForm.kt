@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.ui.screens.add
+package das.omegaterapia.visits.activities.main.forms
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement

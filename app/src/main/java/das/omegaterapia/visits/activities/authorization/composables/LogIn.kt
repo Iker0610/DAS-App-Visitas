@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.activities.authorization.composables.components
+package das.omegaterapia.visits.activities.authorization.composables
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement

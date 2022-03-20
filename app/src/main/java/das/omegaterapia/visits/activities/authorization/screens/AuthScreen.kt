@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.activities.authorization.composables.screens
+package das.omegaterapia.visits.activities.authorization.screens
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
@@ -30,10 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import das.omegaterapia.visits.activities.authorization.AuthViewModel
 import das.omegaterapia.visits.activities.authorization.DeviceBiometricsSupport
-import das.omegaterapia.visits.activities.authorization.composables.components.LoginCard
-import das.omegaterapia.visits.activities.authorization.composables.components.LoginSection
-import das.omegaterapia.visits.activities.authorization.composables.components.SignInCard
-import das.omegaterapia.visits.activities.authorization.composables.components.SignInSection
+import das.omegaterapia.visits.activities.authorization.composables.LoginCard
+import das.omegaterapia.visits.activities.authorization.composables.LoginSection
+import das.omegaterapia.visits.activities.authorization.composables.SignInCard
+import das.omegaterapia.visits.activities.authorization.composables.SignInSection
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme

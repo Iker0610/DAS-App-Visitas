@@ -17,7 +17,8 @@ interface VisitsDao {
     @Insert
     suspend fun addVisitData(visitData: VisitData)
 
-    suspend fun addVisit(visitCard: VisitCard): Boolean{
+    @Transaction
+    suspend fun addVisitCard(visitCard: VisitCard): Boolean{
         try {
             addClient(visitCard.client)
             addVisitData(visitCard.visitData)

@@ -8,8 +8,11 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import das.omegaterapia.visits.model.OmegaterapiaVisitsDatabase
-import das.omegaterapia.visits.preferences.ILoginSettingsRepository
-import das.omegaterapia.visits.preferences.LoginSettingsRepository
+import das.omegaterapia.visits.model.dao.AuthenticationDao
+import das.omegaterapia.visits.model.repositories.ILoginRepository
+import das.omegaterapia.visits.model.repositories.LoginRepository
+import das.omegaterapia.visits.preferences.ILoginSettings
+import das.omegaterapia.visits.preferences.PreferencesRepository
 import javax.inject.Singleton
 
 
@@ -26,13 +29,19 @@ object AppModule {
             "omegaterapia_visits_database"
         ).build()
 
+    @Singleton
+    @Provides
+    fun provideAuthenticationDao(db: OmegaterapiaVisitsDatabase) = db.authenticationDao()
 
     @Singleton
     @Provides
-    fun provideAuthDao(db: OmegaterapiaVisitsDatabase) = db.authDao()
-
+    fun provideVisitsDao(db: OmegaterapiaVisitsDatabase) = db.visitsDao()
 
     @Singleton
     @Provides
-    fun provideDataStoreRepository(@ApplicationContext app: Context): ILoginSettingsRepository = LoginSettingsRepository(app)
+    fun provideLoginSettings(@ApplicationContext app: Context): ILoginSettings = PreferencesRepository(app)
+
+    @Singleton
+    @Provides
+    fun provideLoginRepository(authDao: AuthenticationDao, loginSettings: ILoginSettings): ILoginRepository = LoginRepository(authDao, loginSettings)
 }

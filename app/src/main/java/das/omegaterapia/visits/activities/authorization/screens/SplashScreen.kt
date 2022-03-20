@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.activities.authorization.composables.screens
+package das.omegaterapia.visits.activities.authorization.screens
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.core.animateFloatAsState

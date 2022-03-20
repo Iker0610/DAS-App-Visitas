@@ -8,7 +8,7 @@ import das.omegaterapia.visits.model.entities.AuthUser
 
 
 @Dao
-interface AuthDao {
+interface AuthenticationDao {
     @Insert
     suspend fun createUser(authUser: AuthUser)
 

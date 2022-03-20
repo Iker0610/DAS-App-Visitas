@@ -18,8 +18,8 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 import das.omegaterapia.visits.NotificationID
 import das.omegaterapia.visits.R
-import das.omegaterapia.visits.activities.authorization.composables.screens.AnimatedSplashScreen
-import das.omegaterapia.visits.activities.authorization.composables.screens.AuthScreen
+import das.omegaterapia.visits.activities.authorization.screens.AnimatedSplashScreen
+import das.omegaterapia.visits.activities.authorization.screens.AuthScreen
 import das.omegaterapia.visits.activities.main.MainActivity
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.rememberWindowSizeClass
@@ -78,7 +78,6 @@ class AuthActivity : FragmentActivity() {
                     }
                 }
             }
-
         }
     }
 
@@ -111,7 +110,7 @@ class AuthActivity : FragmentActivity() {
 
         // Open the amin activity
         val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra("LOGED_USERNAME", username)
+            putExtra("LOGGED_USERNAME", username)
         }
         startActivity(intent)
         finish()

@@ -9,8 +9,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import das.omegaterapia.visits.model.OmegaterapiaVisitsDatabase
 import das.omegaterapia.visits.model.dao.AuthenticationDao
+import das.omegaterapia.visits.model.dao.VisitsDao
 import das.omegaterapia.visits.model.repositories.ILoginRepository
+import das.omegaterapia.visits.model.repositories.IVisitsRepository
 import das.omegaterapia.visits.model.repositories.LoginRepository
+import das.omegaterapia.visits.model.repositories.VisitsRepository
 import das.omegaterapia.visits.preferences.ILoginSettings
 import das.omegaterapia.visits.preferences.PreferencesRepository
 import javax.inject.Singleton
@@ -44,4 +47,8 @@ object AppModule {
     @Singleton
     @Provides
     fun provideLoginRepository(authDao: AuthenticationDao, loginSettings: ILoginSettings): ILoginRepository = LoginRepository(authDao, loginSettings)
+
+    @Singleton
+    @Provides
+    fun provideVisitsRepository(visitsDao: VisitsDao): IVisitsRepository = VisitsRepository(visitsDao)
 }

@@ -8,6 +8,7 @@ import androidx.room.Transaction
 import das.omegaterapia.visits.model.entities.Client
 import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.model.entities.VisitData
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface VisitsDao {
@@ -31,5 +32,5 @@ interface VisitsDao {
 
     @Transaction
     @Query("SELECT * FROM VisitData WHERE user = :currentUser")
-    suspend fun getUserVisits(currentUser: String): List<VisitCard>
+    fun getUserVisits(currentUser: String): Flow<List<VisitCard>>
 }

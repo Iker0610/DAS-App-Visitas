@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,21 +57,15 @@ fun VisitList(
 fun VisitGroupHeader(groupTitle: String) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colors.primary.copy(alpha = 0.85f).compositeOver(MaterialTheme.colors.surface),
+        contentColor = MaterialTheme.colors.onPrimary,
         elevation = 16.dp
     ) {
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colors.primary.copy(alpha = 0.1f),
-            contentColor = MaterialTheme.colors.primary,
-        ) {
-            Text(
-                text = groupTitle.uppercase(),
-                style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-            )
-        }
+        Text(
+            text = groupTitle.uppercase(),
+            style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+        )
     }
 }
 
@@ -83,11 +78,11 @@ fun VisitGroupHeader(groupTitle: String) {
 @Composable
 fun VisitListPreview() {
     val groupedVisits = mapOf(
-        "Lunes" to visitList.subList(0, 2),
-        "Martes" to visitList.subList(1, 5),
+        "Lunes" to visitList.subList(0, 5),
+        "Martes" to visitList.subList(5, 12),
         "Miércoles" to emptyList(),
-        "Jueves" to visitList.subList(3, 5),
-        "Viernes" to visitList,
+        "Jueves" to visitList.subList(12, 20),
+        "Viernes" to visitList.subList(20, visitList.size),
     )
     OmegaterapiaTheme {
         Surface {

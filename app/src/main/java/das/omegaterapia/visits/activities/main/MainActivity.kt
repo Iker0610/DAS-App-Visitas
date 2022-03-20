@@ -27,11 +27,11 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
                     val groupedVisits = mapOf(
-                        "Lunes" to visitList.subList(0, 2),
-                        "Martes" to visitList.subList(1, 5),
+                        "Lunes" to visitList.subList(0, 5),
+                        "Martes" to visitList.subList(5, 12),
                         "Miércoles" to emptyList(),
-                        "Jueves" to visitList.subList(3, 5),
-                        "Viernes" to visitList,
+                        "Jueves" to visitList.subList(12, 20),
+                        "Viernes" to visitList.subList(20, visitList.size),
                     )
                     OmegaterapiaTheme {
                         Surface {

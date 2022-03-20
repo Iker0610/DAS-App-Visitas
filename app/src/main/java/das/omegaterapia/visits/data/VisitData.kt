@@ -5,11 +5,11 @@ import das.omegaterapia.visits.model.entities.VisitData
 import java.time.LocalDateTime
 import kotlin.random.Random
 
-val getYear = { Random.nextInt(2018, 2022) }
-val getMonth = { Random.nextInt(1, 12) }
+val getYear = { 22 } // { Random.nextInt(2018, 2022) }
+val getMonth = { Random.nextInt(2, 3) }
 val getDay = { Random.nextInt(1, 28) }
 val getHour = { Random.nextInt(8, 19) }
-val getMinute = { Random.nextInt(0, 59) }
+val getMinute = { arrayOf(0, 15, 30, 45)[Random.nextInt(0, 1)] }
 val getVisitDate = { LocalDateTime.of(getYear(), getMonth(), getDay(), getHour(), getMinute()) }
 
 val getRandomClient = { clients[Random.nextInt(clients.size)] }
@@ -54,6 +54,7 @@ val visitList = listOf(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion(), getRandomCompanion()),
             visitDate = getVisitDate(),
+            isVIP = true
         )
     ),
 
@@ -73,6 +74,179 @@ val visitList = listOf(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion()),
             visitDate = getVisitDate(),
+        )
+    ),
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            companions = mutableListOf(getRandomCompanion(), getRandomCompanion(), getRandomCompanion()),
+            visitDate = getVisitDate(),
+            observations = observation,
+            isVIP = true
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            visitDate = getVisitDate(),
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            visitDate = getVisitDate(),
+            observations = observation,
+            isVIP = true
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            companions = mutableListOf(getRandomCompanion(), getRandomCompanion()),
+            visitDate = getVisitDate(),
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            companions = mutableListOf(getRandomCompanion()),
+            visitDate = getVisitDate(),
+            observations = observation,
+            isVIP = true
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            companions = mutableListOf(getRandomCompanion()),
+            visitDate = getVisitDate(),
+            isVIP = true
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            companions = mutableListOf(getRandomCompanion(), getRandomCompanion(), getRandomCompanion()),
+            visitDate = getVisitDate(),
+            observations = observation,
+            isVIP = true
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            visitDate = getVisitDate(),
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            visitDate = getVisitDate(),
+            observations = observation
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            companions = mutableListOf(getRandomCompanion(), getRandomCompanion()),
+            visitDate = getVisitDate(),
+            isVIP = true
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            companions = mutableListOf(getRandomCompanion()),
+            visitDate = getVisitDate(),
+            observations = observation
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            companions = mutableListOf(getRandomCompanion()),
+            visitDate = getVisitDate(),
+        )
+    ),
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            companions = mutableListOf(getRandomCompanion(), getRandomCompanion(), getRandomCompanion()),
+            visitDate = getVisitDate(),
+            observations = observation,
+            isVIP = true
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            visitDate = getVisitDate(),
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            visitDate = getVisitDate(),
+            observations = observation,
+            isVIP = true
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            companions = mutableListOf(getRandomCompanion(), getRandomCompanion()),
+            visitDate = getVisitDate(),
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            companions = mutableListOf(getRandomCompanion()),
+            visitDate = getVisitDate(),
+            observations = observation,
+            isVIP = true
+        )
+    ),
+
+    VisitCard(
+        mainClient = getRandomClient(),
+        visitData = VisitData(
+            mainClientPhone = "",
+            companions = mutableListOf(getRandomCompanion()),
+            visitDate = getVisitDate(),
+            isVIP = true
         )
     ),
 )

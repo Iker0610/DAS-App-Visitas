@@ -76,7 +76,7 @@ fun VisitCardItem(
     visitCard: VisitCard,
     isExpanded: Boolean = false,
     onClick: (VisitCard) -> Unit = {},
-    elevation: Dp = 4.dp,
+    elevation: Dp = 8.dp,
 ) {
     // Styling
     val typography = MaterialTheme.typography

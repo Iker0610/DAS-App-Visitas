@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.ui.components.generic
+package das.omegaterapia.visits.utils
 
 import android.os.Parcelable
 import androidx.compose.runtime.Composable

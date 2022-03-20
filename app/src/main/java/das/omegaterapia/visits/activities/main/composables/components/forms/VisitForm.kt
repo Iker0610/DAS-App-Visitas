@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.activities.main.forms
+package das.omegaterapia.visits.activities.main.composables.components.forms
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -53,7 +53,7 @@ import das.omegaterapia.visits.ui.components.form.FormSubsection
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.components.generic.OutlinedChoiceChip
 import das.omegaterapia.visits.ui.components.form.ValidatorOutlinedTextField
-import das.omegaterapia.visits.ui.components.generic.rememberMutableStateListOf
+import das.omegaterapia.visits.utils.rememberMutableStateListOf
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.canBePhoneNumber
 import das.omegaterapia.visits.utils.canBeZIP

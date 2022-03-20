@@ -18,8 +18,8 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 import das.omegaterapia.visits.NotificationID
 import das.omegaterapia.visits.R
-import das.omegaterapia.visits.activities.authorization.composables.AnimatedSplashScreen
-import das.omegaterapia.visits.activities.authorization.composables.AuthScreen
+import das.omegaterapia.visits.activities.authorization.composables.screens.AnimatedSplashScreen
+import das.omegaterapia.visits.activities.authorization.composables.screens.AuthScreen
 import das.omegaterapia.visits.activities.main.MainActivity
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.rememberWindowSizeClass

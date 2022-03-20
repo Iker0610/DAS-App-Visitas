@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
 import das.omegaterapia.visits.data.visitList
-import das.omegaterapia.visits.ui.components.visits.VisitList
+import das.omegaterapia.visits.activities.main.composables.components.VisitList
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 
 

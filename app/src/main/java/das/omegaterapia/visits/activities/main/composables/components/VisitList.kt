@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.ui.components.visits
+package das.omegaterapia.visits.activities.main.composables.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi

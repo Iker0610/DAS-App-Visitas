@@ -22,5 +22,4 @@ class UserRepository @Inject constructor(private val authDao: AuthDao) {
             false
         }
     }
-
 }

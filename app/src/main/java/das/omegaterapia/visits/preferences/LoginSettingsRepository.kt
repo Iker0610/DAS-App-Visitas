@@ -37,5 +37,4 @@ class LoginSettingsRepository @Inject constructor(private val context: Context) 
             preferences[PreferencesKeys.LAST_LOGGED_USER] = value
         }
     }
-
 }

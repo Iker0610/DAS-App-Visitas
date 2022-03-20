@@ -1,23 +1,32 @@
 package das.omegaterapia.visits.model.entities
 
-import java.util.*
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 
+
+data class Direction(
+    var address: String,
+    var town: String,
+    var zip: String,
+)
+
+
+@Entity(indices = [Index(value = ["town", "zip"])])
 data class Client(
-    // @PrimaryKey(autoGenerate = true)
-    val id: String = UUID.randomUUID().toString(),
     var name: String,
     var surname: String,
+
+    @ColumnInfo(name = "phone_number")
+    @PrimaryKey var phoneNum: String,
+
+    @Embedded
     var direction: Direction,
-    var phoneNum: String,
 ) {
     override fun toString(): String {
         return "$name $surname"
     }
 }
 
-// Mirar de sustituirlo por la clase Adress de android
-data class Direction(
-    var address: String,
-    var town: String,
-    var zip: String,
-)

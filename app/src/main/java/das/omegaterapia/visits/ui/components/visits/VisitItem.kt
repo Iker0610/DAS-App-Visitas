@@ -66,8 +66,8 @@ fun VisitCardItem(
     }
 
     // Date Formatter
-    val date = visitCard.visitDate.format( DateTimeFormatter.ofPattern("d MMM")).trim('.').uppercase()
-    val time = visitCard.visitDate.format( DateTimeFormatter.ofPattern("hh:mm"))
+    val date = visitCard.visitData.visitDate.format( DateTimeFormatter.ofPattern("d MMM")).trim('.').uppercase()
+    val time = visitCard.visitData.visitDate.format( DateTimeFormatter.ofPattern("hh:mm"))
 
     // UI
     Card(modifier = modifier.fillMaxWidth(), elevation = elevation) {
@@ -86,12 +86,12 @@ fun VisitCardItem(
             ) {
                 CenteredRow(horizontalArrangement = Arrangement.Start) {
                     CenteredColumn {
-                        if (visitCard.isVIP) {
+                        if (visitCard.visitData.isVIP) {
                             Icon(Icons.Filled.StarOutline, "VIP Client", Modifier.height(16.dp))
                             Spacer(modifier = Modifier.height(3.dp))
                         }
                         Text(text = date, style = typography.overline)
-                        if (!visitCard.isVIP) Spacer(modifier = Modifier.height(6.dp))
+                        if (!visitCard.visitData.isVIP) Spacer(modifier = Modifier.height(6.dp))
                         Text(text = time, style = typography.subtitle2)
                     }
 
@@ -116,20 +116,20 @@ fun VisitCardItem(
 
             //-------------------------------
 
-            if (isExpanded && (visitCard.companions.isNotEmpty() || visitCard.observations.isNotBlank())) {
+            if (isExpanded && (visitCard.visitData.companions.isNotEmpty() || visitCard.visitData.observations.isNotBlank())) {
                 Divider()
                 Column(Modifier.padding(vertical = 16.dp)) {
-                    if (visitCard.companions.isNotEmpty()) {
+                    if (visitCard.visitData.companions.isNotEmpty()) {
                         Text("Client's Companions", style = typography.subtitle2, modifier = Modifier.padding(bottom = 4.dp))
-                        for (client in visitCard.companions) {
+                        for (client in visitCard.visitData.companions) {
                             Text(text = "- $client", style = typography.body2)
                         }
 
-                        if (visitCard.observations.isNotBlank()) Spacer(Modifier.height(16.dp))
+                        if (visitCard.visitData.observations.isNotBlank()) Spacer(Modifier.height(16.dp))
                     }
-                    if (visitCard.observations.isNotBlank()) {
+                    if (visitCard.visitData.observations.isNotBlank()) {
                         Text("Observations", style = typography.subtitle2, modifier = Modifier.padding(bottom = 4.dp))
-                        Text(visitCard.observations, style = typography.body2)
+                        Text(visitCard.visitData.observations, style = typography.body2)
                     }
                 }
             }

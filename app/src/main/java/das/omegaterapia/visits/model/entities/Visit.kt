@@ -3,11 +3,9 @@ package das.omegaterapia.visits.model.entities
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import java.time.LocalDateTime
-import java.util.*
 
 
 @Entity(foreignKeys = [])

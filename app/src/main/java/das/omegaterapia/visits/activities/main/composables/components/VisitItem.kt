@@ -1,18 +1,46 @@
 package das.omegaterapia.visits.activities.main.composables.components
 
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.Card
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.PhoneInTalk
+import androidx.compose.material.icons.filled.PinDrop
+import androidx.compose.material.icons.filled.StarOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,9 +48,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.data.visitList
 import das.omegaterapia.visits.model.entities.VisitCard
+import das.omegaterapia.visits.ui.components.form.TextIconButton
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
-import das.omegaterapia.visits.ui.components.form.TextIconButton
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import java.time.format.DateTimeFormatter
 import kotlin.random.Random
@@ -50,8 +78,6 @@ fun VisitCardItem(
     onClick: (VisitCard) -> Unit = {},
     elevation: Dp = 4.dp,
 ) {
-    val expandCollapseIcon = if (isExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore
-
     // Styling
     val typography = MaterialTheme.typography
     val mainText = applyTextStyle(typography.subtitle1, ContentAlpha.high) {
@@ -66,28 +92,30 @@ fun VisitCardItem(
     }
 
     // Date Formatter
-    val date = visitCard.visitData.visitDate.format( DateTimeFormatter.ofPattern("d MMM")).trim('.').uppercase()
-    val time = visitCard.visitData.visitDate.format( DateTimeFormatter.ofPattern("hh:mm"))
+    val date = visitCard.visitData.visitDate.format(DateTimeFormatter.ofPattern("d MMM")).trim('.').uppercase()
+    val time = visitCard.visitData.visitDate.format(DateTimeFormatter.ofPattern("hh:mm"))
+
+
+    // Collapse Logic
+    val canBeExpanded = visitCard.visitData.companions.isNotEmpty() || visitCard.visitData.observations.isNotBlank()
+    val showExpandedContent = isExpanded && (canBeExpanded)
+    val expandCollapseIcon = if (isExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore
+
 
     // UI
     Card(modifier = modifier.fillMaxWidth(), elevation = elevation) {
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                // This `Column` animates its size when its content changes.
-                .animateContentSize()
-        ) {
+        Column {
             CenteredRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onClick(visitCard) }
-                    .padding(vertical = 16.dp),
+                    .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 CenteredRow(horizontalArrangement = Arrangement.Start) {
                     CenteredColumn {
                         if (visitCard.visitData.isVIP) {
-                            Icon(Icons.Filled.StarOutline, "VIP Client", Modifier.height(16.dp))
+                            Icon(Icons.Filled.StarOutline, "VIP Client", Modifier.height(16.dp), tint = MaterialTheme.colors.secondary)
                             Spacer(modifier = Modifier.height(3.dp))
                         }
                         Text(text = date, style = typography.overline)
@@ -104,23 +132,31 @@ fun VisitCardItem(
                     }
                 }
 
-
-                Icon(
-                    expandCollapseIcon,
-                    contentDescription = "Show more",
-                    Modifier
-                        .requiredSize(24.dp)
-                        .defaultMinSize(24.dp)
-                )
+                if (canBeExpanded) {
+                    Icon(
+                        expandCollapseIcon,
+                        contentDescription = "Show more",
+                        Modifier
+                            .requiredSize(24.dp)
+                            .defaultMinSize(24.dp)
+                    )
+                }
             }
+
+
+            // Divider(modifier = Modifier.padding(horizontal = dividerPadding))
 
             //-------------------------------
 
-            if (isExpanded && (visitCard.visitData.companions.isNotEmpty() || visitCard.visitData.observations.isNotBlank())) {
-                Divider()
-                Column(Modifier.padding(vertical = 16.dp)) {
+            AnimatedVisibility(showExpandedContent) {
+                Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
                     if (visitCard.visitData.companions.isNotEmpty()) {
-                        Text("Client's Companions", style = typography.subtitle2, modifier = Modifier.padding(bottom = 4.dp))
+                        Text(
+                            "Client's Companions",
+                            style = typography.subtitle2,
+                            color = MaterialTheme.colors.primary,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
                         for (client in visitCard.visitData.companions) {
                             Text(text = "- $client", style = typography.body2)
                         }
@@ -128,7 +164,12 @@ fun VisitCardItem(
                         if (visitCard.visitData.observations.isNotBlank()) Spacer(Modifier.height(16.dp))
                     }
                     if (visitCard.visitData.observations.isNotBlank()) {
-                        Text("Observations", style = typography.subtitle2, modifier = Modifier.padding(bottom = 4.dp))
+                        Text(
+                            "Observations",
+                            style = typography.subtitle2,
+                            color = MaterialTheme.colors.primary,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
                         Text(visitCard.visitData.observations, style = typography.body2)
                     }
                 }
@@ -138,18 +179,25 @@ fun VisitCardItem(
 
             Divider()
 
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+            Row(Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp), horizontalArrangement = Arrangement.SpaceAround) {
+                val context = LocalContext.current
+                val callIntent = Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", visitCard.mainClient.phoneNum, null))
+                val mapsIntent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Uri.encode(visitCard.mainClient.direction.toString())))
+
+
                 TextIconButton(
                     icon = Icons.Filled.PhoneInTalk,
                     text = visitCard.mainClient.phoneNum,
                     contentPadding = PaddingValues(vertical = 0.dp, horizontal = 16.dp),
-                    onClick = { /*TODO*/ })
+                    onClick = { context.startActivity(callIntent) })
 
                 TextIconButton(
                     icon = Icons.Filled.PinDrop,
                     text = "Open in Maps",
                     contentPadding = PaddingValues(vertical = 0.dp, horizontal = 16.dp),
-                    onClick = { /*TODO*/ })
+                    onClick = { context.startActivity(mapsIntent) })
             }
         }
     }

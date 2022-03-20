@@ -11,7 +11,11 @@ data class Direction(
     var address: String,
     var town: String,
     var zip: String,
-)
+) {
+    override fun toString(): String {
+        return "$address, $town $zip"
+    }
+}
 
 
 @Entity(indices = [Index(value = ["town", "zip"])])

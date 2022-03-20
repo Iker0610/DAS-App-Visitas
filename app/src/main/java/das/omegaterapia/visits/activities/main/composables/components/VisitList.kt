@@ -28,7 +28,7 @@ fun VisitList(
     modifier: Modifier = Modifier,
     selectedVisit: VisitCard? = null,
 ) {
-    val (selectedVisitCard, setSelectedVisitCard) = rememberSaveable { mutableStateOf(selectedVisit) }
+    val (selectedVisitCardId, setSelectedVisitCardId) = rememberSaveable { mutableStateOf(selectedVisit?.id) }
 
     LazyColumn(
         modifier = modifier,
@@ -41,10 +41,10 @@ fun VisitList(
                 VisitCardItem(
                     modifier = Modifier.padding(horizontal = 8.dp),
                     visitCard = visitCardData,
-                    isExpanded = visitCardData == selectedVisitCard,
+                    isExpanded = visitCardData.id == selectedVisitCardId,
                     onClick = {
-                        if (selectedVisitCard != it) setSelectedVisitCard(it)
-                        else setSelectedVisitCard(null)
+                        if (selectedVisitCardId != it.id) setSelectedVisitCardId(it.id)
+                        else setSelectedVisitCardId(null)
                     }
                 )
             }

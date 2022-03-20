@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -81,12 +80,12 @@ fun VisitCardItem(
     // Styling
     val typography = MaterialTheme.typography
     val mainText = applyTextStyle(typography.subtitle1, ContentAlpha.high) {
-        Text(text = visitCard.mainClient.toString(), overflow = TextOverflow.Ellipsis)
+        Text(text = visitCard.client.toString(), overflow = TextOverflow.Ellipsis)
     }
     val directionText = applyTextStyle(MaterialTheme.typography.overline, ContentAlpha.high) {
         Column {
-            Text(visitCard.mainClient.direction.address.uppercase(), overflow = TextOverflow.Clip)
-            Text("${visitCard.mainClient.direction.town} - ${visitCard.mainClient.direction.zip}".uppercase(),
+            Text(visitCard.client.direction.address.uppercase(), overflow = TextOverflow.Clip)
+            Text("${visitCard.client.direction.town} - ${visitCard.client.direction.zip}".uppercase(),
                 overflow = TextOverflow.Clip)
         }
     }
@@ -183,13 +182,13 @@ fun VisitCardItem(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp), horizontalArrangement = Arrangement.SpaceAround) {
                 val context = LocalContext.current
-                val callIntent = Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", visitCard.mainClient.phoneNum, null))
-                val mapsIntent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Uri.encode(visitCard.mainClient.direction.toString())))
+                val callIntent = Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", visitCard.client.phoneNum, null))
+                val mapsIntent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Uri.encode(visitCard.client.direction.toString())))
 
 
                 TextIconButton(
                     icon = Icons.Filled.PhoneInTalk,
-                    text = visitCard.mainClient.phoneNum,
+                    text = visitCard.client.phoneNum,
                     contentPadding = PaddingValues(vertical = 0.dp, horizontal = 16.dp),
                     onClick = { context.startActivity(callIntent) })
 

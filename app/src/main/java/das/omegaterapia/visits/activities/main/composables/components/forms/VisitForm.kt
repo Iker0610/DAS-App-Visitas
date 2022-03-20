@@ -63,6 +63,7 @@ import das.omegaterapia.visits.utils.isText
 import das.omegaterapia.visits.utils.isValidPhoneNumber
 import das.omegaterapia.visits.utils.isZIP
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -80,16 +81,16 @@ fun VisitForm(
 
     // Variables para guardar los datos
     val (isVIP, setIsVIP) = rememberSaveable { mutableStateOf(initialVisitCard?.visitData?.isVIP ?: false) }
-    val (visitDate, setVisitDate) = rememberSaveable { mutableStateOf(initialVisitCard?.visitData?.visitDate ?: LocalDateTime.now()) }
+    val (visitDate, setVisitDate) = rememberSaveable { mutableStateOf(initialVisitCard?.visitData?.visitDate ?: ZonedDateTime.now()) }
 
-    val (clientNameText, setClientNameText) = rememberSaveable { mutableStateOf(initialVisitCard?.mainClient?.name ?: "") }
-    val (clientSurnameText, setClientSurnameText) = rememberSaveable { mutableStateOf(initialVisitCard?.mainClient?.surname ?: "") }
+    val (clientNameText, setClientNameText) = rememberSaveable { mutableStateOf(initialVisitCard?.client?.name ?: "") }
+    val (clientSurnameText, setClientSurnameText) = rememberSaveable { mutableStateOf(initialVisitCard?.client?.surname ?: "") }
     val clientCompanions = rememberMutableStateListOf(*(initialVisitCard?.visitData?.companions?.toTypedArray() ?: arrayOf("")))
 
-    val (addressText, setAddressText) = rememberSaveable { mutableStateOf(initialVisitCard?.mainClient?.direction?.address ?: "") }
-    val (townText, setTownText) = rememberSaveable { mutableStateOf(initialVisitCard?.mainClient?.direction?.town ?: "") }
-    val (zipCodeText, setZIPCodeText) = rememberSaveable { mutableStateOf(initialVisitCard?.mainClient?.direction?.zip ?: "") }
-    val (phoneText, setPhoneText) = rememberSaveable { mutableStateOf(initialVisitCard?.mainClient?.phoneNum ?: "") }
+    val (addressText, setAddressText) = rememberSaveable { mutableStateOf(initialVisitCard?.client?.direction?.address ?: "") }
+    val (townText, setTownText) = rememberSaveable { mutableStateOf(initialVisitCard?.client?.direction?.town ?: "") }
+    val (zipCodeText, setZIPCodeText) = rememberSaveable { mutableStateOf(initialVisitCard?.client?.direction?.zip ?: "") }
+    val (phoneText, setPhoneText) = rememberSaveable { mutableStateOf(initialVisitCard?.client?.phoneNum ?: "") }
 
     val (observationText, setObservationText) = rememberSaveable { mutableStateOf(initialVisitCard?.visitData?.observations ?: "") }
 

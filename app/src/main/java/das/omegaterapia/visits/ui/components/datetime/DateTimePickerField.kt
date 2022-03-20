@@ -15,14 +15,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun OutlinedDateTimeField(
     modifier: Modifier = Modifier,
 
-    date: LocalDateTime = LocalDateTime.now(),
-    onDateTimeSelected: (LocalDateTime) -> Unit = {},
+    date: ZonedDateTime = ZonedDateTime.now(),
+    onDateTimeSelected: (ZonedDateTime) -> Unit = {},
     dateFormatPattern: String = "dd/MM/yyyy hh:mm",
     requireFutureDateTime: Boolean = false,
 
@@ -71,8 +72,8 @@ fun OutlinedDateTimeField(
 fun AlternativeOutlinedDateTimeField(
     modifier: Modifier = Modifier,
 
-    date: LocalDateTime = LocalDateTime.now(),
-    onDateTimeSelected: (LocalDateTime) -> Unit = {},
+    date: ZonedDateTime = ZonedDateTime.now(),
+    onDateTimeSelected: (ZonedDateTime) -> Unit = {},
     dateFormatPattern: String = "dd/MM/yyyy",
     timeFormatPattern: String = "hh:mm",
     requireFutureDateTime: Boolean = false,

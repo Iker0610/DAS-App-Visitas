@@ -1,8 +1,10 @@
 package das.omegaterapia.visits.data
 
+
 import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.model.entities.VisitData
 import java.time.LocalDateTime
+import java.time.ZoneId
 import kotlin.random.Random
 
 val getYear = { 22 } // { Random.nextInt(2018, 2022) }
@@ -10,7 +12,7 @@ val getMonth = { Random.nextInt(2, 3) }
 val getDay = { Random.nextInt(1, 28) }
 val getHour = { Random.nextInt(8, 19) }
 val getMinute = { arrayOf(0, 15, 30, 45)[Random.nextInt(0, 1)] }
-val getVisitDate = { LocalDateTime.of(getYear(), getMonth(), getDay(), getHour(), getMinute()) }
+val getVisitDate = { LocalDateTime.of(getYear(), getMonth(), getDay(), getHour(), getMinute()).atZone(ZoneId.systemDefault()) }
 
 val getRandomClient = { clients[Random.nextInt(clients.size)] }
 val getRandomCompanion = { clients[Random.nextInt(clients.size)].toString() }
@@ -21,7 +23,7 @@ const val observation =
 val visitList = listOf(
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion(), getRandomCompanion(), getRandomCompanion()),
@@ -32,7 +34,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             visitDate = getVisitDate(),
@@ -40,7 +42,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             visitDate = getVisitDate(),
@@ -49,7 +51,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion(), getRandomCompanion()),
@@ -59,7 +61,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion()),
@@ -69,7 +71,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion()),
@@ -77,7 +79,7 @@ val visitList = listOf(
         )
     ),
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion(), getRandomCompanion(), getRandomCompanion()),
@@ -88,7 +90,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             visitDate = getVisitDate(),
@@ -96,7 +98,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             visitDate = getVisitDate(),
@@ -106,7 +108,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion(), getRandomCompanion()),
@@ -115,7 +117,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion()),
@@ -126,7 +128,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion()),
@@ -136,7 +138,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion(), getRandomCompanion(), getRandomCompanion()),
@@ -147,7 +149,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             visitDate = getVisitDate(),
@@ -155,7 +157,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             visitDate = getVisitDate(),
@@ -164,7 +166,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion(), getRandomCompanion()),
@@ -174,7 +176,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion()),
@@ -184,7 +186,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion()),
@@ -192,7 +194,7 @@ val visitList = listOf(
         )
     ),
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion(), getRandomCompanion(), getRandomCompanion()),
@@ -203,7 +205,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             visitDate = getVisitDate(),
@@ -211,7 +213,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             visitDate = getVisitDate(),
@@ -221,7 +223,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion(), getRandomCompanion()),
@@ -230,7 +232,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion()),
@@ -241,7 +243,7 @@ val visitList = listOf(
     ),
 
     VisitCard(
-        mainClient = getRandomClient(),
+        client = getRandomClient(),
         visitData = VisitData(
             mainClientPhone = "",
             companions = mutableListOf(getRandomCompanion()),

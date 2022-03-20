@@ -222,7 +222,7 @@ fun LoginSection(
 @Composable
 fun LoginCardPreview() {
     OmegaterapiaTheme {
-        Surface() {
+        Surface {
             LoginCard(viewModel())
         }
     }

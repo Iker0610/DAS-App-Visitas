@@ -146,7 +146,7 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, o
 @Composable
 fun SignInCardPreview() {
     OmegaterapiaTheme {
-        Surface() {
+        Surface {
             SignInCard(viewModel())
         }
     }

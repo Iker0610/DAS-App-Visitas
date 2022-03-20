@@ -94,12 +94,14 @@ dependencies {
     // implementation 'androidx.hilt:hilt-work:1.0.0'
     // kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
-
-
     // Datastore Dependencies
     implementation "androidx.datastore:datastore:1.0.0"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
+    // GSON
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    
     // Testing dependencies
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

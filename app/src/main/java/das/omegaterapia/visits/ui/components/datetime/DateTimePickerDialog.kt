@@ -6,6 +6,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.ModalDialog
 import com.afollestad.materialdialogs.datetime.dateTimePicker
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 
 class DateTimeDialogBehavior(val onDismissAction: () -> Unit) : DialogBehavior by ModalDialog {
@@ -21,12 +22,12 @@ fun openDateTimePickerDialog(
     title: String,
     requireFutureDateTime: Boolean = false,
     onDismissAction: () -> Unit = {},
-    onDateTimeSelected: (LocalDateTime) -> Unit,
+    onDateTimeSelected: (ZonedDateTime) -> Unit,
 ) {
     MaterialDialog(context, DateTimeDialogBehavior(onDismissAction)).show {
         title(text = title)
         dateTimePicker(requireFutureDateTime = requireFutureDateTime) { _, dateTime ->
-            onDateTimeSelected(LocalDateTime.ofInstant(dateTime.toInstant(), dateTime.timeZone.toZoneId()))
+            onDateTimeSelected(ZonedDateTime.ofInstant(dateTime.toInstant(), dateTime.timeZone.toZoneId()))
         }
     }
 }

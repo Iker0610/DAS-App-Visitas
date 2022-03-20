@@ -92,12 +92,12 @@ fun VisitCardItem(
     }
 
     // Date Formatter
-    val date = visitCard.visitData.visitDate.format(DateTimeFormatter.ofPattern("d MMM")).trim('.').uppercase()
-    val time = visitCard.visitData.visitDate.format(DateTimeFormatter.ofPattern("hh:mm"))
+    val date = visitCard.visitDate.format(DateTimeFormatter.ofPattern("d MMM")).trim('.').uppercase()
+    val time = visitCard.visitDate.format(DateTimeFormatter.ofPattern("hh:mm"))
 
 
     // Collapse Logic
-    val canBeExpanded = visitCard.visitData.companions.isNotEmpty() || visitCard.visitData.observations.isNotBlank()
+    val canBeExpanded = visitCard.companions.isNotEmpty() || visitCard.observations.isNotBlank()
     val showExpandedContent = isExpanded && (canBeExpanded)
     val expandCollapseIcon = if (isExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore
 
@@ -114,12 +114,12 @@ fun VisitCardItem(
             ) {
                 CenteredRow(horizontalArrangement = Arrangement.Start) {
                     CenteredColumn {
-                        if (visitCard.visitData.isVIP) {
+                        if (visitCard.isVIP) {
                             Icon(Icons.Filled.StarOutline, "VIP Client", Modifier.height(16.dp), tint = MaterialTheme.colors.secondary)
                             Spacer(modifier = Modifier.height(3.dp))
                         }
                         Text(text = date, style = typography.overline)
-                        if (!visitCard.visitData.isVIP) Spacer(modifier = Modifier.height(6.dp))
+                        if (!visitCard.isVIP) Spacer(modifier = Modifier.height(6.dp))
                         Text(text = time, style = typography.subtitle2)
                     }
 
@@ -150,27 +150,27 @@ fun VisitCardItem(
 
             AnimatedVisibility(showExpandedContent) {
                 Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
-                    if (visitCard.visitData.companions.isNotEmpty()) {
+                    if (visitCard.companions.isNotEmpty()) {
                         Text(
                             "Client's Companions",
                             style = typography.subtitle2,
                             color = MaterialTheme.colors.primary,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
-                        for (client in visitCard.visitData.companions) {
+                        for (client in visitCard.companions) {
                             Text(text = "- $client", style = typography.body2)
                         }
 
-                        if (visitCard.visitData.observations.isNotBlank()) Spacer(Modifier.height(16.dp))
+                        if (visitCard.observations.isNotBlank()) Spacer(Modifier.height(16.dp))
                     }
-                    if (visitCard.visitData.observations.isNotBlank()) {
+                    if (visitCard.observations.isNotBlank()) {
                         Text(
                             "Observations",
                             style = typography.subtitle2,
                             color = MaterialTheme.colors.primary,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
-                        Text(visitCard.visitData.observations, style = typography.body2)
+                        Text(visitCard.observations, style = typography.body2)
                     }
                 }
             }

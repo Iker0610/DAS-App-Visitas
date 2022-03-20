@@ -6,11 +6,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import java.time.LocalDateTime
+import java.util.*
 
 
 @Entity(foreignKeys = [])
 data class VisitData(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey val id: String = UUID.randomUUID().toString(),
 
     @ColumnInfo(name = "main_client_phone")
     var mainClientPhone: String,
@@ -33,7 +34,13 @@ data class VisitCard(
     @Relation(parentColumn = "main_client_phone", entityColumn = "phone_number", entity = Client::class)
     @ColumnInfo(name = "main_client")
     var mainClient: Client,
-)
+) {
+    val id by visitData::id
+    val companions by visitData::companions
+    val visitDate by visitData::visitDate
+    val observations by visitData::observations
+    val isVIP by visitData::isVIP
+}
 
 
 /*

@@ -36,7 +36,7 @@ fun VisitList(
 
     LazyColumn(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         state = lazyListState
     ) {
         groupedVisitCards.forEach { (groupTitle, groupVisitCards) ->
@@ -44,7 +44,7 @@ fun VisitList(
 
             items(groupVisitCards) { visitCardData ->
                 VisitCardItem(
-                    modifier = Modifier.padding(horizontal = 8.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp),
                     visitCard = visitCardData,
                     isExpanded = visitCardData.id == selectedVisitCardId,
                     onClick = {

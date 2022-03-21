@@ -30,7 +30,7 @@ object AppModule {
             app,
             OmegaterapiaVisitsDatabase::class.java,
             "omegaterapia_visits_database"
-        ).build()
+        ).createFromAsset("database/omegaterapia_visits_database.db").build()
 
     @Singleton
     @Provides

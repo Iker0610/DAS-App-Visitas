@@ -37,6 +37,7 @@ import das.omegaterapia.visits.activities.authorization.composables.SignInSectio
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
+import das.omegaterapia.visits.ui.theme.getButtonShape
 import das.omegaterapia.visits.ui.theme.getMaterialRectangleShape
 import das.omegaterapia.visits.utils.WindowSizeFormat
 import das.omegaterapia.visits.utils.WindowSize
@@ -114,7 +115,7 @@ fun AuthScreen(
                         Divider(modifier = Modifier.padding(top = 32.dp, bottom = 24.dp))
 
                         Text(text = "Don't have an account?", style = MaterialTheme.typography.body2)
-                        TextButton(onClick = authViewModel::switchScreen, shape = getMaterialRectangleShape()) {
+                        TextButton(onClick = authViewModel::switchScreen, shape = getButtonShape()) {
                             Text(text = "Sign In")
                         }
                     }
@@ -146,7 +147,7 @@ fun AuthScreen(
                         Divider(modifier = Modifier.padding(top = 32.dp, bottom = 24.dp))
 
                         Text(text = "Already have an account?", style = MaterialTheme.typography.body2)
-                        TextButton(onClick = authViewModel::switchScreen, shape = getMaterialRectangleShape()) {
+                        TextButton(onClick = authViewModel::switchScreen, shape = getButtonShape()) {
                             Text(text = "Login")
                         }
                     }

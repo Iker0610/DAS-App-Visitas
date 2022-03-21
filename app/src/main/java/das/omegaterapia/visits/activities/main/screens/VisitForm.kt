@@ -19,7 +19,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -56,8 +55,10 @@ import das.omegaterapia.visits.ui.components.form.FormSection
 import das.omegaterapia.visits.ui.components.form.FormSubsection
 import das.omegaterapia.visits.ui.components.form.ValidatorOutlinedTextField
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
+import das.omegaterapia.visits.ui.components.generic.FixedOutlinedButton
 import das.omegaterapia.visits.ui.components.generic.OutlinedChoiceChip
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
+import das.omegaterapia.visits.ui.theme.getButtonShape
 import das.omegaterapia.visits.ui.theme.getMaterialRectangleShape
 import das.omegaterapia.visits.utils.canBePhoneNumber
 import das.omegaterapia.visits.utils.canBeZIP
@@ -126,7 +127,7 @@ fun VisitForm(
                 title = { Text(text = "Couldn't add a new Visit Card") },
                 text = { Text(text = "An error occurred when adding the Visit Card. Try again.") },
                 onDismissRequest = { showErrorDialog = false },
-                confirmButton = { TextButton(onClick = { showErrorDialog = false }, shape = getMaterialRectangleShape()) { Text(text = "DISMISS") } }
+                confirmButton = { TextButton(onClick = { showErrorDialog = false }, shape = getButtonShape()) { Text(text = "DISMISS") } }
             )
         } else {
             AlertDialog(
@@ -134,7 +135,7 @@ fun VisitForm(
                 title = { Text(text = "Couldn't edit the Visit Card") },
                 text = { Text(text = "An error occurred when editing the Visit Card. Try again.") },
                 onDismissRequest = { showErrorDialog = false },
-                confirmButton = { TextButton(onClick = { showErrorDialog = false }, shape = getMaterialRectangleShape()) { Text(text = "DISMISS") } }
+                confirmButton = { TextButton(onClick = { showErrorDialog = false }, shape = getButtonShape()) { Text(text = "DISMISS") } }
             )
         }
     }
@@ -152,7 +153,9 @@ fun VisitForm(
             CenteredRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 val iconSize = 28.dp
                 OutlinedChoiceChip(
-                    modifier = Modifier.height(IntrinsicSize.Max).padding(top = 8.dp),
+                    modifier = Modifier
+                        .height(IntrinsicSize.Max)
+                        .padding(top = 8.dp),
                     onClick = { setIsVIP(!isVIP) },
                     selected = isVIP,
                     leadingIcon = {
@@ -238,7 +241,7 @@ fun VisitForm(
                         maxLines = 1
                     )
                 }
-                OutlinedButton(onClick = { clientCompanions.add("") }, Modifier.align(Alignment.CenterHorizontally)) {
+                FixedOutlinedButton(onClick = { clientCompanions.add("") }, Modifier.align(Alignment.CenterHorizontally)) {
                     Text(text = "Add Companion")
                 }
             }
@@ -322,7 +325,7 @@ fun VisitForm(
 
         Button(
             modifier = Modifier.fillMaxWidth(),
-            shape = getMaterialRectangleShape(),
+            shape = getButtonShape(),
             onClick = {
                 val clientData = Client(
                     name = clientNameText,

@@ -35,6 +35,7 @@ import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.form.PasswordField
 import das.omegaterapia.visits.ui.components.form.ValidatorOutlinedTextField
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
+import das.omegaterapia.visits.ui.theme.getButtonShape
 import das.omegaterapia.visits.ui.theme.getMaterialRectangleShape
 import das.omegaterapia.visits.utils.canBeValidUsername
 import kotlinx.coroutines.Dispatchers
@@ -131,7 +132,7 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, o
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onSignIn,
-            shape = getMaterialRectangleShape(),
+            shape = getButtonShape(),
             enabled = authViewModel.isSignInUsernameValid && authViewModel.isSignInPasswordConfirmationValid
         ) {
             Text(text = "Sign In")

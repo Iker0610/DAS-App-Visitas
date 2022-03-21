@@ -42,6 +42,7 @@ import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.form.PasswordField
 import das.omegaterapia.visits.ui.components.form.ValidatorOutlinedTextField
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
+import das.omegaterapia.visits.ui.theme.getButtonShape
 import das.omegaterapia.visits.ui.theme.getMaterialRectangleShape
 import das.omegaterapia.visits.utils.canBeValidUsername
 import kotlinx.coroutines.Dispatchers
@@ -110,7 +111,7 @@ fun LoginSection(
             shape = getMaterialRectangleShape(),
             title = { Text(text = "Incorrect username or password.") },
             onDismissRequest = { showLoginErrorDialog = false },
-            confirmButton = { TextButton(onClick = { showLoginErrorDialog = false }, shape = getMaterialRectangleShape()) { Text(text = "OK") } }
+            confirmButton = { TextButton(onClick = { showLoginErrorDialog = false }, shape = getButtonShape()) { Text(text = "OK") } }
         )
     }
 
@@ -126,7 +127,7 @@ fun LoginSection(
             onDismissRequest = { showBiometricErrorDialogState = false },
             confirmButton = {
                 TextButton(onClick = { showBiometricErrorDialogState = false },
-                    shape = getMaterialRectangleShape()) { Text(text = "OK") }
+                    shape = getButtonShape()) { Text(text = "OK") }
             }
         )
     }
@@ -146,7 +147,7 @@ fun LoginSection(
             onDismissRequest = { showBiometricEnrollDialogState = false },
             confirmButton = {
                 TextButton(
-                    shape = getMaterialRectangleShape(),
+                    shape = getButtonShape(),
                     onClick = {
                         showBiometricEnrollDialogState = false
                         BiometricAuthManager.makeBiometricEnroll(context)
@@ -155,7 +156,7 @@ fun LoginSection(
             },
             dismissButton = {
                 TextButton(onClick = { showBiometricEnrollDialogState = false },
-                    shape = getMaterialRectangleShape()) { Text(text = "CANCEL") }
+                    shape = getButtonShape()) { Text(text = "CANCEL") }
             }
         )
     }
@@ -192,7 +193,7 @@ fun LoginSection(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onLogin,
-            shape = getMaterialRectangleShape(),
+            shape = getButtonShape(),
             enabled = authViewModel.loginUsername.isNotBlank() && authViewModel.loginPassword.isNotBlank()
         ) {
             Text(text = "Login")
@@ -204,7 +205,7 @@ fun LoginSection(
             TextButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = onBiometricAuthButtonClick,
-                shape = getMaterialRectangleShape()
+                shape = getButtonShape()
             ) {
                 Icon(Icons.Filled.Fingerprint, contentDescription = "Biometric Authentication")
                 Spacer(modifier = Modifier.width(8.dp))

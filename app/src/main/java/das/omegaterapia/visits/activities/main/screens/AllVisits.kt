@@ -22,24 +22,10 @@ fun AllVisitsScreen(visitViewModel: VisitsViewModel) {
 
     // A surface container using the 'background' color from the theme
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-        val groupedVisits = mapOf(
-            "Lunes" to visitViewModel.allVisits.collectAsState(emptyList()).value,
-            "Martes" to visitList.subList(5, 12),
-            "Miércoles" to emptyList(),
-            "Jueves" to visitList.subList(12, 20),
-            "Viernes" to visitList.subList(20, visitList.size),
-        )
+        val groupedVisits = visitViewModel.allVisits.collectAsState(emptyMap()).value
         OmegaterapiaTheme {
             Surface {
                 CenteredColumn(Modifier.fillMaxSize()) {
-                    Button(onClick = {
-                        scope.launch {
-                            visitViewModel.addVisitCard(visitList[5].also {
-                                it.user = visitViewModel.currentUser; it.visitData.mainClientPhone = it.client.phoneNum
-                            })
-                        }
-                    })
-                    { Text(text = "Add") }
                     VisitList(groupedVisitCards = groupedVisits)
                 }
             }

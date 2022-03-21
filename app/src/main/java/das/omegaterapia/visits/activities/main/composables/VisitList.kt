@@ -62,7 +62,7 @@ fun VisitGroupHeader(groupTitle: String) {
         elevation = 16.dp
     ) {
         Text(
-            text = groupTitle.uppercase(),
+            text = groupTitle,
             style = MaterialTheme.typography.subtitle2.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
         )

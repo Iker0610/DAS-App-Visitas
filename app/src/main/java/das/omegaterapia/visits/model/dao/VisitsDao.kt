@@ -1,8 +1,11 @@
 package das.omegaterapia.visits.model.dao
 
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import das.omegaterapia.visits.model.entities.Client
@@ -12,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface VisitsDao {
-    @Insert
+    @Insert(onConflict = IGNORE)
     suspend fun addClient(client: Client)
 
     @Insert
@@ -20,18 +23,26 @@ interface VisitsDao {
 
     @Transaction
     suspend fun addVisitCard(visitCard: VisitCard): Boolean {
-        try {
-            addClient(visitCard.client)
+        return try {
+            try {
+                addClient(visitCard.client)
+            }
+            catch (e: Exception){
+                Log.e("ROOM-Insert Client from VisitCard", "${visitCard.client} ${visitCard.client.phoneNum} ${visitCard.visitData.mainClientPhone}")
+                e.printStackTrace()
+            }
             addVisitData(visitCard.visitData)
-            return true
+            true
         } catch (e: SQLiteConstraintException) {
             e.printStackTrace()
-            return false
+            false
         }
     }
 
+    suspend fun addVisitCards(visitCards: List<VisitCard>): List<Boolean> = visitCards.map { addVisitCard(it) }
+
     @Transaction
-    @Query("SELECT * FROM VisitData WHERE user = :currentUser")
+    @Query("SELECT * FROM VisitData WHERE user = :currentUser ORDER BY visit_date")
     fun getUserVisits(currentUser: String): Flow<List<VisitCard>>
 
     @Transaction

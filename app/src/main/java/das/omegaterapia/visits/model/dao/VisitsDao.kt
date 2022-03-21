@@ -19,13 +19,13 @@ interface VisitsDao {
     suspend fun addVisitData(visitData: VisitData)
 
     @Transaction
-    suspend fun addVisitCard(visitCard: VisitCard): Boolean{
+    suspend fun addVisitCard(visitCard: VisitCard): Boolean {
         try {
             addClient(visitCard.client)
             addVisitData(visitCard.visitData)
             return true
-        }
-        catch (e: SQLiteConstraintException){
+        } catch (e: SQLiteConstraintException) {
+            e.printStackTrace()
             return false
         }
     }
@@ -33,4 +33,8 @@ interface VisitsDao {
     @Transaction
     @Query("SELECT * FROM VisitData WHERE user = :currentUser")
     fun getUserVisits(currentUser: String): Flow<List<VisitCard>>
+
+    @Transaction
+    @Query("SELECT * FROM VisitData WHERE user = :currentUser AND DATE(visit_date, 'unixepoch') = DATE('now') ORDER BY visit_date")
+    fun getUserTodaysVisits(currentUser: String): Flow<List<VisitCard>>
 }

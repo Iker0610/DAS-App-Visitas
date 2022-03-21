@@ -7,8 +7,14 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
-interface IVisitsRepository
+interface IVisitsRepository {
+    fun getUsersVisits(username: String): Flow<List<VisitCard>>
+    fun getUsersTodaysVisits(username: String): Flow<List<VisitCard>>
+    suspend fun addVisitCard(visitCard: VisitCard): Boolean
+}
 
 class VisitsRepository @Inject constructor(private val visitsDao: VisitsDao) : IVisitsRepository {
-    fun getUsersTodaysVisits(username: String): Flow<List<VisitCard>> = visitsDao.getUserVisits(username)
+    override fun getUsersVisits(username: String): Flow<List<VisitCard>> = visitsDao.getUserVisits(username)
+    override fun getUsersTodaysVisits(username: String): Flow<List<VisitCard>> = visitsDao.getUserTodaysVisits(username)
+    override suspend fun addVisitCard(visitCard: VisitCard): Boolean = visitsDao.addVisitCard(visitCard)
 }

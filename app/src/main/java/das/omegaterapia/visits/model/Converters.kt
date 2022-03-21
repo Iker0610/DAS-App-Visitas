@@ -7,7 +7,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 
-class ZonedDateTimeConverter {
+class Converters {
     @TypeConverter
     fun fromTimestamp(value: Long): ZonedDateTime {
         return ZonedDateTime.ofInstant(Instant.ofEpochSecond(value), ZoneId.systemDefault())

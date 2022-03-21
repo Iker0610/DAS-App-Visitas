@@ -10,7 +10,7 @@ import das.omegaterapia.visits.model.entities.Client
 import das.omegaterapia.visits.model.entities.VisitData
 
 @Database(entities = [AuthUser::class, VisitData::class, Client::class], version = 1, exportSchema = false)
-@TypeConverters(ZonedDateTimeConverter::class)
+@TypeConverters(Converters::class)
 abstract class OmegaterapiaVisitsDatabase : RoomDatabase() {
     abstract fun authenticationDao(): AuthenticationDao
     abstract fun visitsDao(): VisitsDao

@@ -92,7 +92,7 @@ fun VisitCardItem(
 
     // Date Formatter
     val date = visitCard.visitDate.format(DateTimeFormatter.ofPattern("d MMM")).trim('.').uppercase()
-    val time = visitCard.visitDate.format(DateTimeFormatter.ofPattern("hh:mm"))
+    val time = visitCard.visitDate.format(DateTimeFormatter.ofPattern("HH:mm"))
 
 
     // Collapse Logic

@@ -2,4 +2,6 @@
     <string name="app_name">App-Visitas</string>
     <string name="auth_channel_name">Authorization Channel</string>
     <string name="auth_channel_description">Notification channel for authorization events.</string>
+    <string name="fab_add">Add</string>
+    <string name="fab_icon_description">Add new item</string>
 </resources>

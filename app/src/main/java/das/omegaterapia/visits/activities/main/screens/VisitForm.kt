@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.activities.main.composables.forms
+package das.omegaterapia.visits.activities.main.screens
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -22,6 +23,7 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContactPhone
 import androidx.compose.material.icons.filled.MapsHomeWork
@@ -38,7 +40,9 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,11 +54,11 @@ import das.omegaterapia.visits.model.entities.VisitData
 import das.omegaterapia.visits.ui.components.datetime.AlternativeOutlinedDateTimeField
 import das.omegaterapia.visits.ui.components.form.FormSection
 import das.omegaterapia.visits.ui.components.form.FormSubsection
+import das.omegaterapia.visits.ui.components.form.ValidatorOutlinedTextField
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.components.generic.OutlinedChoiceChip
-import das.omegaterapia.visits.ui.components.form.ValidatorOutlinedTextField
-import das.omegaterapia.visits.utils.rememberMutableStateListOf
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
+import das.omegaterapia.visits.ui.theme.getMaterialRectangleShape
 import das.omegaterapia.visits.utils.canBePhoneNumber
 import das.omegaterapia.visits.utils.canBeZIP
 import das.omegaterapia.visits.utils.formatPhoneNumber
@@ -62,14 +66,18 @@ import das.omegaterapia.visits.utils.isNonEmptyText
 import das.omegaterapia.visits.utils.isText
 import das.omegaterapia.visits.utils.isValidPhoneNumber
 import das.omegaterapia.visits.utils.isZIP
+import das.omegaterapia.visits.utils.rememberMutableStateListOf
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun VisitForm(
-    onSubmitForm: (VisitCard) -> Unit,
+    submitForm: suspend (VisitCard) -> Boolean,
     modifier: Modifier = Modifier,
+    onSuccessfulSubmit: () -> Unit = {},
     initialVisitCard: VisitCard? = null,
 ) {
     /*
@@ -77,6 +85,10 @@ fun VisitForm(
     * - Añadir on IME action
     * - Mejorar el botón VIP y el de calendario / hora
     */
+
+    // Courutine Scope
+    val scope = rememberCoroutineScope()
+    var showErrorDialog by rememberSaveable { mutableStateOf(false) }
 
     // Variables para guardar los datos
     val (isVIP, setIsVIP) = rememberSaveable { mutableStateOf(initialVisitCard?.visitData?.isVIP ?: false) }
@@ -105,18 +117,42 @@ fun VisitForm(
 
     val areAllValid = isNameValid && isSurnameValid && isAddressValid && isTownValid && isZIPValid && isPhoneValid
 
+
+    // Dialogs
+    if (showErrorDialog) {
+        if (initialVisitCard == null) {
+            AlertDialog(
+                shape = getMaterialRectangleShape(),
+                title = { Text(text = "Couldn't add a new Visit Card") },
+                text = { Text(text = "An error occurred when adding the Visit Card. Try again.") },
+                onDismissRequest = { showErrorDialog = false },
+                confirmButton = { TextButton(onClick = { showErrorDialog = false }, shape = getMaterialRectangleShape()) { Text(text = "DISMISS") } }
+            )
+        } else {
+            AlertDialog(
+                shape = getMaterialRectangleShape(),
+                title = { Text(text = "Couldn't edit the Visit Card") },
+                text = { Text(text = "An error occurred when editing the Visit Card. Try again.") },
+                onDismissRequest = { showErrorDialog = false },
+                confirmButton = { TextButton(onClick = { showErrorDialog = false }, shape = getMaterialRectangleShape()) { Text(text = "DISMISS") } }
+            )
+        }
+    }
+
+
     // UI
     Column(
-        modifier
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 32.dp)
     ) {
         FormSection(title = "Visit Data") {
             CenteredRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                val iconSize = 32.dp
+                val iconSize = 28.dp
                 OutlinedChoiceChip(
-                    modifier = Modifier.height(IntrinsicSize.Max),
+                    modifier = Modifier.height(IntrinsicSize.Max).padding(top = 8.dp),
                     onClick = { setIsVIP(!isVIP) },
                     selected = isVIP,
                     leadingIcon = {
@@ -126,10 +162,12 @@ fun VisitForm(
                                     .size(iconSize)
                                     .padding(start = 8.dp))
                         } else {
-                            Icon(Icons.Filled.StarOutline, contentDescription = "Not VIP Client",
+                            Icon(
+                                Icons.Filled.StarOutline, contentDescription = "Not VIP Client",
                                 Modifier
                                     .size(iconSize)
-                                    .padding(start = 8.dp))
+                                    .padding(start = 8.dp)
+                            )
                         }
                     },
                 ) {
@@ -137,8 +175,6 @@ fun VisitForm(
                 }
 
                 AlternativeOutlinedDateTimeField(
-                    modifier = Modifier.weight(2f),
-
                     date = visitDate,
                     onDateTimeSelected = setVisitDate,
                     requireFutureDateTime = initialVisitCard == null,
@@ -191,7 +227,7 @@ fun VisitForm(
                         leadingIcon = { Icon(Icons.Default.People, contentDescription = "Client's companion name and surname") },
                         trailingIcon = {
                             IconButton(onClick = { clientCompanions.removeAt(index) }) {
-                                Icon(Icons.Filled.RemoveCircle, contentDescription = "Delete Companion")
+                                Icon(Icons.Filled.RemoveCircle, contentDescription = "Delete Companion", tint = MaterialTheme.colors.secondary)
                             }
                         },
 
@@ -286,6 +322,7 @@ fun VisitForm(
 
         Button(
             modifier = Modifier.fillMaxWidth(),
+            shape = getMaterialRectangleShape(),
             onClick = {
                 val clientData = Client(
                     name = clientNameText,
@@ -313,8 +350,12 @@ fun VisitForm(
                         observations = observationText
                     )
                 }
+                scope.launch(Dispatchers.IO) {
+                    val operationOK = submitForm(VisitCard(visitData, clientData))
 
-                onSubmitForm(VisitCard(visitData, clientData))
+                    if (operationOK) onSuccessfulSubmit()
+                    else showErrorDialog = true
+                }
             },
             enabled = areAllValid
         ) {
@@ -332,7 +373,7 @@ fun VisitForm(
 fun AddVisitCardScreenPreview() {
     OmegaterapiaTheme {
         Surface {
-            VisitForm({})
+            VisitForm({ true })
         }
     }
 }

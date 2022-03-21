@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -28,12 +30,14 @@ fun VisitList(
     groupedVisitCards: Map<String, List<VisitCard>>,
     modifier: Modifier = Modifier,
     selectedVisit: VisitCard? = null,
+    lazyListState: LazyListState = rememberLazyListState(),
 ) {
     val (selectedVisitCardId, setSelectedVisitCardId) = rememberSaveable { mutableStateOf(selectedVisit?.id) }
 
     LazyColumn(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        state = lazyListState
     ) {
         groupedVisitCards.forEach { (groupTitle, groupVisitCards) ->
             stickyHeader { VisitGroupHeader(groupTitle) }

@@ -1,34 +1,27 @@
 package das.omegaterapia.visits.activities.main.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import das.omegaterapia.visits.activities.main.VisitsViewModel
 import das.omegaterapia.visits.activities.main.composables.VisitList
-import das.omegaterapia.visits.data.visitList
-import das.omegaterapia.visits.ui.components.generic.CenteredColumn
-import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
-import kotlinx.coroutines.launch
+import das.omegaterapia.visits.utils.WindowSize
+
 
 @Composable
-fun AllVisitsScreen(visitViewModel: VisitsViewModel) {
-    val scope = rememberCoroutineScope()
-
-    // A surface container using the 'background' color from the theme
-    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-        val groupedVisits = visitViewModel.allVisits.collectAsState(emptyMap()).value
-        OmegaterapiaTheme {
-            Surface {
-                CenteredColumn(Modifier.fillMaxSize()) {
-                    VisitList(groupedVisitCards = groupedVisits)
-                }
-            }
-        }
-    }
+fun AllVisitsScreen(
+    visitViewModel: VisitsViewModel,
+    windowSize: WindowSize,
+    modifier: Modifier = Modifier,
+    lazyListState: LazyListState = rememberLazyListState(),
+) {
+    val groupedVisits = visitViewModel.allVisits.collectAsState(emptyMap()).value
+    VisitList(
+        groupedVisitCards = groupedVisits,
+        modifier = modifier.fillMaxSize(),
+        lazyListState = lazyListState,
+    )
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -19,8 +20,8 @@ private const val SurfaceOverlayOpacity = 0.12f
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun selectedChoiceChipColors(
-    backgroundColor: Color = MaterialTheme.colors.primary.copy(alpha = 0.25f).compositeOver(MaterialTheme.colors.surface),
-    contentColor: Color = MaterialTheme.colors.primary,
+    backgroundColor: Color = MaterialTheme.colors.secondary.copy(alpha = 0.25f).compositeOver(MaterialTheme.colors.surface),
+    contentColor: Color = MaterialTheme.colors.secondary,
     leadingIconContentColor: Color = contentColor.copy(alpha = 0.75f),
 
     disabledBackgroundColor: Color =
@@ -42,9 +43,9 @@ fun selectedChoiceChipColors(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun selectedOutlinedChoiceChipColors(
-    backgroundColor: Color = MaterialTheme.colors.primary.copy(alpha = SurfaceOverlayOpacity).compositeOver(MaterialTheme.colors.surface),
-    contentColor: Color = MaterialTheme.colors.primary.copy(alpha = ChipDefaults.ContentOpacity),
-    leadingIconContentColor: Color = contentColor.copy(alpha = ChipDefaults.LeadingIconOpacity),
+    backgroundColor: Color = MaterialTheme.colors.secondary.copy(alpha = SurfaceOverlayOpacity).compositeOver(MaterialTheme.colors.surface),
+    contentColor: Color = MaterialTheme.colors.secondary,
+    leadingIconContentColor: Color = contentColor.copy(alpha = 0.85f),
 
     disabledBackgroundColor: Color =
         MaterialTheme.colors.onSurface
@@ -118,7 +119,7 @@ fun OutlinedChoiceChip(
     modifier: Modifier = Modifier,
     selected: Boolean = false,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = RoundedCornerShape(50),
+    shape: Shape = CutCornerShape(30),
     colors: ChipColors = if (selected) selectedOutlinedChoiceChipColors() else unselectedOutlinedChoiceChipColors(),
     leadingIcon: @Composable (() -> Unit)? = null,
     content: @Composable RowScope.() -> Unit,

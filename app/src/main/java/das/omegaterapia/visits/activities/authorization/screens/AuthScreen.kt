@@ -39,12 +39,12 @@ import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.ui.theme.getMaterialRectangleShape
 import das.omegaterapia.visits.utils.WindowSizeFormat
-import das.omegaterapia.visits.utils.WindowsSize
+import das.omegaterapia.visits.utils.WindowSize
 
 @Composable
 fun AuthScreen(
     authViewModel: AuthViewModel = viewModel(),
-    windowSizeFormatClass: WindowsSize,
+    windowSizeFormatClass: WindowSize,
     biometricSupportChecker: () -> DeviceBiometricsSupport = { DeviceBiometricsSupport.UNSUPPORTED },
     onSuccessfulLogin: (String) -> Unit = {},
     onSuccessfulSignIn: (String) -> Unit = {},
@@ -163,7 +163,7 @@ fun AuthScreen(
 @Composable
 fun AuthScreenPreview() {
     OmegaterapiaTheme {
-        AuthScreen(windowSizeFormatClass = WindowsSize(WindowSizeFormat.Compact, WindowSizeFormat.Compact, isLandscape = false))
+        AuthScreen(windowSizeFormatClass = WindowSize(WindowSizeFormat.Compact, WindowSizeFormat.Compact, isLandscape = false))
     }
 }
 
@@ -172,6 +172,6 @@ fun AuthScreenPreview() {
 @Composable
 fun AuthScreenLandscapePreview() {
     OmegaterapiaTheme {
-        AuthScreen(windowSizeFormatClass = WindowsSize(WindowSizeFormat.Compact, WindowSizeFormat.Compact, isLandscape = true))
+        AuthScreen(windowSizeFormatClass = WindowSize(WindowSizeFormat.Compact, WindowSizeFormat.Compact, isLandscape = true))
     }
 }

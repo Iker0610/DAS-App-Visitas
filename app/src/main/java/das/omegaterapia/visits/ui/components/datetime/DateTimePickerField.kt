@@ -97,7 +97,7 @@ fun AlternativeOutlinedDateTimeField(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         OutlinedDateTimeField(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1.5f),
 
             date = date,
             onDateTimeSelected = onDateTimeSelected,

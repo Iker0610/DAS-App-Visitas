@@ -38,13 +38,13 @@ import androidx.window.layout.WindowMetricsCalculator
  */
 enum class WindowSizeFormat { Compact, Medium, Expanded }
 
-data class WindowsSize(val width: WindowSizeFormat, val height: WindowSizeFormat, val isLandscape: Boolean)
+data class WindowSize(val width: WindowSizeFormat, val height: WindowSizeFormat, val isLandscape: Boolean)
 
 /**
  * Remembers the [WindowSizeFormat] class for the window corresponding to the current window metrics.
  */
 @Composable
-fun Activity.rememberWindowSizeClass(): WindowsSize {
+fun Activity.rememberWindowSizeClass(): WindowSize {
     // Get the size (in pixels) of the window
     val windowSize = rememberWindowSize()
 
@@ -54,7 +54,7 @@ fun Activity.rememberWindowSizeClass(): WindowsSize {
     }
 
     // Calculate the window size class
-    return WindowsSize(
+    return WindowSize(
         getWindowWidthSizeClass(windowDpSize),
         getWindowHeightSizeClass(windowDpSize),
         windowDpSize.width > windowDpSize.height

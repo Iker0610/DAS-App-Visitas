@@ -22,5 +22,5 @@ class Converters {
     fun listToJson(value: List<String>?): String = Gson().toJson(value)
 
     @TypeConverter
-    fun jsonToList(value: String): MutableList<String> = Gson().fromJson(value, Array<String>::class.java).toMutableList()
+    fun jsonToList(value: String): List<String> = Gson().fromJson(value, Array<String>::class.java).toMutableList()
 }

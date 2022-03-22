@@ -18,6 +18,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -29,6 +30,8 @@ import das.omegaterapia.visits.activities.main.screens.VisitForm
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.isScrollingUp
 import das.omegaterapia.visits.utils.rememberWindowSizeClass
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -50,8 +53,9 @@ class MainActivity : ComponentActivity() {
                 val currentRoute by navController.currentBackStackEntryFlow.collectAsState(initial = navController.currentBackStackEntry)
 
                 val scaffoldState = rememberScaffoldState()
-
                 val allVisitsLazyListState = rememberLazyListState()
+
+                val scope = rememberCoroutineScope()
 
                 Scaffold(
                     scaffoldState = scaffoldState,
@@ -99,8 +103,10 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.padding(innerPadding),
                                 submitForm = visitViewModel::addVisitCard,
                                 onSuccessfulSubmit = {
-                                    if (!navController.popBackStack()) {
-                                        navController.navigate("all_visits_screen")
+                                    scope.launch(Dispatchers.Main) {
+                                        if (!navController.popBackStack()) {
+                                            navController.navigate("all_visits_screen")
+                                        }
                                     }
                                 }
                             )

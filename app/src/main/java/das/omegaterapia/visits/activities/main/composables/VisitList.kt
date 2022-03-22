@@ -42,11 +42,11 @@ fun VisitList(
         groupedVisitCards.forEach { (groupTitle, groupVisitCards) ->
             stickyHeader { VisitGroupHeader(groupTitle) }
 
-            items(groupVisitCards) { visitCardData ->
+            items(groupVisitCards) { visitCard ->
                 VisitCardItem(
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    visitCard = visitCardData,
-                    isExpanded = visitCardData.id == selectedVisitCardId,
+                    visitCard = visitCard,
+                    isExpanded = visitCard.id == selectedVisitCardId,
                     onClick = {
                         if (selectedVisitCardId != it.id) setSelectedVisitCardId(it.id)
                         else setSelectedVisitCardId(null)

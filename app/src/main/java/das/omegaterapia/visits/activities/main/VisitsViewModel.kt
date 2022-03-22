@@ -32,7 +32,7 @@ class VisitsViewModel @Inject constructor(
 
 
     // Events
-    suspend fun addVisitCard(visitCard: VisitCard) = visitsRepository.addVisitCard(visitCard)
+    suspend fun addVisitCard(visitCard: VisitCard) = visitsRepository.addVisitCard(visitCard.also { it.user = currentUser })
 
     // TODO
 }

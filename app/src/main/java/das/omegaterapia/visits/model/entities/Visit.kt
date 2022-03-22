@@ -15,7 +15,7 @@ import java.util.*
 @Entity(
     foreignKeys = [
         ForeignKey(entity = AuthUser::class, parentColumns = ["username"], childColumns = ["user"], onDelete = ForeignKey.CASCADE),
-        ForeignKey(entity = Client::class, parentColumns = ["phone_number"], childColumns = ["main_client_phone"], onDelete = ForeignKey.RESTRICT)
+        ForeignKey(entity = Client::class, parentColumns = ["phone_number"], childColumns = ["main_client_phone"], onDelete = ForeignKey.CASCADE)
     ],
     indices = [Index(value = ["user", "visit_date"]), Index(value = ["main_client_phone"])],
 )
@@ -28,7 +28,7 @@ data class VisitData(
     @ColumnInfo(name = "main_client_phone")
     var mainClientPhone: String,
 
-    var companions: MutableList<String> = mutableListOf(),
+    var companions: List<String> = listOf(),
 
     @ColumnInfo(name = "visit_date")
     var visitDate: ZonedDateTime,
@@ -48,14 +48,19 @@ data class VisitCard(
 ) {
     @delegate:Ignore
     val id by visitData::id
+
     @delegate:Ignore
     var user by visitData::user
+
     @delegate:Ignore
     val companions by visitData::companions
+
     @delegate:Ignore
     val visitDate by visitData::visitDate
+
     @delegate:Ignore
     val observations by visitData::observations
+
     @delegate:Ignore
     val isVIP by visitData::isVIP
 }

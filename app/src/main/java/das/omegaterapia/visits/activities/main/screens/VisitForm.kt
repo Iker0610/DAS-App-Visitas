@@ -149,6 +149,7 @@ fun VisitForm(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp, vertical = 32.dp)
     ) {
+
         FormSection(title = "Visit Data") {
             CenteredRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 val iconSize = 28.dp
@@ -229,7 +230,7 @@ fun VisitForm(
                         label = { Text(text = "Name and Surname") },
                         leadingIcon = { Icon(Icons.Default.People, contentDescription = "Client's companion name and surname") },
                         trailingIcon = {
-                            IconButton(onClick = { clientCompanions.removeAt(index) }) {
+                            IconButton(onClick = { clientCompanions.removeAt(index); if (clientCompanions.isEmpty()) clientCompanions.add("") }) {
                                 Icon(Icons.Filled.RemoveCircle, contentDescription = "Delete Companion", tint = MaterialTheme.colors.secondary)
                             }
                         },
@@ -339,7 +340,7 @@ fun VisitForm(
                 if (initialVisitCard != null) {
                     visitData = initialVisitCard.visitData.copy(
                         mainClientPhone = clientData.phoneNum,
-                        companions = clientCompanions,
+                        companions = clientCompanions.filter { it.isNotBlank() },
                         visitDate = visitDate,
                         isVIP = isVIP,
                         observations = observationText
@@ -347,7 +348,7 @@ fun VisitForm(
                 } else {
                     visitData = VisitData(
                         mainClientPhone = clientData.phoneNum,
-                        companions = clientCompanions,
+                        companions = clientCompanions.filter { it.isNotBlank() },
                         visitDate = visitDate,
                         isVIP = isVIP,
                         observations = observationText

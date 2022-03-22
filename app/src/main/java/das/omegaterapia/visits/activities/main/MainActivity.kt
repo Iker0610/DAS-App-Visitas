@@ -14,6 +14,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.collectAsState
@@ -24,9 +25,10 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
+import das.omegaterapia.visits.activities.main.composables.BottomNavBar
 import das.omegaterapia.visits.activities.main.composables.MainFloatingActionButton
-import das.omegaterapia.visits.activities.main.screens.AllVisitsScreen
 import das.omegaterapia.visits.activities.main.screens.AddVisitScreen
+import das.omegaterapia.visits.activities.main.screens.AllVisitsScreen
 import das.omegaterapia.visits.activities.main.screens.MainActivityScreens
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.isScrollingUp
@@ -62,14 +64,24 @@ class MainActivity : ComponentActivity() {
                     scaffoldState = scaffoldState,
                     floatingActionButton = {
                         AnimatedVisibility(
-                            currentRoute?.destination?.route != MainActivityScreens.AddVisit.route,
+                            currentRoute?.destination?.route != MainActivityScreens.AddVisit.route && !allVisitsLazyListState.isScrollInProgress,
                             enter = scaleIn(),
                             exit = scaleOut()
                         ) {
                             MainFloatingActionButton(
                                 onClick = { navController.navigate(MainActivityScreens.AddVisit.route) },
-                                extended = allVisitsLazyListState.isScrollingUp()
                             )
+                        }
+                    },
+                    floatingActionButtonPosition = FabPosition.Center,
+                    isFloatingActionButtonDocked = true,
+                    bottomBar = {
+                        AnimatedVisibility(
+                            currentRoute?.destination?.route != MainActivityScreens.AddVisit.route && !allVisitsLazyListState.isScrollInProgress,
+                            enter = slideInVertically(initialOffsetY = { 2 * it }),
+                            exit = slideOutVertically(targetOffsetY = { 2 * it })
+                        ) {
+                            BottomNavBar()
                         }
                     }
                 )

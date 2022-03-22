@@ -16,3 +16,4 @@ enum class MainActivityScreens(var title: String, var route: String, var icon: I
 }
 
 val navigableScreens = listOf(MainActivityScreens.TodaysVisits, MainActivityScreens.AllVisits, MainActivityScreens.VIPs)
+

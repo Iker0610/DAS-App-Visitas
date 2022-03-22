@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,6 +47,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -82,6 +84,7 @@ fun VisitCardItem(
     visitCard: VisitCard,
     isExpanded: Boolean = false,
     onClick: (VisitCard) -> Unit = {},
+    onLongClick: (VisitCard) -> Unit = {},
     elevation: Dp = 8.dp,
 ) {
     // Styling
@@ -137,7 +140,9 @@ fun VisitCardItem(
                 }
 
                 if (canBeExpanded) {
-                    Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier.requiredWidth(IntrinsicSize.Max).padding(start = 16.dp)) {
+                    Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier
+                        .requiredWidth(IntrinsicSize.Max)
+                        .padding(start = 16.dp)) {
                         Icon(expandCollapseIcon, contentDescription = "Show more", Modifier.size(24.dp))
                     }
                 }

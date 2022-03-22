@@ -59,11 +59,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
 private fun MainActivityScreen(
     visitViewModel: VisitsViewModel = viewModel(),
-    windowSize: WindowSize
+    windowSize: WindowSize,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -79,7 +80,7 @@ private fun MainActivityScreen(
     BottomDrawer(
         gesturesEnabled = gesturesEnabled,
         drawerState = drawerState,
-        drawerShape = CutCornerShape(5),
+        drawerShape = CutCornerShape(topStartPercent = 5, topEndPercent = 5),
         drawerContent = {
 
             LazyColumn(Modifier.padding(vertical = 24.dp)) {

@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.activities.main.screens
+package das.omegaterapia.visits.activities.main.composables.form
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -35,10 +35,8 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarOutline
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -46,10 +44,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import das.omegaterapia.visits.model.entities.Client
-import das.omegaterapia.visits.model.entities.Direction
+import androidx.lifecycle.viewmodel.compose.viewModel
 import das.omegaterapia.visits.model.entities.VisitCard
-import das.omegaterapia.visits.model.entities.VisitData
 import das.omegaterapia.visits.ui.components.datetime.AlternativeOutlinedDateTimeField
 import das.omegaterapia.visits.ui.components.form.FormSection
 import das.omegaterapia.visits.ui.components.form.FormSubsection
@@ -63,61 +59,29 @@ import das.omegaterapia.visits.ui.theme.getMaterialRectangleShape
 import das.omegaterapia.visits.utils.canBePhoneNumber
 import das.omegaterapia.visits.utils.canBeZIP
 import das.omegaterapia.visits.utils.formatPhoneNumber
-import das.omegaterapia.visits.utils.isNonEmptyText
 import das.omegaterapia.visits.utils.isText
-import das.omegaterapia.visits.utils.isValidPhoneNumber
-import das.omegaterapia.visits.utils.isZIP
-import das.omegaterapia.visits.utils.rememberMutableStateListOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.ZonedDateTime
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun VisitForm(
-    submitForm: suspend (VisitCard) -> Boolean,
+    submitVisitCard: suspend (VisitCard) -> Boolean,
     modifier: Modifier = Modifier,
     onSuccessfulSubmit: () -> Unit = {},
     initialVisitCard: VisitCard? = null,
+    visitFormViewModel: VisitFormViewModel = viewModel(),
 ) {
-    /*
-    * TODO:
-    * - Añadir on IME action
-    * - Mejorar el botón VIP y el de calendario / hora
-    */
+
+    // TODO:    * - Añadir on IME action
+
 
     // Courutine Scope
     val scope = rememberCoroutineScope()
+
+    // Dialog State
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
-
-    // Variables para guardar los datos
-    val (isVIP, setIsVIP) = rememberSaveable { mutableStateOf(initialVisitCard?.visitData?.isVIP ?: false) }
-    val (visitDate, setVisitDate) = rememberSaveable { mutableStateOf(initialVisitCard?.visitData?.visitDate ?: ZonedDateTime.now()) }
-
-    val (clientNameText, setClientNameText) = rememberSaveable { mutableStateOf(initialVisitCard?.client?.name ?: "") }
-    val (clientSurnameText, setClientSurnameText) = rememberSaveable { mutableStateOf(initialVisitCard?.client?.surname ?: "") }
-    val clientCompanions = rememberMutableStateListOf(*(initialVisitCard?.visitData?.companions?.toTypedArray() ?: arrayOf("")))
-
-    val (addressText, setAddressText) = rememberSaveable { mutableStateOf(initialVisitCard?.client?.direction?.address ?: "") }
-    val (townText, setTownText) = rememberSaveable { mutableStateOf(initialVisitCard?.client?.direction?.town ?: "") }
-    val (zipCodeText, setZIPCodeText) = rememberSaveable { mutableStateOf(initialVisitCard?.client?.direction?.zip ?: "") }
-    val (phoneText, setPhoneText) = rememberSaveable { mutableStateOf(initialVisitCard?.client?.phoneNum ?: "") }
-
-    val (observationText, setObservationText) = rememberSaveable { mutableStateOf(initialVisitCard?.visitData?.observations ?: "") }
-
-
-    // Variable para comprobación de datos
-    val isNameValid by remember(clientNameText) { derivedStateOf { isNonEmptyText(clientNameText) } }
-    val isSurnameValid by remember(clientSurnameText) { derivedStateOf { isNonEmptyText(clientSurnameText) } }
-
-    val isAddressValid by remember(addressText) { derivedStateOf { addressText.isNotBlank() } }
-    val isTownValid by remember(townText) { derivedStateOf { townText.isNotBlank() } }
-    val isZIPValid by remember(zipCodeText) { derivedStateOf { isZIP(zipCodeText) } }
-    val isPhoneValid by remember(phoneText) { derivedStateOf { isValidPhoneNumber(phoneText) } }
-
-    val areAllValid = isNameValid && isSurnameValid && isAddressValid && isTownValid && isZIPValid && isPhoneValid
-
 
     // Dialogs
     if (showErrorDialog) {
@@ -127,7 +91,10 @@ fun VisitForm(
                 title = { Text(text = "Couldn't add a new Visit Card") },
                 text = { Text(text = "An error occurred when adding the Visit Card. Try again.") },
                 onDismissRequest = { showErrorDialog = false },
-                confirmButton = { TextButton(onClick = { showErrorDialog = false }, shape = getButtonShape()) { Text(text = "DISMISS") } }
+                confirmButton = {
+                    TextButton(onClick = { showErrorDialog = false },
+                        shape = getButtonShape()) { Text(text = "DISMISS") }
+                }
             )
         } else {
             AlertDialog(
@@ -135,7 +102,10 @@ fun VisitForm(
                 title = { Text(text = "Couldn't edit the Visit Card") },
                 text = { Text(text = "An error occurred when editing the Visit Card. Try again.") },
                 onDismissRequest = { showErrorDialog = false },
-                confirmButton = { TextButton(onClick = { showErrorDialog = false }, shape = getButtonShape()) { Text(text = "DISMISS") } }
+                confirmButton = {
+                    TextButton(onClick = { showErrorDialog = false },
+                        shape = getButtonShape()) { Text(text = "DISMISS") }
+                }
             )
         }
     }
@@ -157,10 +127,10 @@ fun VisitForm(
                     modifier = Modifier
                         .height(IntrinsicSize.Max)
                         .padding(top = 8.dp),
-                    onClick = { setIsVIP(!isVIP) },
-                    selected = isVIP,
+                    onClick = { visitFormViewModel.isVIP = !visitFormViewModel.isVIP },
+                    selected = visitFormViewModel.isVIP,
                     leadingIcon = {
-                        if (isVIP) {
+                        if (visitFormViewModel.isVIP) {
                             Icon(Icons.Filled.Star, contentDescription = "VIP Client",
                                 Modifier
                                     .size(iconSize)
@@ -179,8 +149,8 @@ fun VisitForm(
                 }
 
                 AlternativeOutlinedDateTimeField(
-                    date = visitDate,
-                    onDateTimeSelected = setVisitDate,
+                    date = visitFormViewModel.visitDate,
+                    onDateTimeSelected = visitFormViewModel::visitDate::set,
                     requireFutureDateTime = initialVisitCard == null,
 
                     dateLabel = { Text(text = "Date*") },
@@ -200,9 +170,9 @@ fun VisitForm(
                     label = { Text(text = "Client Name*") },
                     leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Client name and surname") },
 
-                    value = clientNameText,
-                    onValueChange = { if (isText(it)) setClientNameText(it) },
-                    isValid = isNameValid,
+                    value = visitFormViewModel.clientNameText,
+                    onValueChange = { if (isText(it)) visitFormViewModel.clientNameText = it },
+                    isValid = visitFormViewModel.isNameValid,
 
                     singleLine = true,
                     maxLines = 1
@@ -213,9 +183,9 @@ fun VisitForm(
 
                     label = { Text(text = "Client Surname*") },
 
-                    value = clientSurnameText,
-                    onValueChange = { if (isText(it)) setClientSurnameText(it) },
-                    isValid = isSurnameValid,
+                    value = visitFormViewModel.clientSurnameText,
+                    onValueChange = { if (isText(it)) visitFormViewModel.clientSurnameText = it },
+                    isValid = visitFormViewModel.isSurnameValid,
 
                     singleLine = true,
                     maxLines = 1
@@ -223,26 +193,30 @@ fun VisitForm(
             }
 
             FormSubsection(title = "Client's Companions") {
-                clientCompanions.forEachIndexed { index, companion ->
+                visitFormViewModel.clientCompanions.forEachIndexed { index, companion ->
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
 
                         label = { Text(text = "Name and Surname") },
                         leadingIcon = { Icon(Icons.Default.People, contentDescription = "Client's companion name and surname") },
                         trailingIcon = {
-                            IconButton(onClick = { clientCompanions.removeAt(index); if (clientCompanions.isEmpty()) clientCompanions.add("") }) {
+                            IconButton(onClick = {
+                                visitFormViewModel.clientCompanions.removeAt(index)
+                                if (visitFormViewModel.clientCompanions.isEmpty()) visitFormViewModel.clientCompanions.add("")
+                            }
+                            ) {
                                 Icon(Icons.Filled.RemoveCircle, contentDescription = "Delete Companion", tint = MaterialTheme.colors.secondary)
                             }
                         },
 
                         value = companion,
-                        onValueChange = { if (isText(it)) clientCompanions[index] = it },
+                        onValueChange = { if (isText(it)) visitFormViewModel.clientCompanions[index] = it },
 
                         singleLine = true,
                         maxLines = 1
                     )
                 }
-                FixedOutlinedButton(onClick = { clientCompanions.add("") }, Modifier.align(Alignment.CenterHorizontally)) {
+                FixedOutlinedButton(onClick = { visitFormViewModel.clientCompanions.add("") }, Modifier.align(Alignment.CenterHorizontally)) {
                     Text(text = "Add Companion")
                 }
             }
@@ -256,9 +230,9 @@ fun VisitForm(
                 label = { Text(text = "Phone Number*") },
                 leadingIcon = { Icon(Icons.Default.ContactPhone, contentDescription = "Phone Number") },
 
-                value = phoneText,
-                onValueChange = { if (canBePhoneNumber(it)) setPhoneText(formatPhoneNumber(it)) },
-                isValid = isPhoneValid,
+                value = visitFormViewModel.phoneText,
+                onValueChange = { if (canBePhoneNumber(it)) visitFormViewModel.phoneText = formatPhoneNumber(it) },
+                isValid = visitFormViewModel.isPhoneValid,
 
                 singleLine = true,
                 maxLines = 1
@@ -270,9 +244,9 @@ fun VisitForm(
                 label = { Text(text = "Address*") },
                 leadingIcon = { Icon(Icons.Default.MapsHomeWork, contentDescription = "Address") },
 
-                value = addressText,
-                onValueChange = setAddressText,
-                isValid = isAddressValid,
+                value = visitFormViewModel.addressText,
+                onValueChange = visitFormViewModel::addressText::set,
+                isValid = visitFormViewModel.isAddressValid,
 
                 singleLine = true,
                 maxLines = 1
@@ -286,9 +260,9 @@ fun VisitForm(
                     label = { Text(text = "Town*") },
                     leadingIcon = { Icon(Icons.Default.PinDrop, contentDescription = "Town") },
 
-                    value = townText,
-                    onValueChange = { if (isText(it)) setTownText(it) },
-                    isValid = isTownValid,
+                    value = visitFormViewModel.townText,
+                    onValueChange = { if (isText(it)) visitFormViewModel.townText = it },
+                    isValid = visitFormViewModel.isTownValid,
 
                     singleLine = true,
                     maxLines = 1
@@ -300,9 +274,9 @@ fun VisitForm(
                     label = { Text(text = "ZIP*") },
                     leadingIcon = { Icon(Icons.Default.MyLocation, contentDescription = "ZIP Code") },
 
-                    value = zipCodeText,
-                    onValueChange = { if (canBeZIP(it)) setZIPCodeText(it) },
-                    isValid = isZIPValid,
+                    value = visitFormViewModel.zipCodeText,
+                    onValueChange = { if (canBeZIP(it)) visitFormViewModel.zipCodeText = it },
+                    isValid = visitFormViewModel.isZIPValid,
 
                     singleLine = true,
                     maxLines = 1
@@ -319,8 +293,8 @@ fun VisitForm(
                 label = { Text(text = "Observations") },
                 leadingIcon = { Icon(Icons.Default.Visibility, contentDescription = "Observations") },
 
-                value = observationText,
-                onValueChange = setObservationText
+                value = visitFormViewModel.observationText,
+                onValueChange = visitFormViewModel::observationText::set
             )
         }
 
@@ -328,40 +302,14 @@ fun VisitForm(
             modifier = Modifier.fillMaxWidth(),
             shape = getButtonShape(),
             onClick = {
-                val clientData = Client(
-                    name = clientNameText,
-                    surname = clientSurnameText,
-                    phoneNum = phoneText,
-                    direction = Direction(addressText, townText, zipCodeText)
-                )
-
-                val visitData: VisitData
-
-                if (initialVisitCard != null) {
-                    visitData = initialVisitCard.visitData.copy(
-                        mainClientPhone = clientData.phoneNum,
-                        companions = clientCompanions.filter { it.isNotBlank() },
-                        visitDate = visitDate,
-                        isVIP = isVIP,
-                        observations = observationText
-                    )
-                } else {
-                    visitData = VisitData(
-                        mainClientPhone = clientData.phoneNum,
-                        companions = clientCompanions.filter { it.isNotBlank() },
-                        visitDate = visitDate,
-                        isVIP = isVIP,
-                        observations = observationText
-                    )
-                }
                 scope.launch(Dispatchers.IO) {
-                    val operationOK = submitForm(VisitCard(visitData, clientData))
+                    val operationOK = submitVisitCard(visitFormViewModel.generateVisitCard())
 
                     if (operationOK) onSuccessfulSubmit()
                     else showErrorDialog = true
                 }
             },
-            enabled = areAllValid
+            enabled = visitFormViewModel.areAllValid
         ) {
             Text(text = "Add new Visit Card")
         }

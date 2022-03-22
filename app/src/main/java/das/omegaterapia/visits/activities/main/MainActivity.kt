@@ -26,7 +26,8 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 import das.omegaterapia.visits.activities.main.composables.MainFloatingActionButton
 import das.omegaterapia.visits.activities.main.screens.AllVisitsScreen
-import das.omegaterapia.visits.activities.main.screens.VisitForm
+import das.omegaterapia.visits.activities.main.screens.AddVisitScreen
+import das.omegaterapia.visits.activities.main.screens.MainActivityScreens
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.isScrollingUp
 import das.omegaterapia.visits.utils.rememberWindowSizeClass
@@ -61,12 +62,12 @@ class MainActivity : ComponentActivity() {
                     scaffoldState = scaffoldState,
                     floatingActionButton = {
                         AnimatedVisibility(
-                            currentRoute?.destination?.route != "add",
+                            currentRoute?.destination?.route != MainActivityScreens.AddVisit.route,
                             enter = scaleIn(),
                             exit = scaleOut()
                         ) {
                             MainFloatingActionButton(
-                                onClick = { navController.navigate("add") },
+                                onClick = { navController.navigate(MainActivityScreens.AddVisit.route) },
                                 extended = allVisitsLazyListState.isScrollingUp()
                             )
                         }
@@ -75,9 +76,9 @@ class MainActivity : ComponentActivity() {
                 { innerPadding ->
                     AnimatedNavHost(
                         navController = navController,
-                        startDestination = "all_visits_screen"
+                        startDestination = MainActivityScreens.AllVisits.route
                     ) {
-                        composable(route = "all_visits_screen") {
+                        composable(route = MainActivityScreens.AllVisits.route) {
                             AllVisitsScreen(
                                 visitViewModel = visitViewModel,
                                 windowSize = windowSize,
@@ -85,7 +86,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(
-                            route = "add",
+                            route = MainActivityScreens.AddVisit.route,
                             enterTransition = {
                                 slideInVertically(
                                     initialOffsetY = { 2 * it },
@@ -99,13 +100,13 @@ class MainActivity : ComponentActivity() {
                                 )
                             },
                         ) {
-                            VisitForm(
+                            AddVisitScreen(
                                 modifier = Modifier.padding(innerPadding),
-                                submitForm = visitViewModel::addVisitCard,
+                                addVisitCard = visitViewModel::addVisitCard,
                                 onSuccessfulSubmit = {
                                     scope.launch(Dispatchers.Main) {
                                         if (!navController.popBackStack()) {
-                                            navController.navigate("all_visits_screen")
+                                            navController.navigate(MainActivityScreens.AllVisits.route)
                                         }
                                     }
                                 }

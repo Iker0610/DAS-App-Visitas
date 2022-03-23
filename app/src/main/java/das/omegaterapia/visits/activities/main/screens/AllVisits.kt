@@ -15,14 +15,15 @@ import das.omegaterapia.visits.utils.WindowSize
 @Composable
 fun AllVisitsScreen(
     visitViewModel: VisitsViewModel,
-    windowSize: WindowSize,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
-) {
+    onScrollStateChange: (Boolean) -> Unit = {},
+    ) {
     val groupedVisits by visitViewModel.allVisits.collectAsState(emptyMap())
     VisitList(
         groupedVisitCards = groupedVisits,
         modifier = modifier.fillMaxSize(),
         lazyListState = lazyListState,
+        onScrollStateChange = onScrollStateChange
     )
 }

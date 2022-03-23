@@ -32,8 +32,6 @@ fun OutlinedDateTimeField(
     leadingIcon: @Composable (() -> Unit)? = { Icon(Icons.Default.Event, contentDescription = "Date and Time") },
     trailingIcon: @Composable (() -> Unit)? = null,
 
-    dialogTitle: String = "Choose a Date and Time",
-
     enabled: Boolean = true,
 ) {
     val dateTimeText = date.format(DateTimeFormatter.ofPattern(dateFormatPattern))!!
@@ -43,7 +41,7 @@ fun OutlinedDateTimeField(
     OutlinedTextField(
         modifier = modifier.onFocusChanged {
             if (it.isFocused) {
-                openDateTimePickerDialog(context,dialogTitle, requireFutureDateTime, onDismissAction = { focusManager.clearFocus() }) { dateTime ->
+                openDateTimePickerDialog(context, requireFutureDateTime, onDismissAction = { focusManager.clearFocus() }) { dateTime ->
                     onDateTimeSelected(dateTime)
                     focusManager.clearFocus()
                 }
@@ -88,8 +86,6 @@ fun AlternativeOutlinedDateTimeField(
     timeLeadingIcon: @Composable (() -> Unit)? = { Icon(Icons.Default.Schedule, contentDescription = "Time") },
     timeTrailingIcon: @Composable (() -> Unit)? = null,
 
-    dialogTitle: String = "Choose a Date and Time",
-
     enabled: Boolean = true,
 ) {
     Row(
@@ -109,8 +105,6 @@ fun AlternativeOutlinedDateTimeField(
             leadingIcon = dateLeadingIcon,
             trailingIcon = dateTrailingIcon,
 
-            dialogTitle = dialogTitle,
-
             enabled = enabled,
         )
 
@@ -126,8 +120,6 @@ fun AlternativeOutlinedDateTimeField(
             placeholder = timePlaceholder,
             leadingIcon = timeLeadingIcon,
             trailingIcon = timeTrailingIcon,
-
-            dialogTitle = dialogTitle,
 
             enabled = enabled,
         )

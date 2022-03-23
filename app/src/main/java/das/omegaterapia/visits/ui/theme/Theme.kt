@@ -11,13 +11,13 @@ import androidx.compose.ui.unit.dp
 
 private val DarkColorPalette = darkColors(
     primary = BlueGrey200,
-    primaryVariant = BlueGrey800,
+    primaryVariant = BlueGrey900,
     secondary = Orange300,
 )
 
 private val LightColorPalette = lightColors(
     primary = BlueGrey600,
-    primaryVariant = BlueGrey800,
+    primaryVariant = BlueGrey900,
     secondary = Orange300
 
     /* Other default colors to override

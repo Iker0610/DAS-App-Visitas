@@ -155,8 +155,6 @@ fun VisitForm(
 
                     dateLabel = { Text(text = "Date*") },
                     timeLabel = { Text(text = "Time*") },
-
-                    dialogTitle = "Select your visit's Date and Hour"
                 )
             }
         }

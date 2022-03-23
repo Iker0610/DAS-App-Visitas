@@ -15,7 +15,7 @@
         <activity
             android:name=".activities.authorization.AuthActivity"
             android:exported="true"
-            android:theme="@style/Theme.OmegaterapiaTheme">
+            android:theme="@style/Theme.OmegaterapiaLoginTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

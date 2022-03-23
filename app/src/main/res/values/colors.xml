@@ -1,11 +1,7 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-  <color name="primaryColor">#546e7a</color>
-  <color name="primaryLightColor">#819ca9</color>
-  <color name="primaryDarkColor">#29434e</color>
-  <color name="secondaryColor">#ffb74d</color>
-  <color name="secondaryLightColor">#ffe97d</color>
-  <color name="secondaryDarkColor">#c88719</color>
-  <color name="primaryTextColor">#ffffff</color>
-  <color name="secondaryTextColor">#000000</color>
+  <color name="BlueGrey200">#b0bec5</color>
+  <color name="BlueGrey600">#546e7a</color>
+  <color name="BlueGrey900">#263238</color>
+  <color name="Orange300">#ffb74d</color>
 </resources>

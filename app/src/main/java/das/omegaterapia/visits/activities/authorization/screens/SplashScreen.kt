@@ -33,12 +33,12 @@ fun AnimatedSplashScreen(onAnimationFinished: () -> Unit) {
     var startAnimation by rememberSaveable { mutableStateOf(false) }
     val alphaAnim by animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
-        animationSpec = tween(delayMillis = 150, durationMillis = 2000)
+        animationSpec = tween(delayMillis = 150, durationMillis = 1750)
     )
 
     LaunchedEffect(key1 = true) {
         startAnimation = true
-        delay(3000)
+        delay(2000)
         onAnimationFinished()
     }
     Splash(alpha = alphaAnim)

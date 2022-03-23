@@ -4,17 +4,34 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.BottomDrawer
+import androidx.compose.material.BottomDrawerValue
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FabPosition
+import androidx.compose.material.Icon
+import androidx.compose.material.ListItem
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.rememberBottomDrawerState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,7 +49,8 @@ import das.omegaterapia.visits.activities.main.composables.MainFloatingActionBut
 import das.omegaterapia.visits.activities.main.screens.AddVisitScreen
 import das.omegaterapia.visits.activities.main.screens.AllVisitsScreen
 import das.omegaterapia.visits.activities.main.screens.MainActivityScreens
-import das.omegaterapia.visits.activities.main.screens.navigableScreens
+import das.omegaterapia.visits.activities.main.screens.TodaysVisitsScreen
+import das.omegaterapia.visits.activities.main.screens.VIPVisitsScreen
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.WindowSize
 import das.omegaterapia.visits.utils.rememberWindowSizeClass
@@ -80,7 +98,7 @@ private fun MainActivityScreen(
     BottomDrawer(
         gesturesEnabled = gesturesEnabled,
         drawerState = drawerState,
-        drawerShape = CutCornerShape(topStartPercent = 5, topEndPercent = 5),
+        drawerShape = CutCornerShape(topStartPercent = 7, topEndPercent = 7),
         drawerContent = {
 
             LazyColumn(Modifier.padding(vertical = 24.dp)) {
@@ -99,9 +117,20 @@ private fun MainActivityScreen(
                             .fillMaxWidth()
                     )
                 }
-                items(navigableScreens) {
+                items(MainActivityScreens.navigableScreens) {
                     ListItem(
-                        modifier = Modifier.padding(horizontal = 16.dp),
+                        Modifier
+                            .padding(horizontal = 16.dp)
+                            .clickable {
+                                if (currentRoute?.destination?.route != it.route) {
+                                    scope.launch { drawerState.close() }
+                                }
+                                navController.navigate(it.route) {
+                                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            },
                         text = { Text(it.title) },
                         icon = {
                             Icon(
@@ -114,8 +143,6 @@ private fun MainActivityScreen(
             }
         },
     ) {
-
-
         Scaffold(
             scaffoldState = scaffoldState,
             floatingActionButton = {
@@ -137,15 +164,28 @@ private fun MainActivityScreen(
                     enter = slideInVertically(initialOffsetY = { 2 * it }),
                     exit = slideOutVertically(targetOffsetY = { 2 * it })
                 ) {
-                    BottomNavBar(onMenuOpen = { scope.launch { drawerState.open() } })
+                    BottomNavBar(
+                        MainActivityScreens.fromRoute(currentRoute?.destination?.route).title,
+                        onMenuOpen = { scope.launch { drawerState.open() } }
+                    )
                 }
             }
         )
         { innerPadding ->
             AnimatedNavHost(
                 navController = navController,
-                startDestination = MainActivityScreens.AllVisits.route
+                startDestination = MainActivityScreens.TodaysVisits.route
             ) {
+
+                composable(route = MainActivityScreens.TodaysVisits.route) {
+                    TodaysVisitsScreen(
+                        visitViewModel = visitViewModel,
+                        windowSize = windowSize,
+                        lazyListState = allVisitsLazyListState,
+                    )
+                }
+
+
                 composable(route = MainActivityScreens.AllVisits.route) {
                     AllVisitsScreen(
                         visitViewModel = visitViewModel,
@@ -153,6 +193,17 @@ private fun MainActivityScreen(
                         lazyListState = allVisitsLazyListState,
                     )
                 }
+
+
+                composable(route = MainActivityScreens.VIPs.route) {
+                    VIPVisitsScreen(
+                        visitViewModel = visitViewModel,
+                        windowSize = windowSize,
+                        lazyListState = allVisitsLazyListState,
+                    )
+                }
+
+
                 composable(
                     route = MainActivityScreens.AddVisit.route,
                     enterTransition = {

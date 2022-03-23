@@ -27,6 +27,9 @@ class VisitsViewModel @Inject constructor(
     val allVisits = visitsRepository.getUsersVisits(currentUser)
         .map { visitList -> TemporalConverter.WEEK.groupDates(visitList, key = VisitCard::visitDate::get) }
 
+    val vipVisits = visitsRepository.getUsersVIPVisits(currentUser)
+        .map { visitList -> TemporalConverter.WEEK.groupDates(visitList, key = VisitCard::visitDate::get) }
+
     val todaysVisits = visitsRepository.getUsersTodaysVisits(currentUser)
         .map { visitList -> TemporalConverter.HOUR_WITH_DAY.groupDates(visitList, key = VisitCard::visitDate::get) }
 

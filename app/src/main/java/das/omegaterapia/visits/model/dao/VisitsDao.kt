@@ -26,8 +26,7 @@ interface VisitsDao {
         return try {
             try {
                 addClient(visitCard.client)
-            }
-            catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("ROOM-Insert Client from VisitCard", "${visitCard.client} ${visitCard.client.phoneNum} ${visitCard.visitData.mainClientPhone}")
                 e.printStackTrace()
             }
@@ -48,4 +47,8 @@ interface VisitsDao {
     @Transaction
     @Query("SELECT * FROM VisitData WHERE user = :currentUser AND DATE(visit_date, 'unixepoch') = DATE('now') ORDER BY visit_date")
     fun getUserTodaysVisits(currentUser: String): Flow<List<VisitCard>>
+
+    @Transaction
+    @Query("SELECT * FROM VisitData WHERE user = :currentUser AND is_VIP = 1 ORDER BY visit_date")
+    fun getUsersVIPVisits(currentUser: String): Flow<List<VisitCard>>
 }

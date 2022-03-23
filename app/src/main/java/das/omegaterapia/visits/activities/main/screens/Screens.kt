@@ -13,7 +13,19 @@ enum class MainActivityScreens(var title: String, var route: String, var icon: I
     AllVisits("All Visits", "all_visits", Icons.Filled.RecentActors),
     VIPs("VIP Visits", "vip_visits", Icons.Filled.Star),
     AddVisit("Add Visit", "add_visit", Icons.Filled.Add);
-}
 
-val navigableScreens = listOf(MainActivityScreens.TodaysVisits, MainActivityScreens.AllVisits, MainActivityScreens.VIPs)
+    companion object {
+        // Original code from Google's Compose Navigation Codelab
+        fun fromRoute(route: String?): MainActivityScreens =
+            when (route?.substringBefore("/")) {
+                TodaysVisits.route -> TodaysVisits
+                AllVisits.route -> AllVisits
+                VIPs.route -> VIPs
+                AddVisit.route -> AddVisit
+                null -> TodaysVisits
+                else -> throw IllegalArgumentException("Route $route is not recognized.")
+            }
+        val navigableScreens = listOf(TodaysVisits, AllVisits, VIPs)
+    }
+}
 

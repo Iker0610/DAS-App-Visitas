@@ -13,13 +13,13 @@ import das.omegaterapia.visits.utils.WindowSize
 
 
 @Composable
-fun AllVisitsScreen(
+fun TodaysVisitsScreen(
     visitViewModel: VisitsViewModel,
     windowSize: WindowSize,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
 ) {
-    val groupedVisits by visitViewModel.allVisits.collectAsState(emptyMap())
+    val groupedVisits by visitViewModel.todaysVisits.collectAsState(emptyMap())
     VisitList(
         groupedVisitCards = groupedVisits,
         modifier = modifier.fillMaxSize(),

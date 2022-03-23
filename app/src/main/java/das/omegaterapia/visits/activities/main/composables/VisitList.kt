@@ -51,7 +51,7 @@ fun VisitList(
 
             items(groupVisitCards) { visitCard ->
                 VisitCardItem(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.padding(horizontal = 8.dp),
                     visitCard = visitCard,
                     isExpanded = visitCard.id == selectedVisitCardId,
                     onClick = {
@@ -72,9 +72,9 @@ fun VisitList(
 fun VisitGroupHeader(groupTitle: String) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colors.primary.copy(alpha = 0.85f).compositeOver(MaterialTheme.colors.surface),
+        color = MaterialTheme.colors.primary.copy(alpha = 1f).compositeOver(MaterialTheme.colors.surface),
         contentColor = MaterialTheme.colors.onPrimary,
-        elevation = 16.dp
+        elevation = 8.dp
     ) {
         Text(
             text = groupTitle,

@@ -199,7 +199,7 @@ private fun MainActivityScreen(
             ) {
                 if (enableRailNavigation) {
                     NavigationRail(
-                        header = { Box(Modifier.padding(8.dp)) { FAB() } }
+                        header = { Box(Modifier.padding(8.dp)) { FAB() } },
                     ) {
                         CenteredColumn(Modifier.weight(1f, true)) {
                             MainActivityScreens.navigableScreens.forEach { screen ->

@@ -4,37 +4,61 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.BottomDrawer
+import androidx.compose.material.BottomDrawerValue
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FabPosition
+import androidx.compose.material.Icon
+import androidx.compose.material.NavigationRail
+import androidx.compose.material.NavigationRailItem
+import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.runtime.*
+import androidx.compose.material.rememberBottomDrawerState
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
-import das.omegaterapia.visits.R
-import das.omegaterapia.visits.activities.main.composables.BottomNavBar
-import das.omegaterapia.visits.activities.main.composables.MainFloatingActionButton
-import das.omegaterapia.visits.activities.main.screens.*
+import das.omegaterapia.visits.activities.main.screens.AddVisitScreen
+import das.omegaterapia.visits.activities.main.screens.AllVisitsScreen
+import das.omegaterapia.visits.activities.main.screens.MainActivityScreens
+import das.omegaterapia.visits.activities.main.screens.TodaysVisitsScreen
+import das.omegaterapia.visits.activities.main.screens.VIPVisitsScreen
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.DrawerButton
+import das.omegaterapia.visits.ui.components.navigation.AddFloatingActionButton
+import das.omegaterapia.visits.ui.components.navigation.BottomNavBar
+import das.omegaterapia.visits.ui.components.navigation.NavDrawerHeader
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.WindowSize
 import das.omegaterapia.visits.utils.WindowSizeFormat
@@ -74,9 +98,6 @@ private fun MainActivityScreen(
     val navController = rememberAnimatedNavController()
     val currentRoute by navController.currentBackStackEntryFlow.collectAsState(initial = navController.currentBackStackEntry)
 
-    val scaffoldState = rememberScaffoldState()
-
-    var isScrolling by rememberSaveable { mutableStateOf(false) }
 
     //-------------------------------------------------------------------
     // Navigation booleans
@@ -84,23 +105,24 @@ private fun MainActivityScreen(
     val enableBottomNavigation = enableNavigation && windowSize.width == WindowSizeFormat.Compact
     val enableRailNavigation = enableNavigation && !enableBottomNavigation
 
+    var isScrolling by rememberSaveable { mutableStateOf(false) }
     val showBottomNavigation = enableBottomNavigation && !isScrolling
     //--------------------------------------------------------------------
 
-
+    val scaffoldState = rememberScaffoldState()
     val drawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
     val gesturesEnabled = drawerState.currentValue != BottomDrawerValue.Closed
 
-    LaunchedEffect(windowSize.width) {
-        if (windowSize.width != WindowSizeFormat.Compact) {
+    LaunchedEffect(enableBottomNavigation) {
+        if (!enableBottomNavigation && drawerState.currentValue != BottomDrawerValue.Closed) {
             scope.launch { drawerState.close() }
         }
     }
 
     @Composable
     fun FAB() {
-        MainFloatingActionButton(
-            onClick = { navController.navigate(MainActivityScreens.AddVisit.route) },
+        AddFloatingActionButton(
+            onAdd = { navController.navigate(MainActivityScreens.AddVisit.route) },
         )
     }
 
@@ -177,7 +199,7 @@ private fun MainActivityScreen(
             ) {
                 if (enableRailNavigation) {
                     NavigationRail(
-                        header = { Box(Modifier.padding(horizontal = 8.dp)) { FAB() } }
+                        header = { Box(Modifier.padding(8.dp)) { FAB() } }
                     ) {
                         CenteredColumn(Modifier.weight(1f, true)) {
                             MainActivityScreens.navigableScreens.forEach { screen ->
@@ -279,29 +301,3 @@ private fun MainActivityScreen(
 }
 
 
-@Composable
-private fun NavDrawerHeader(
-    currentUser: String,
-    modifier: Modifier = Modifier,
-    onClose: () -> Unit
-) {
-    Row(
-        modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.mipmap.ic_launcher_foreground),
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
-            modifier = Modifier
-                .height(50.dp)
-                .padding(end = 8.dp)
-        )
-        Text(currentUser, style = MaterialTheme.typography.h6)
-        Spacer(Modifier.weight(1f, true))
-        IconButton(onClick = onClose) {
-            Icon(Icons.Filled.Close, contentDescription = "Close navigation drawer.")
-        }
-    }
-}

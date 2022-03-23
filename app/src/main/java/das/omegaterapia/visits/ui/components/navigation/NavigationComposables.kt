@@ -1,5 +1,6 @@
-package das.omegaterapia.visits.activities.main.composables
+package das.omegaterapia.visits.ui.components.navigation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,27 +12,28 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.R
-import das.omegaterapia.visits.ui.components.generic.CenteredRow
 
 private val FABShape = CutCornerShape(50)
 
 @Composable
-fun MainFloatingActionButton(
-    onClick: () -> Unit = {},
+fun AddFloatingActionButton(
+    onAdd: () -> Unit = {},
 ) {
-    FloatingActionButton(onClick = onClick, shape = FABShape) {
+    FloatingActionButton(onClick = onAdd, shape = FABShape) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -72,6 +74,34 @@ fun BottomNavBar(currentScreenTitle: String, onMenuOpen: () -> Unit) {
             IconButton(onClick = { /* doSomething() */ }) {
                 Icon(Icons.Filled.AccountCircle, contentDescription = "Localized description")
             }
+        }
+    }
+}
+
+
+@Composable
+fun NavDrawerHeader(
+    currentUser: String,
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit
+) {
+    Row(
+        modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
+            modifier = Modifier
+                .height(50.dp)
+                .padding(end = 8.dp)
+        )
+        Text(currentUser, style = MaterialTheme.typography.h6)
+        Spacer(Modifier.weight(1f, true))
+        IconButton(onClick = onClose) {
+            Icon(Icons.Filled.Close, contentDescription = "Close navigation drawer.")
         }
     }
 }

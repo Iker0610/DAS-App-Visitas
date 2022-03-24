@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,7 +43,7 @@ fun VisitList(
 
 
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier.clipToBounds()/*Importante el clip para cuando hagamos swipe de las cards*/,
         verticalArrangement = Arrangement.spacedBy(16.dp),
         state = lazyListState
     ) {
@@ -50,7 +51,7 @@ fun VisitList(
             stickyHeader { VisitGroupHeader(groupTitle) }
 
             items(groupVisitCards) { visitCard ->
-                VisitCardItem(
+                SwipeableVisitCardItem(
                     modifier = Modifier.padding(horizontal = 8.dp),
                     visitCard = visitCard,
                     isExpanded = visitCard.id == selectedVisitCardId,

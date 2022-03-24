@@ -4,8 +4,10 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.SpringSpec
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,41 +15,48 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.absolutePadding
-import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.PhoneInTalk
 import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.StarOutline
+import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -59,7 +68,10 @@ import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.ui.components.form.TextIconButton
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
+import das.omegaterapia.visits.ui.components.generic.SwipeableItem
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 
@@ -80,12 +92,11 @@ private fun applyTextStyle(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun VisitCardItem(
-    modifier: Modifier = Modifier,
     visitCard: VisitCard,
+    modifier: Modifier = Modifier,
+    elevation: Dp = 4.dp,
     isExpanded: Boolean = false,
     onClick: (VisitCard) -> Unit = {},
-    onLongClick: (VisitCard) -> Unit = {},
-    elevation: Dp = 4.dp,
 ) {
     // Styling
     val typography = MaterialTheme.typography
@@ -208,6 +219,111 @@ fun VisitCardItem(
     }
 }
 
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun SwipeableVisitCardItem(
+    visitCard: VisitCard,
+    modifier: Modifier = Modifier,
+    elevation: Dp = 4.dp,
+    isExpanded: Boolean = false,
+    onClick: (VisitCard) -> Unit = {},
+    onEdit: (VisitCard) -> Unit = {},
+    onDelete: (VisitCard) -> Unit = {},
+) {
+    val scope = rememberCoroutineScope()
+
+    //-------------------------------------------------------------------------------------------------------------------------------
+    // Código para controlar el estado y evitar que puedas pasar de una punta a otra sin pasar por el centro.
+    // Y en caso de que lo intentes te fuerce a parar en el centro.
+
+    var current by rememberSaveable { mutableStateOf(0) }
+    var checkFailed by rememberSaveable { mutableStateOf(false) }
+
+    val swipeableState = rememberSwipeableState(
+        initialValue = 0,
+        confirmStateChange = {
+            checkFailed = !(it == 0 || current == 0)
+            !checkFailed
+        },
+    )
+
+    LaunchedEffect(swipeableState.currentValue) { current = swipeableState.currentValue }
+    LaunchedEffect(checkFailed) {
+        if (checkFailed) {
+            swipeableState.animateTo(0)
+            checkFailed = false
+        }
+    }
+    //-------------------------------------------------------------------------------------------------------------------------------
+
+    SwipeableItem(
+        state = swipeableState,
+        swipeEnabled = !checkFailed,
+        modifier = modifier,
+        background = {
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                CenteredRow(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    CenteredRow(
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth(0.5f)
+                            .background(MaterialTheme.colors.secondary
+                                .copy(alpha = 0.80f)
+                                .compositeOver(MaterialTheme.colors.surface))
+                            .padding(start = 32.dp)
+                    ) {
+                        IconButton(onClick = {
+                            scope.launch {
+                                delay(250)
+                                swipeableState.animateTo(targetValue = 0)
+                                delay(100)
+                                onEdit(visitCard)
+                            }
+                        }) {
+                            Icon(Icons.Filled.Edit, contentDescription = null)
+                        }
+                    }
+
+                    CenteredRow(
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colors.error
+                                .copy(alpha = 0.80f)
+                                .compositeOver(MaterialTheme.colors.surface))
+                            .padding(end = 32.dp)
+                    ) {
+                        IconButton(onClick = {
+                            scope.launch {
+                                delay(250)
+                                swipeableState.animateTo(targetValue = 0)
+                                delay(100)
+                                onDelete(visitCard)
+                            }
+                        }) {
+                            Icon(Icons.Filled.Delete, contentDescription = null)
+                        }
+                    }
+                }
+            }
+        }
+    ) {
+        VisitCardItem(
+            visitCard = visitCard,
+            modifier = Modifier,
+            elevation = elevation,
+            isExpanded = isExpanded,
+            onClick = onClick
+        )
+    }
+}
 
 //-----------------------------------------------------------------------------------------------------------------------
 

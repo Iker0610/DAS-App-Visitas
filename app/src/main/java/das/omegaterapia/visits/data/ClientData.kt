@@ -9,7 +9,7 @@ val clients = mutableListOf(
     Client(
         name = "Manolo",
         surname = "Pérez Ramírez",
-        phoneNum = "+34 655-145260",
+        phoneNum = "+34655145260",
         direction = Direction(
             address = "Calle Henao, 3, Bajo 3º",
             town = "Bilbao",
@@ -20,7 +20,7 @@ val clients = mutableListOf(
     Client(
         name = "Eider",
         surname = "Mesa Rojo",
-        phoneNum = "+34 614819500",
+        phoneNum = "+34614819500",
         direction = Direction(
             address = "Av. de la Paz, 71 , Ático 2º",
             town = "Logroño",
@@ -31,7 +31,7 @@ val clients = mutableListOf(
     Client(
         name = "Teodora",
         surname = "Teodora  Maroto",
-        phoneNum = "969 003677",
+        phoneNum = "+34969003677",
         direction = Direction(
             address = "C. el Arca, 13 , 34º D",
             town = "Lardero",
@@ -41,8 +41,8 @@ val clients = mutableListOf(
 
     Client(
         name = "Nagore",
-        surname = "C. Serapio Urra Bianca de La Torre",
-        phoneNum = "+34 992 58 1888",
+        surname = "Idiazabal",
+        phoneNum = "+34992581888",
         direction = Direction(
             address = "Ronda Verduzco, 5, 8º 4º",
             town = "Viana",
@@ -52,8 +52,8 @@ val clients = mutableListOf(
 
     Client(
         name = "Jose",
-        surname = "San-Martin",
-        phoneNum = "+34 935-368257",
+        surname = "San Martin",
+        phoneNum = "+34935368257",
         direction = Direction(
             address = "Vicente Goicoechea Kalea, 4, 44º F",
             town = "Gasteiz",
@@ -64,7 +64,7 @@ val clients = mutableListOf(
     Client(
         name = "Erik",
         surname = "Miguel",
-        phoneNum = "606 14 6126",
+        phoneNum = "+34606146126",
         direction = Direction(
             address = "Joaquin Jose Landazuri Kalea, 17, 6º",
             town = "Gasteiz",
@@ -75,7 +75,7 @@ val clients = mutableListOf(
     Client(
         name = "Anna",
         surname = "Castro",
-        phoneNum = "+34 642683678",
+        phoneNum = "+34642683678",
         direction = Direction(
             address = "C. del Río Ayuda, 16, Bajo 0º",
             town = "Gasteiz",
@@ -86,7 +86,7 @@ val clients = mutableListOf(
     Client(
         name = "Adam",
         surname = "Rosas",
-        phoneNum = "+34 648372563",
+        phoneNum = "+34648372563",
         direction = Direction(
             address = "Urbanizacion los Jardines, 5, Ático 2º",
             town = "Camargo",
@@ -97,7 +97,7 @@ val clients = mutableListOf(
     Client(
         name = "Erik",
         surname = "Miguel",
-        phoneNum = "606-77-3348",
+        phoneNum = "+34606773348",
         direction = Direction(
             address = "C. Larramendi, 6, 3º",
             town = "Tolosa",

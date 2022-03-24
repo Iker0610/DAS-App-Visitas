@@ -79,7 +79,7 @@ fun DrawerButton(
     label: String,
     isSelected: Boolean,
     action: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val colors = MaterialTheme.colors
     val textIconColor = if (isSelected) {
@@ -177,11 +177,10 @@ fun NavRailIcon(
     )
 
     Surface(
-        color = backgroundColor,
         onClick = action,
+        modifier = modifier.size(48.dp),
         shape = CircleShape,
-        role = Role.Tab,
-        modifier = modifier.size(48.dp)
+        color = backgroundColor
     ) {
         NavigationIcon(
             icon = icon,

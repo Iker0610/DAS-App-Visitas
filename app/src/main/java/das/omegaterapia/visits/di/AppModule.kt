@@ -26,11 +26,9 @@ object AppModule {
     @Singleton // Tell Dagger-Hilt to create a singleton accessible everywhere in ApplicationCompenent (i.e. everywhere in the application)
     @Provides
     fun providesOmegaterapiaVisitsDatabase(@ApplicationContext app: Context) =
-        Room.databaseBuilder(
-            app,
-            OmegaterapiaVisitsDatabase::class.java,
-            "omegaterapia_visits_database"
-        ).createFromAsset("database/omegaterapia_visits_database.db").build()
+        Room.databaseBuilder(app, OmegaterapiaVisitsDatabase::class.java, "omegaterapia_visits_database")
+            .createFromAsset("database/omegaterapia_visits_database.db")
+            .build()
 
     @Singleton
     @Provides

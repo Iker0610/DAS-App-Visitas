@@ -60,6 +60,7 @@ import das.omegaterapia.visits.activities.main.screens.visitlists.TodaysVisitsSc
 import das.omegaterapia.visits.activities.main.screens.visitlists.VIPVisitsScreen
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.DrawerButton
+import das.omegaterapia.visits.ui.components.generic.NavRailIcon
 import das.omegaterapia.visits.ui.components.navigation.AddFloatingActionButton
 import das.omegaterapia.visits.ui.components.navigation.BottomNavBar
 import das.omegaterapia.visits.ui.components.navigation.NavDrawerHeader
@@ -220,11 +221,29 @@ private fun MainActivityScreen(
                     ) {
                         CenteredColumn(Modifier.weight(1f, true)) {
                             MainActivityScreens.navigableScreens.forEach { screen ->
-                                NavigationRailItem(
-                                    icon = { Icon(screen.icon, contentDescription = screen.title) },
-                                    label = null,
-                                    selected = currentRoute?.destination?.route == screen.route,
-                                    onClick = {
+                                // Solución por defecto de google
+
+//                                  NavigationRailItem(
+//                                    icon = { Icon(screen.icon, contentDescription = screen.title) },
+//                                    label = null,
+//                                    selected = currentRoute?.destination?.route == screen.route,
+//                                    onClick = {
+//                                        navController.navigate(screen.route) {
+//                                            popUpTo(navController.graph.startDestinationId) {
+//                                                saveState = true
+//                                            }
+//                                            launchSingleTop = true
+//                                            restoreState = true
+//                                        }
+//                                    }
+//                                )
+
+                                // Usamos este botón debido a que resalta mejor la ventana actual
+                                NavRailIcon(
+                                    icon = screen.icon,
+                                    contentDescription = screen.title,
+                                    isSelected = currentRoute?.destination?.route == screen.route,
+                                    action = {
                                         navController.navigate(screen.route) {
                                             popUpTo(navController.graph.startDestinationId) {
                                                 saveState = true
@@ -235,17 +254,13 @@ private fun MainActivityScreen(
                                     }
                                 )
                             }
+
                         }
-                        NavigationRailItem(
-                            icon = {
-                                Icon(
-                                    MainActivityScreens.Account.icon,
-                                    contentDescription = MainActivityScreens.Account.title
-                                )
-                            },
-                            label = null,
-                            selected = currentRoute?.destination?.route == MainActivityScreens.Account.route,
-                            onClick = {
+                        NavRailIcon(
+                            icon = MainActivityScreens.Account.icon,
+                            contentDescription = MainActivityScreens.Account.title,
+                            isSelected = currentRoute?.destination?.route == MainActivityScreens.Account.route,
+                            action = {
                                 navController.navigate(MainActivityScreens.Account.route) {
                                     popUpTo(navController.graph.startDestinationId) {
                                         saveState = true

@@ -7,7 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandHorizontally
@@ -35,8 +34,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.NavigationRail
 import androidx.compose.material.NavigationRailItem
 import androidx.compose.material.Scaffold
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.rememberBottomDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -55,12 +52,12 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
-import das.omegaterapia.visits.activities.main.screens.AddVisitScreen
-import das.omegaterapia.visits.activities.main.screens.AllVisitsScreen
-import das.omegaterapia.visits.activities.main.screens.EditVisitScreen
+import das.omegaterapia.visits.activities.main.screens.addedit.AddVisitScreen
+import das.omegaterapia.visits.activities.main.screens.visitlists.AllVisitsScreen
+import das.omegaterapia.visits.activities.main.screens.addedit.EditVisitScreen
 import das.omegaterapia.visits.activities.main.screens.MainActivityScreens
-import das.omegaterapia.visits.activities.main.screens.TodaysVisitsScreen
-import das.omegaterapia.visits.activities.main.screens.VIPVisitsScreen
+import das.omegaterapia.visits.activities.main.screens.visitlists.TodaysVisitsScreen
+import das.omegaterapia.visits.activities.main.screens.visitlists.VIPVisitsScreen
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.DrawerButton
 import das.omegaterapia.visits.ui.components.navigation.AddFloatingActionButton

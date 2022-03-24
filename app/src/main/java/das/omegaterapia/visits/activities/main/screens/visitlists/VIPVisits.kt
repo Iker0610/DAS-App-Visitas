@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.activities.main.screens
+package das.omegaterapia.visits.activities.main.screens.visitlists
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyListState
@@ -13,20 +13,19 @@ import das.omegaterapia.visits.utils.WindowSize
 
 
 @Composable
-fun AllVisitsScreen(
+fun VIPVisitsScreen(
     visitViewModel: VisitsViewModel,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     onScrollStateChange: (Boolean) -> Unit = {},
-    ) {
-    val groupedVisits by visitViewModel.allVisits.collectAsState(emptyMap())
+) {
+    val groupedVisits by visitViewModel.vipVisits.collectAsState(emptyMap())
     VisitList(
         groupedVisitCards = groupedVisits,
         modifier = modifier.fillMaxSize(),
 
         onItemEdit = visitViewModel::currentToEditVisit::set,
         onItemDelete = visitViewModel::deleteVisitCard,
-
 
         lazyListState = lazyListState,
         onScrollStateChange = onScrollStateChange

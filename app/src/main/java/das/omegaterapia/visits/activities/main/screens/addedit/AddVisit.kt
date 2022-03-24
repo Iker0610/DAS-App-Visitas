@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.activities.main.screens
+package das.omegaterapia.visits.activities.main.screens.addedit
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable

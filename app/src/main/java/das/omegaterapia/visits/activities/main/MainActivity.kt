@@ -56,6 +56,7 @@ import das.omegaterapia.visits.activities.main.screens.addedit.AddVisitScreen
 import das.omegaterapia.visits.activities.main.screens.visitlists.AllVisitsScreen
 import das.omegaterapia.visits.activities.main.screens.addedit.EditVisitScreen
 import das.omegaterapia.visits.activities.main.screens.MainActivityScreens
+import das.omegaterapia.visits.activities.main.screens.profile.UserProfileScreen
 import das.omegaterapia.visits.activities.main.screens.visitlists.TodaysVisitsScreen
 import das.omegaterapia.visits.activities.main.screens.visitlists.VIPVisitsScreen
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
@@ -303,6 +304,11 @@ private fun MainActivityScreen(
                     }
 
 
+                    composable(route = MainActivityScreens.Account.route){
+                        UserProfileScreen()
+                    }
+
+
                     composable(
                         route = MainActivityScreens.AddVisit.route,
                         enterTransition = {
@@ -364,7 +370,7 @@ private fun MainActivityScreen(
                             ) {
                                 navController.navigate(MainActivityScreens.TodaysVisits.route)
                             }
-                        } else
+                        } else {
                             EditVisitScreen(
                                 visitCard = visitViewModel.currentToEditVisit!!,
                                 onEditVisitCard = visitViewModel::updateVisitCard,
@@ -377,6 +383,7 @@ private fun MainActivityScreen(
                                     }
                                 }
                             )
+                        }
                     }
                 }
             }

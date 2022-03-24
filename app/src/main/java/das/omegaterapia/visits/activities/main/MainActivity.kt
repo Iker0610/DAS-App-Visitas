@@ -6,11 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -197,7 +202,11 @@ private fun MainActivityScreen(
                     .fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (enableRailNavigation) {
+                AnimatedVisibility (
+                    enableRailNavigation,
+                    enter = slideInHorizontally(initialOffsetX = { -it }) + expandHorizontally(),
+                    exit = slideOutHorizontally(targetOffsetX = { -it }) + shrinkHorizontally()
+                ) {
                     NavigationRail(
                         header = { Box(Modifier.padding(8.dp)) { FAB() } },
                     ) {

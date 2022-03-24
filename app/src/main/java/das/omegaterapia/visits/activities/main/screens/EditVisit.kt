@@ -7,17 +7,19 @@ import das.omegaterapia.visits.activities.main.composables.form.VisitForm
 import das.omegaterapia.visits.model.entities.VisitCard
 
 @Composable
-fun AddVisitScreen(
-    addVisitCard: suspend (VisitCard) -> Boolean,
+fun EditVisitScreen(
+    visitCard: VisitCard,
+    onEditVisitCard: suspend (VisitCard) -> Boolean,
     modifier: Modifier = Modifier,
-    onBackPressed: ()->Unit = {},
+    onBackPressed: () -> Unit = {},
     onSuccessfulSubmit: () -> Unit = onBackPressed,
 ) {
     BackHandler(onBack = onBackPressed)
 
     VisitForm(
+        initialVisitCard = visitCard,
         modifier = modifier,
-        submitVisitCard = addVisitCard,
+        submitVisitCard = onEditVisitCard,
         onSuccessfulSubmit = onSuccessfulSubmit
     )
 }

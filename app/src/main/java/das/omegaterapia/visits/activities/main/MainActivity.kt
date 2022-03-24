@@ -1,6 +1,7 @@
 package das.omegaterapia.visits.activities.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -56,6 +57,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 import das.omegaterapia.visits.activities.main.screens.AddVisitScreen
 import das.omegaterapia.visits.activities.main.screens.AllVisitsScreen
+import das.omegaterapia.visits.activities.main.screens.EditVisitScreen
 import das.omegaterapia.visits.activities.main.screens.MainActivityScreens
 import das.omegaterapia.visits.activities.main.screens.TodaysVisitsScreen
 import das.omegaterapia.visits.activities.main.screens.VIPVisitsScreen
@@ -106,7 +108,7 @@ private fun MainActivityScreen(
 
     //-------------------------------------------------------------------
     // Navigation booleans
-    val enableNavigation = currentRoute?.destination?.route != MainActivityScreens.AddVisit.route
+    val enableNavigation = MainActivityScreens.isNavigable(currentRoute?.destination?.route)
     val enableBottomNavigation = enableNavigation && windowSize.width == WindowSizeFormat.Compact
     val enableRailNavigation = enableNavigation && !enableBottomNavigation
 
@@ -150,7 +152,7 @@ private fun MainActivityScreen(
                             .fillMaxWidth()
                     )
                 }
-                items(MainActivityScreens.navigableScreens) {
+                items(MainActivityScreens.navigableScreens.toList()) {
                     DrawerButton(
                         icon = it.icon,
                         label = it.title,
@@ -191,18 +193,27 @@ private fun MainActivityScreen(
                 ) {
                     BottomNavBar(
                         MainActivityScreens.fromRoute(currentRoute?.destination?.route).title,
-                        onMenuOpen = { scope.launch { drawerState.open() } }
+                        onMenuOpen = { scope.launch { drawerState.open() } },
+                        onSettings = {
+                            navController.navigate(MainActivityScreens.Account.route) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
                     )
                 }
             },
         )
-        { innerPadding ->
+        {
             Row(
                 modifier = Modifier
                     .fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                AnimatedVisibility (
+                AnimatedVisibility(
                     enableRailNavigation,
                     enter = slideInHorizontally(initialOffsetX = { -it }) + expandHorizontally(),
                     exit = slideOutHorizontally(targetOffsetX = { -it }) + shrinkHorizontally()
@@ -231,13 +242,21 @@ private fun MainActivityScreen(
                         NavigationRailItem(
                             icon = {
                                 Icon(
-                                    Icons.Filled.AccountCircle,
-                                    contentDescription = "User Settings"
+                                    MainActivityScreens.Account.icon,
+                                    contentDescription = MainActivityScreens.Account.title
                                 )
                             },
                             label = null,
-                            selected = false,
-                            onClick = { /*TODO*/ }
+                            selected = currentRoute?.destination?.route == MainActivityScreens.Account.route,
+                            onClick = {
+                                navController.navigate(MainActivityScreens.Account.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
                         )
                     }
                 }
@@ -251,7 +270,8 @@ private fun MainActivityScreen(
                         TodaysVisitsScreen(
                             visitViewModel = visitViewModel,
                             onScrollStateChange = { isScrolling = it },
-                        )
+
+                            )
                     }
 
 
@@ -294,17 +314,67 @@ private fun MainActivityScreen(
                     ) {
                         AddVisitScreen(
                             addVisitCard = visitViewModel::addVisitCard,
-                            onSuccessfulSubmit = {
+                            onBackPressed = {
                                 scope.launch(Dispatchers.Main) {
                                     if (!navController.popBackStack()) {
-                                        navController.navigate(MainActivityScreens.AllVisits.route)
+                                        navController.navigate(MainActivityScreens.TodaysVisits.route)
                                     }
                                 }
                             }
                         )
                     }
+
+
+                    composable(
+                        route = MainActivityScreens.EditVisit.route,
+                        enterTransition = {
+                            slideInVertically(
+                                initialOffsetY = { 2 * it },
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioNoBouncy,
+                                    stiffness = Spring.StiffnessVeryLow
+                                )
+                            )
+                        },
+                        exitTransition = {
+                            slideOutVertically(
+                                targetOffsetY = { 2 * it },
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioNoBouncy,
+                                    stiffness = Spring.StiffnessVeryLow
+                                )
+                            )
+                        },
+                    ) {
+                        if (visitViewModel.currentToEditVisit == null) {
+                            if (currentRoute?.destination?.route == MainActivityScreens.EditVisit.route
+                                && !navController.popBackStack()
+                            ) {
+                                navController.navigate(MainActivityScreens.TodaysVisits.route)
+                            }
+                        } else
+                            EditVisitScreen(
+                                visitCard = visitViewModel.currentToEditVisit!!,
+                                onEditVisitCard = visitViewModel::updateVisitCard,
+                                onBackPressed = {
+                                    visitViewModel.currentToEditVisit = null
+                                    scope.launch(Dispatchers.Main) {
+                                        if (!navController.popBackStack()) {
+                                            navController.navigate(MainActivityScreens.TodaysVisits.route)
+                                        }
+                                    }
+                                }
+                            )
+                    }
                 }
             }
+        }
+    }
+
+    LaunchedEffect(visitViewModel.currentToEditVisit) {
+        Log.d("edit", "Ha cambiado el estado. ${visitViewModel.currentToEditVisit}")
+        if (visitViewModel.currentToEditVisit != null && currentRoute?.destination?.route != MainActivityScreens.EditVisit.route) {
+            navController.navigate(MainActivityScreens.EditVisit.route)
         }
     }
 }

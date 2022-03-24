@@ -23,6 +23,10 @@ fun VIPVisitsScreen(
     VisitList(
         groupedVisitCards = groupedVisits,
         modifier = modifier.fillMaxSize(),
+
+        onItemEdit = visitViewModel::currentToEditVisit::set,
+        onItemDelete = visitViewModel::deleteVisitCard,
+
         lazyListState = lazyListState,
         onScrollStateChange = onScrollStateChange
     )

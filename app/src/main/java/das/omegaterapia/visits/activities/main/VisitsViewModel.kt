@@ -1,12 +1,19 @@
 package das.omegaterapia.visits.activities.main
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import das.omegaterapia.visits.model.entities.VisitCard
+import das.omegaterapia.visits.model.entities.VisitId
 import das.omegaterapia.visits.model.repositories.IVisitsRepository
 import das.omegaterapia.visits.utils.TemporalConverter
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,9 +40,13 @@ class VisitsViewModel @Inject constructor(
     val todaysVisits = visitsRepository.getUsersTodaysVisits(currentUser)
         .map { visitList -> TemporalConverter.HOUR_WITH_DAY.groupDates(visitList, key = VisitCard::visitDate::get) }
 
+    var currentToEditVisit: VisitCard? by mutableStateOf(null)
 
     // Events
     suspend fun addVisitCard(visitCard: VisitCard) = visitsRepository.addVisitCard(visitCard.also { it.user = currentUser })
 
-    // TODO
+    suspend fun updateVisitCard(visitCard: VisitCard) = visitsRepository.updateVisitCard(visitCard)
+
+    fun deleteVisitCard(visitId: VisitId) = viewModelScope.launch(Dispatchers.IO) { visitsRepository.deleteVisitCard(visitId) }
+
 }

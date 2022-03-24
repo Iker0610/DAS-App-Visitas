@@ -3,14 +3,16 @@ package das.omegaterapia.visits.model.dao
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import das.omegaterapia.visits.model.entities.Client
 import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.model.entities.VisitData
+import das.omegaterapia.visits.model.entities.VisitId
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -40,6 +42,22 @@ interface VisitsDao {
 
     suspend fun addVisitCards(visitCards: List<VisitCard>): List<Boolean> = visitCards.map { addVisitCard(it) }
 
+    @Update
+    fun updateVisitData(visitData: VisitData)
+
+    @Update
+    fun updateClientData(client: Client)
+
+    @Transaction
+    fun updateVisitCard(visitCard: VisitCard) {
+        updateClientData(visitCard.client)
+        updateVisitData(visitCard.visitData)
+    }
+
+    @Delete(entity = VisitData::class)
+    fun deleteVisitCard(visitId: VisitId)
+
+
     @Transaction
     @Query("SELECT * FROM VisitData WHERE user = :currentUser ORDER BY visit_date")
     fun getUserVisits(currentUser: String): Flow<List<VisitCard>>
@@ -51,4 +69,6 @@ interface VisitsDao {
     @Transaction
     @Query("SELECT * FROM VisitData WHERE user = :currentUser AND is_VIP = 1 ORDER BY visit_date")
     fun getUsersVIPVisits(currentUser: String): Flow<List<VisitCard>>
+
+
 }

@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.R
+import das.omegaterapia.visits.activities.main.screens.MainActivityScreens
 
 private val FABShape = CutCornerShape(50)
 
@@ -47,7 +48,7 @@ fun AddFloatingActionButton(
 }
 
 @Composable
-fun BottomNavBar(currentScreenTitle: String, onMenuOpen: () -> Unit) {
+fun BottomNavBar(currentScreenTitle: String, onMenuOpen: () -> Unit, onSettings: () -> Unit) {
 
     BottomAppBar(cutoutShape = FABShape) {
         // Leading icons should typically have a high content alpha
@@ -60,7 +61,7 @@ fun BottomNavBar(currentScreenTitle: String, onMenuOpen: () -> Unit) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable(onClick = onMenuOpen)) {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                     IconButton(onClick = onMenuOpen) {
-                        Icon(Icons.Filled.Menu, contentDescription = "Localized description")
+                        Icon(Icons.Filled.Menu, contentDescription = "Open navigation menu")
                     }
                     Text(text = currentScreenTitle, style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold))
                 }
@@ -71,8 +72,11 @@ fun BottomNavBar(currentScreenTitle: String, onMenuOpen: () -> Unit) {
         // content alpha provided by BottomAppBar
         Row {
             Spacer(Modifier.weight(1f, true))
-            IconButton(onClick = { /* doSomething() */ }) {
-                Icon(Icons.Filled.AccountCircle, contentDescription = "Localized description")
+            IconButton(onClick = onSettings) {
+                Icon(
+                    MainActivityScreens.Account.icon,
+                    contentDescription = MainActivityScreens.Account.title
+                )
             }
         }
     }
@@ -83,7 +87,7 @@ fun BottomNavBar(currentScreenTitle: String, onMenuOpen: () -> Unit) {
 fun NavDrawerHeader(
     currentUser: String,
     modifier: Modifier = Modifier,
-    onClose: () -> Unit
+    onClose: () -> Unit,
 ) {
     Row(
         modifier.fillMaxWidth(),

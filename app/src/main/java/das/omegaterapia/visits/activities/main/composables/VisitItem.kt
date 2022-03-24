@@ -302,7 +302,6 @@ fun SwipeableVisitCardItem(
                             scope.launch {
                                 delay(250)
                                 swipeableState.animateTo(targetValue = 0)
-                                delay(100)
                                 onEdit(visitCard)
                             }
                         }) {
@@ -323,7 +322,6 @@ fun SwipeableVisitCardItem(
                             scope.launch {
                                 delay(250)
                                 swipeableState.animateTo(targetValue = 0)
-                                delay(100)
                                 onDelete(visitCard)
                             }
                         }) {

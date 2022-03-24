@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,25 +21,25 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class VisitFormViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : ViewModel() {
+class VisitFormViewModel @Inject constructor() : ViewModel() {
 
-    private val initialVisitCard: VisitCard? = savedStateHandle["initialVisitCard"]
+    private var initialVisitCard: VisitCard? = null
 
 
     // Variables para guardar los datos
-    var isVIP by mutableStateOf(initialVisitCard?.visitData?.isVIP ?: false)
-    var visitDate: ZonedDateTime by mutableStateOf(initialVisitCard?.visitData?.visitDate ?: ZonedDateTime.now())
+    var isVIP by mutableStateOf(false)
+    var visitDate: ZonedDateTime by mutableStateOf(ZonedDateTime.now())
 
-    var clientNameText by mutableStateOf(initialVisitCard?.client?.name ?: "")
-    var clientSurnameText by mutableStateOf(initialVisitCard?.client?.surname ?: "")
-    var clientCompanions = mutableStateListOf(*(initialVisitCard?.visitData?.companions?.toTypedArray() ?: arrayOf("")))
+    var clientNameText by mutableStateOf("")
+    var clientSurnameText by mutableStateOf("")
+    var clientCompanions = mutableStateListOf("")
 
-    var phoneText by mutableStateOf(initialVisitCard?.client?.phoneNum ?: "")
-    var addressText by mutableStateOf(initialVisitCard?.client?.direction?.address ?: "")
-    var townText by mutableStateOf(initialVisitCard?.client?.direction?.town ?: "")
-    var zipCodeText by mutableStateOf(initialVisitCard?.client?.direction?.zip ?: "")
+    var phoneText by mutableStateOf("")
+    var addressText by mutableStateOf("")
+    var townText by mutableStateOf("")
+    var zipCodeText by mutableStateOf("")
 
-    var observationText by mutableStateOf(initialVisitCard?.visitData?.observations ?: "")
+    var observationText by mutableStateOf("")
 
 
     // Variable para comprobación de datos
@@ -53,6 +54,26 @@ class VisitFormViewModel @Inject constructor(savedStateHandle: SavedStateHandle)
     val areAllValid by derivedStateOf { isNameValid && isSurnameValid && isAddressValid && isTownValid && isZIPValid && isPhoneValid }
 
 
+    fun initializeWithVisitCard(visitCard: VisitCard) {
+        if (initialVisitCard == null) {
+            initialVisitCard = visitCard
+
+            isVIP = visitCard.isVIP
+            visitDate = visitCard.visitDate
+
+            clientNameText = visitCard.client.name
+            clientSurnameText = visitCard.client.surname
+            clientCompanions.addAll(0, visitCard.companions)
+
+            phoneText = visitCard.client.phoneNum
+            addressText = visitCard.client.direction.address
+            townText = visitCard.client.direction.town
+            zipCodeText = visitCard.client.direction.zip
+
+            observationText = visitCard.observations
+        }
+    }
+
     fun generateVisitCard(): VisitCard {
         val clientData = Client(
             name = clientNameText,
@@ -64,7 +85,7 @@ class VisitFormViewModel @Inject constructor(savedStateHandle: SavedStateHandle)
         val visitData: VisitData
 
         if (initialVisitCard != null) {
-            visitData = initialVisitCard.visitData.copy(
+            visitData = initialVisitCard!!.visitData.copy(
                 mainClientPhone = clientData.phoneNum,
                 companions = clientCompanions.filter { it.isNotBlank() },
                 visitDate = visitDate,

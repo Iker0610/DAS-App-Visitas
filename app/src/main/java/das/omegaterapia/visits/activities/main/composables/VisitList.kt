@@ -9,21 +9,28 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.data.visitList
 import das.omegaterapia.visits.model.entities.VisitCard
+import das.omegaterapia.visits.model.entities.VisitId
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -31,12 +38,35 @@ import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 fun VisitList(
     groupedVisitCards: Map<String, List<VisitCard>>,
     modifier: Modifier = Modifier,
-    selectedVisit: VisitCard? = null,
+    onItemEdit: (VisitCard) -> Unit = {},
+    onItemDelete: (VisitId) -> Unit = {},
     lazyListState: LazyListState = rememberLazyListState(),
     onScrollStateChange: (Boolean) -> Unit = {},
 ) {
-    val (expandedVisitCardId, setExpandedVisitCardId) = rememberSaveable { mutableStateOf(selectedVisit?.id) }
-    val (swipedVisitCardId, setSwipedVisitCardId) = rememberSaveable { mutableStateOf(selectedVisit?.id) }
+    val (expandedVisitCardId, setExpandedVisitCardId) = rememberSaveable { mutableStateOf<String?>(null) }
+    val (swipedVisitCardId, setSwipedVisitCardId) = rememberSaveable { mutableStateOf<String?>(null) }
+
+    var toDeleteItemId by rememberSaveable { mutableStateOf<String?>(null) }
+
+    if (toDeleteItemId != null) {
+        val dismissCallback = { toDeleteItemId = null }
+        AlertDialog(
+            title = { Text(text = "Do you want to delete this Visit Card?") },
+            confirmButton = {
+                TextButton(onClick = { onItemDelete(VisitId(toDeleteItemId!!)); toDeleteItemId = null }) {
+                    Text(text = "DELETE")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = dismissCallback) {
+                    Text(text = "DISMISS")
+                }
+            },
+            onDismissRequest = dismissCallback,
+            shape = RectangleShape,
+        )
+    }
+
 
     LazyColumn(
         modifier = modifier.clipToBounds()/*Importante el clip para cuando hagamos swipe de las cards*/,
@@ -52,6 +82,9 @@ fun VisitList(
                     visitCard = visitCard,
                     isExpanded = visitCard.id == expandedVisitCardId,
                     canBeSwippedToSide = visitCard.id == swipedVisitCardId || swipedVisitCardId == null,
+
+                    onEdit = onItemEdit,
+                    onDelete = { toDeleteItemId = visitCard.id },
 
                     onClick = {
                         if (expandedVisitCardId != it.id) {

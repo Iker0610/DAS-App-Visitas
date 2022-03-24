@@ -1,6 +1,7 @@
 package das.omegaterapia.visits.activities.main.composables.form
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -35,6 +36,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarOutline
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -76,6 +78,9 @@ fun VisitForm(
 
     // TODO:    * - Añadir on IME action
 
+    LaunchedEffect(true) {
+        if (initialVisitCard != null) visitFormViewModel.initializeWithVisitCard(initialVisitCard)
+    }
 
     // Courutine Scope
     val scope = rememberCoroutineScope()
@@ -309,7 +314,7 @@ fun VisitForm(
             },
             enabled = visitFormViewModel.areAllValid
         ) {
-            Text(text = "Add new Visit Card")
+            Text(text = if (initialVisitCard == null) "Add new Visit Card" else "Update Visit Card")
         }
     }
 }

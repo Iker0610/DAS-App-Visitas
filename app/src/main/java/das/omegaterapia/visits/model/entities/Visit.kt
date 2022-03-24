@@ -11,6 +11,7 @@ import androidx.room.Relation
 import java.time.ZonedDateTime
 import java.util.*
 
+data class VisitId(val id: String)
 
 @Entity(
     foreignKeys = [

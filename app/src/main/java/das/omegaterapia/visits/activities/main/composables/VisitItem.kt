@@ -40,7 +40,7 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.PhoneInTalk
 import androidx.compose.material.icons.filled.PinDrop
-import androidx.compose.material.icons.filled.StarOutline
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -132,7 +132,7 @@ fun VisitCardItem(
             ) {
                 CenteredColumn {
                     if (visitCard.isVIP) {
-                        Icon(Icons.Filled.StarOutline, "VIP Client", Modifier.height(16.dp), tint = MaterialTheme.colors.secondary)
+                        Icon(Icons.Filled.Star, "VIP Client", Modifier.height(16.dp), tint = MaterialTheme.colors.secondary)
                         Spacer(modifier = Modifier.height(3.dp))
                     }
                     Text(text = date, style = typography.overline)

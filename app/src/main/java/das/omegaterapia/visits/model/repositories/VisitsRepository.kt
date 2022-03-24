@@ -30,9 +30,9 @@ class VisitsRepository @Inject constructor(private val visitsDao: VisitsDao) : I
             visitsDao.updateVisitCard(visitCard)
             true
         } catch (e: SQLiteConstraintException) {
+            e.printStackTrace()
             false
         }
 
     override suspend fun deleteVisitCard(visitId: VisitId) = visitsDao.deleteVisitCard(visitId)
-
 }

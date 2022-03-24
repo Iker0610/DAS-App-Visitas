@@ -1,7 +1,6 @@
 package das.omegaterapia.visits.activities.main.composables.form
 
 import android.content.res.Configuration
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -76,11 +75,14 @@ fun VisitForm(
     visitFormViewModel: VisitFormViewModel = viewModel(),
 ) {
 
-    // TODO:    * - Añadir on IME action
+    // TODO: Añadir on IME action
 
+    val editMode = initialVisitCard != null
+    
     LaunchedEffect(true) {
         if (initialVisitCard != null) visitFormViewModel.initializeWithVisitCard(initialVisitCard)
     }
+
 
     // Courutine Scope
     val scope = rememberCoroutineScope()
@@ -90,11 +92,11 @@ fun VisitForm(
 
     // Dialogs
     if (showErrorDialog) {
-        if (initialVisitCard == null) {
+        if (editMode) {
             AlertDialog(
                 shape = getMaterialRectangleShape(),
-                title = { Text(text = "Couldn't add a new Visit Card") },
-                text = { Text(text = "An error occurred when adding the Visit Card. Try again.") },
+                title = { Text(text = "Couldn't edit the Visit Card") },
+                text = { Text(text = "An error occurred when editing the Visit Card. Try again.") },
                 onDismissRequest = { showErrorDialog = false },
                 confirmButton = {
                     TextButton(onClick = { showErrorDialog = false },
@@ -104,8 +106,8 @@ fun VisitForm(
         } else {
             AlertDialog(
                 shape = getMaterialRectangleShape(),
-                title = { Text(text = "Couldn't edit the Visit Card") },
-                text = { Text(text = "An error occurred when editing the Visit Card. Try again.") },
+                title = { Text(text = "Couldn't add a new Visit Card") },
+                text = { Text(text = "An error occurred when adding the Visit Card. Try again.") },
                 onDismissRequest = { showErrorDialog = false },
                 confirmButton = {
                     TextButton(onClick = { showErrorDialog = false },
@@ -156,7 +158,7 @@ fun VisitForm(
                 AlternativeOutlinedDateTimeField(
                     date = visitFormViewModel.visitDate,
                     onDateTimeSelected = visitFormViewModel::visitDate::set,
-                    requireFutureDateTime = initialVisitCard == null,
+                    requireFutureDateTime = !editMode,
 
                     dateLabel = { Text(text = "Date*") },
                     timeLabel = { Text(text = "Time*") },
@@ -176,6 +178,7 @@ fun VisitForm(
                     value = visitFormViewModel.clientNameText,
                     onValueChange = { if (isText(it)) visitFormViewModel.clientNameText = it },
                     isValid = visitFormViewModel.isNameValid,
+                    ignoreFirstTime = editMode,
 
                     singleLine = true,
                     maxLines = 1
@@ -189,6 +192,7 @@ fun VisitForm(
                     value = visitFormViewModel.clientSurnameText,
                     onValueChange = { if (isText(it)) visitFormViewModel.clientSurnameText = it },
                     isValid = visitFormViewModel.isSurnameValid,
+                    ignoreFirstTime = editMode,
 
                     singleLine = true,
                     maxLines = 1
@@ -236,6 +240,7 @@ fun VisitForm(
                 value = visitFormViewModel.phoneText,
                 onValueChange = { if (canBePhoneNumber(it)) visitFormViewModel.phoneText = formatPhoneNumber(it) },
                 isValid = visitFormViewModel.isPhoneValid,
+                ignoreFirstTime = editMode,
 
                 singleLine = true,
                 maxLines = 1
@@ -250,6 +255,7 @@ fun VisitForm(
                 value = visitFormViewModel.addressText,
                 onValueChange = visitFormViewModel::addressText::set,
                 isValid = visitFormViewModel.isAddressValid,
+                ignoreFirstTime = editMode,
 
                 singleLine = true,
                 maxLines = 1
@@ -266,6 +272,7 @@ fun VisitForm(
                     value = visitFormViewModel.townText,
                     onValueChange = { if (isText(it)) visitFormViewModel.townText = it },
                     isValid = visitFormViewModel.isTownValid,
+                    ignoreFirstTime = editMode,
 
                     singleLine = true,
                     maxLines = 1
@@ -280,6 +287,7 @@ fun VisitForm(
                     value = visitFormViewModel.zipCodeText,
                     onValueChange = { if (canBeZIP(it)) visitFormViewModel.zipCodeText = it },
                     isValid = visitFormViewModel.isZIPValid,
+                    ignoreFirstTime = editMode,
 
                     singleLine = true,
                     maxLines = 1

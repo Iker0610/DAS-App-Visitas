@@ -6,6 +6,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -17,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface VisitsDao {
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = REPLACE)
     suspend fun addClient(client: Client)
 
     @Insert
@@ -29,7 +30,7 @@ interface VisitsDao {
             try {
                 addClient(visitCard.client)
             } catch (e: Exception) {
-                Log.e("ROOM-Insert Client from VisitCard", "${visitCard.client} ${visitCard.client.phoneNum} ${visitCard.visitData.mainClientPhone}")
+                Log.e("room", "${visitCard.client} ${visitCard.client.phoneNum} ${visitCard.visitData.mainClientPhone}")
                 e.printStackTrace()
             }
             addVisitData(visitCard.visitData)
@@ -43,19 +44,23 @@ interface VisitsDao {
     suspend fun addVisitCards(visitCards: List<VisitCard>): List<Boolean> = visitCards.map { addVisitCard(it) }
 
     @Update
-    fun updateVisitData(visitData: VisitData)
+    suspend fun updateVisitData(visitData: VisitData)
 
     @Update
-    fun updateClientData(client: Client)
+    fun updateClientData(client: Client): Int
 
     @Transaction
-    fun updateVisitCard(visitCard: VisitCard) {
-        updateClientData(visitCard.client)
+    suspend fun updateVisitCard(visitCard: VisitCard) {
+
+        if (0 == updateClientData(visitCard.client)) {
+            addClient(visitCard.client)
+        }
+
         updateVisitData(visitCard.visitData)
     }
 
     @Delete(entity = VisitData::class)
-    fun deleteVisitCard(visitId: VisitId)
+    suspend fun deleteVisitCard(visitId: VisitId)
 
 
     @Transaction

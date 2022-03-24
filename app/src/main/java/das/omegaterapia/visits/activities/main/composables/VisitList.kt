@@ -1,9 +1,7 @@
 package das.omegaterapia.visits.activities.main.composables
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,9 +14,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -39,8 +35,8 @@ fun VisitList(
     lazyListState: LazyListState = rememberLazyListState(),
     onScrollStateChange: (Boolean) -> Unit = {},
 ) {
-    val (selectedVisitCardId, setSelectedVisitCardId) = rememberSaveable { mutableStateOf(selectedVisit?.id) }
-
+    val (expandedVisitCardId, setExpandedVisitCardId) = rememberSaveable { mutableStateOf(selectedVisit?.id) }
+    val (swipedVisitCardId, setSwipedVisitCardId) = rememberSaveable { mutableStateOf(selectedVisit?.id) }
 
     LazyColumn(
         modifier = modifier.clipToBounds()/*Importante el clip para cuando hagamos swipe de las cards*/,
@@ -54,10 +50,23 @@ fun VisitList(
                 SwipeableVisitCardItem(
                     modifier = Modifier.padding(horizontal = 8.dp),
                     visitCard = visitCard,
-                    isExpanded = visitCard.id == selectedVisitCardId,
+                    isExpanded = visitCard.id == expandedVisitCardId,
+                    canBeSwippedToSide = visitCard.id == swipedVisitCardId || swipedVisitCardId == null,
+
                     onClick = {
-                        if (selectedVisitCardId != it.id) setSelectedVisitCardId(it.id)
-                        else setSelectedVisitCardId(null)
+                        if (expandedVisitCardId != it.id) {
+                            setExpandedVisitCardId(it.id)
+                            setSwipedVisitCardId(it.id)
+                        } else {
+                            setExpandedVisitCardId(null)
+                        }
+                    },
+
+                    onSwipe = {
+                        if (swipedVisitCardId != it.id) {
+                            setSwipedVisitCardId(it.id)
+                            setExpandedVisitCardId(null)
+                        }
                     }
                 )
             }

@@ -69,6 +69,7 @@ import das.omegaterapia.visits.utils.WindowSize
 import das.omegaterapia.visits.utils.WindowSizeFormat
 import das.omegaterapia.visits.utils.rememberWindowSizeClass
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -175,13 +176,14 @@ private fun MainActivityScreen(
                         label = it.title,
                         isSelected = currentRoute?.destination?.route == it.route,
                         action = {
-                            if (currentRoute?.destination?.route != it.route) {
+                            scope.launch {
                                 scope.launch { drawerState.close() }
-                            }
-                            navController.navigate(it.route) {
-                                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
+                                delay(100)
+                                navController.navigate(it.route) {
+                                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         },
                     )

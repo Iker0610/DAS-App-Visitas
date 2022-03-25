@@ -97,13 +97,16 @@ fun DrawerButton(
     val surfaceModifier = modifier
         .padding(start = 8.dp, top = 8.dp, end = 8.dp)
         .fillMaxWidth()
+
+    val onClickAction: () -> Unit = if (!isSelected) action else fun() = Unit
+
     Surface(
         modifier = surfaceModifier,
         color = backgroundColor,
         shape = MaterialTheme.shapes.small
     ) {
         TextButton(
-            onClick = action,
+            onClick = onClickAction,
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(

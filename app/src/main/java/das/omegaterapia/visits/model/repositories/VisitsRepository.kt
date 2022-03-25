@@ -6,6 +6,7 @@ import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.model.entities.VisitId
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import javax.inject.Singleton
 
 
 interface IVisitsRepository {
@@ -18,6 +19,7 @@ interface IVisitsRepository {
     suspend fun deleteVisitCard(visitId: VisitId)
 }
 
+@Singleton
 class VisitsRepository @Inject constructor(private val visitsDao: VisitsDao) : IVisitsRepository {
     override fun getUsersVisits(username: String): Flow<List<VisitCard>> = visitsDao.getUserVisits(username)
     override fun getUsersTodaysVisits(username: String): Flow<List<VisitCard>> = visitsDao.getUserTodaysVisits(username)

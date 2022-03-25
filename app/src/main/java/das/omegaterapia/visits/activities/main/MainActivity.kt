@@ -47,6 +47,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -213,7 +215,7 @@ private fun MainActivityScreen(
                         currentScreenTitle = MainActivityScreens.fromRoute(currentRoute?.destination?.route).title,
                         onMenuOpen = { scope.launch { drawerState.open() } },
                         onSettings = {
-                            navController.navigate(MainActivityScreens.Account.route) {
+                            navController.navigate(MainActivityScreens.Account.route + "/${visitViewModel.currentUser}") {
                                 popUpTo(navController.graph.startDestinationId) {
                                     saveState = true
                                 }
@@ -280,7 +282,7 @@ private fun MainActivityScreen(
                             contentDescription = MainActivityScreens.Account.title,
                             isSelected = currentRoute?.destination?.route == MainActivityScreens.Account.route,
                             action = {
-                                navController.navigate(MainActivityScreens.Account.route) {
+                                navController.navigate(MainActivityScreens.Account.route + "/${visitViewModel.currentUser}") {
                                     popUpTo(navController.graph.startDestinationId) {
                                         saveState = true
                                     }
@@ -327,10 +329,15 @@ private fun MainActivityScreen(
                     }
 
 
-                    composable(route = MainActivityScreens.Account.route) {
+                    composable(
+                        route = "${MainActivityScreens.Account.route}/{username}",
+                        arguments = listOf(navArgument("username") { type = NavType.StringType })
+                    ) {
                         UserProfileScreen(
                             MainActivityScreens.Account.title,
-                            onBackPressed = navigateBack
+                            onBackPressed = navigateBack,
+                            visitsViewModel = visitViewModel,
+                            preferencesViewModel = hiltViewModel()
                         )
                     }
 

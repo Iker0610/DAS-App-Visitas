@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
+import javax.inject.Singleton
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "PREFERENCES_SETTINGS")
 
@@ -16,18 +17,10 @@ private object PreferencesKeys {
 }
 
 
+@Singleton
+class PreferencesRepository @Inject constructor(private val context: Context) : ILoginSettings, IUserPreferences {
 
-class PreferencesRepository @Inject constructor(private val context: Context) : ILoginSettings {
-
-    override suspend fun getLastLoggedUser(): String? {
-        return try {
-            val preferences = context.dataStore.data.first()
-            preferences[PreferencesKeys.LAST_LOGGED_USER]
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
+    override suspend fun getLastLoggedUser(): String? = context.dataStore.data.first()[PreferencesKeys.LAST_LOGGED_USER]
 
     override suspend fun setLastLoggedUser(value: String) {
         context.dataStore.edit { preferences ->

@@ -6,14 +6,18 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.GsonBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.model.entities.VisitId
 import das.omegaterapia.visits.model.repositories.IVisitsRepository
 import das.omegaterapia.visits.utils.TemporalConverter
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,4 +53,23 @@ class VisitsViewModel @Inject constructor(
 
     fun deleteVisitCard(visitId: VisitId) = viewModelScope.launch(Dispatchers.IO) { visitsRepository.deleteVisitCard(visitId) }
 
+    // Utils
+    fun todaysVisitsJson(): String {
+        val gsonBuilder = GsonBuilder().setPrettyPrinting().create()
+
+        return runBlocking {
+            val todaysVisit = visitsRepository.getUsersTodaysVisits(currentUser).first()
+                .map { visitCard ->
+                    mapOf(
+                        "Date-Time" to visitCard.visitDate.format(DateTimeFormatter.ISO_DATE_TIME),
+                        "Client" to visitCard.client.toString(),
+                        "Direction" to visitCard.client.direction.toString(),
+                        "Phone" to visitCard.client.phoneNum,
+                        "VIP" to visitCard.isVIP.toString()
+                    )
+                }
+
+            return@runBlocking gsonBuilder.toJson(todaysVisit)
+        }
+    }
 }

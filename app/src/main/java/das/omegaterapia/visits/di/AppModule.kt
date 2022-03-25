@@ -15,6 +15,7 @@ import das.omegaterapia.visits.model.repositories.IVisitsRepository
 import das.omegaterapia.visits.model.repositories.LoginRepository
 import das.omegaterapia.visits.model.repositories.VisitsRepository
 import das.omegaterapia.visits.preferences.ILoginSettings
+import das.omegaterapia.visits.preferences.IUserPreferences
 import das.omegaterapia.visits.preferences.PreferencesRepository
 import javax.inject.Singleton
 
@@ -40,11 +41,15 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideLoginRepository(authDao: AuthenticationDao, loginSettings: ILoginSettings): ILoginRepository = LoginRepository(authDao, loginSettings)
+
+    @Singleton
+    @Provides
     fun provideLoginSettings(@ApplicationContext app: Context): ILoginSettings = PreferencesRepository(app)
 
     @Singleton
     @Provides
-    fun provideLoginRepository(authDao: AuthenticationDao, loginSettings: ILoginSettings): ILoginRepository = LoginRepository(authDao, loginSettings)
+    fun provideUserPreferences(@ApplicationContext app: Context): IUserPreferences = PreferencesRepository(app)
 
     @Singleton
     @Provides

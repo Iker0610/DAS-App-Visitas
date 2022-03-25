@@ -4,4 +4,5 @@
     <string name="auth_channel_description">Notification channel for authorization events.</string>
     <string name="fab_add">Add</string>
     <string name="fab_icon_description">Add new item</string>
+    <string name="save_json_section_title">Save today\'s visits as JSON</string>
 </resources>

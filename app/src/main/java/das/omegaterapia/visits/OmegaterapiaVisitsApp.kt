@@ -1,5 +1,6 @@
 package das.omegaterapia.visits
 
+import android.app.Activity
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -7,7 +8,10 @@ import dagger.hilt.android.HiltAndroidApp
 
 
 @HiltAndroidApp
-class OmegaterapiaVisitsApp : Application(){
+class OmegaterapiaVisitsApp : Application() {
+
+    lateinit var currentActivity: Activity
+
     override fun onCreate() {
         super.onCreate()
 
@@ -28,6 +32,6 @@ class OmegaterapiaVisitsApp : Application(){
     }
 }
 
-enum class NotificationID(val id: Int){
+enum class NotificationID(val id: Int) {
     USER_CREATED(0)
 }

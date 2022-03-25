@@ -17,6 +17,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 import das.omegaterapia.visits.NotificationID
+import das.omegaterapia.visits.OmegaterapiaVisitsApp
 import das.omegaterapia.visits.R
 import das.omegaterapia.visits.activities.authorization.screens.AnimatedSplashScreen
 import das.omegaterapia.visits.activities.authorization.screens.AuthScreen
@@ -35,6 +36,8 @@ class AuthActivity : FragmentActivity() {
     --------------------------------------------------*/
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        (this.application as OmegaterapiaVisitsApp).currentActivity = this
+
         super.onCreate(savedInstanceState)
 
         // Inicializamos la autenticación biométrica

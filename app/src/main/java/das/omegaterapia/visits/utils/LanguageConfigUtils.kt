@@ -1,12 +1,16 @@
 package das.omegaterapia.visits.utils
 
+import android.app.Application
+import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Divider
@@ -17,17 +21,20 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ActivityScoped
+import das.omegaterapia.visits.OmegaterapiaVisitsApp
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 fun Context.getActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
+    is OmegaterapiaVisitsApp -> this.currentActivity as ComponentActivity
     is ContextWrapper -> baseContext.getActivity()
     else -> null
 }
@@ -53,6 +60,7 @@ class LanguageManager @Inject constructor(
 
 
     fun changeLang(newLang: AppLanguage, recreate: Boolean = true) {
+        Log.d("lang", "call to change: ${newLang.code} ${currentLang.code} $context")
         if (newLang != currentLang || currentLang.code != Locale.getDefault().language) {
             currentLang = newLang
 
@@ -67,7 +75,7 @@ class LanguageManager @Inject constructor(
                 context.resources.updateConfiguration(config, displayMetrics)
             }
 
-            if (recreate) context.getActivity()?.recreate()
+            if (recreate) (context as Application).getActivity()?.recreate()
         }
     }
 
@@ -92,8 +100,8 @@ fun LanguagePickerDialog(
         dismissButton = { TextButton(onClick = onDismiss) { Text(text = "CANCEL") } },
         text = {
             Divider()
-            LazyColumn {
-                items(AppLanguage.values().asList()) { lang ->
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                AppLanguage.values().forEach { lang ->
                     ListItem(
                         modifier = Modifier.clickable { selected = lang.code },
                         trailing = { Checkbox(checked = selected == lang.code, onCheckedChange = { selected = lang.code }) },

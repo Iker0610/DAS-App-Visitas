@@ -20,8 +20,8 @@ fun VIPVisitsScreen(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     onScrollStateChange: (Boolean) -> Unit = {},
-    paddingAtBottom: Dp = 0.dp,
-) {
+    paddingAtBottom: Boolean = false,
+    ) {
     val groupedVisits by visitViewModel.vipVisits.collectAsState(emptyMap())
     VisitList(
         groupedVisitCards = groupedVisits,

@@ -20,7 +20,7 @@ fun TodaysVisitsScreen(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     onScrollStateChange: (Boolean) -> Unit = {},
-    paddingAtBottom: Dp = 0.dp,
+    paddingAtBottom: Boolean = false,
 ) {
     val groupedVisits by visitViewModel.todaysVisits.collectAsState(emptyMap())
     VisitList(

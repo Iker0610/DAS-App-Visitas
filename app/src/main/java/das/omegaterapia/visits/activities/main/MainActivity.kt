@@ -276,13 +276,11 @@ private fun MainActivityScreen(
                     startDestination = MainActivityScreens.TodaysVisits.route
                 ) {
 
-                    val bottomPadding = if (enableBottomNavigation) 80.dp else 0.dp
-
                     composable(route = MainActivityScreens.TodaysVisits.route) {
                         TodaysVisitsScreen(
                             visitViewModel = visitViewModel,
                             onScrollStateChange = { isScrolling = it },
-                            paddingAtBottom = bottomPadding,
+                            paddingAtBottom = enableBottomNavigation
                         )
                     }
 
@@ -291,7 +289,7 @@ private fun MainActivityScreen(
                         AllVisitsScreen(
                             visitViewModel = visitViewModel,
                             onScrollStateChange = { isScrolling = it },
-                            paddingAtBottom = bottomPadding,
+                            paddingAtBottom = enableBottomNavigation
                         )
                     }
 
@@ -300,7 +298,7 @@ private fun MainActivityScreen(
                         VIPVisitsScreen(
                             visitViewModel = visitViewModel,
                             onScrollStateChange = { isScrolling = it },
-                            paddingAtBottom = bottomPadding,
+                            paddingAtBottom = enableBottomNavigation
                         )
                     }
 
@@ -394,10 +392,15 @@ private fun MainActivityScreen(
     }
 
     LaunchedEffect(visitViewModel.currentToEditVisit) {
-        Log.d("edit", "Ha cambiado el estado. ${visitViewModel.currentToEditVisit}")
+        Log.d("navigation", "Ha cambiado el estado. ${visitViewModel.currentToEditVisit}")
         if (visitViewModel.currentToEditVisit != null && currentRoute?.destination?.route != MainActivityScreens.EditVisit.route) {
             navController.navigate(MainActivityScreens.EditVisit.route)
         }
+    }
+
+    LaunchedEffect(currentRoute) {
+        Log.d("navigation",
+            "Ha cambiado la pila. ${currentRoute?.destination?.route} \n ${navController.backQueue.joinToString("  -  ") { it.destination.route ?: "sin_nombre" }}")
     }
 }
 

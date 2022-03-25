@@ -3,6 +3,7 @@ package das.omegaterapia.visits.activities.main.composables
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,7 +46,7 @@ fun VisitList(
     onItemDelete: (VisitId) -> Unit = {},
     lazyListState: LazyListState = rememberLazyListState(),
     onScrollStateChange: (Boolean) -> Unit = {},
-    paddingAtBottom: Dp = 0.dp,
+    paddingAtBottom: Boolean = false,
 ) {
     val (expandedVisitCardId, setExpandedVisitCardId) = rememberSaveable { mutableStateOf<String?>(null) }
     val (swipedVisitCardId, setSwipedVisitCardId) = rememberSaveable { mutableStateOf<String?>(null) }
@@ -71,16 +72,19 @@ fun VisitList(
         )
     }
 
+    val paddingAtBottomValue = if (paddingAtBottom) 90.dp else 16.dp
 
     LazyColumn(
         modifier = modifier.clipToBounds()/*Importante el clip para cuando hagamos swipe de las cards*/,
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        state = lazyListState
+        state = lazyListState,
+        contentPadding = PaddingValues(bottom = paddingAtBottomValue)
     ) {
         groupedVisitCards.forEach { (groupTitle, groupVisitCards) ->
             stickyHeader { VisitGroupHeader(groupTitle) }
 
-            items(groupVisitCards) { visitCard ->
+            items(groupVisitCards, key = { visitCard -> visitCard.hashCode() }
+            ) { visitCard ->
                 SwipeableVisitCardItem(
                     modifier = Modifier.padding(horizontal = 8.dp),
                     visitCard = visitCard,
@@ -108,8 +112,7 @@ fun VisitList(
                 )
             }
         }
-
-        item { Spacer(modifier = Modifier.height(paddingAtBottom)) }
+        //item { Spacer(modifier = Modifier.height(80.dp)) }
     }
 
     LaunchedEffect(lazyListState.isScrollInProgress) {

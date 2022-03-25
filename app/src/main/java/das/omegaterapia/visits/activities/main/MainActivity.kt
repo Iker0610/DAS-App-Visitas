@@ -56,6 +56,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import das.omegaterapia.visits.activities.main.screens.MainActivityScreens
 import das.omegaterapia.visits.activities.main.screens.addedit.AddVisitScreen
 import das.omegaterapia.visits.activities.main.screens.addedit.EditVisitScreen
+import das.omegaterapia.visits.activities.main.screens.profile.PreferencesViewModel
 import das.omegaterapia.visits.activities.main.screens.profile.UserProfileScreen
 import das.omegaterapia.visits.activities.main.screens.visitlists.AllVisitsScreen
 import das.omegaterapia.visits.activities.main.screens.visitlists.TodaysVisitsScreen
@@ -79,15 +80,19 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    private val preferencesViewModel: PreferencesViewModel by viewModels()
+
+
     /*--------------------------------------------------
     |            Activity Lifecycle Methods            |
     --------------------------------------------------*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            preferencesViewModel.reloadLang()
             OmegaterapiaTheme {
                 val windowSize = rememberWindowSizeClass()
-                MainActivityScreen(windowSize = windowSize)
+                MainActivityScreen(preferencesViewModel = preferencesViewModel, windowSize = windowSize)
             }
         }
     }
@@ -97,6 +102,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
 private fun MainActivityScreen(
+    preferencesViewModel: PreferencesViewModel = hiltViewModel(),
     visitViewModel: VisitsViewModel = hiltViewModel(),
     windowSize: WindowSize,
 ) {
@@ -337,7 +343,7 @@ private fun MainActivityScreen(
                             MainActivityScreens.Account.title,
                             onBackPressed = navigateBack,
                             visitsViewModel = visitViewModel,
-                            preferencesViewModel = hiltViewModel()
+                            preferencesViewModel = preferencesViewModel
                         )
                     }
 

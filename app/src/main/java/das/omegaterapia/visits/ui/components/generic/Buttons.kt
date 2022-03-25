@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ButtonElevation
@@ -179,7 +180,7 @@ fun NavRailIcon(
     Surface(
         onClick = action,
         modifier = modifier.size(48.dp),
-        shape = CircleShape,
+        shape = CutCornerShape(topStartPercent = 25, bottomEndPercent = 25),
         color = backgroundColor
     ) {
         NavigationIcon(

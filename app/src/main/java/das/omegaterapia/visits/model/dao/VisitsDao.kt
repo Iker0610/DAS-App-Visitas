@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface VisitsDao {
-    @Insert(onConflict = REPLACE)
+    @Insert
     suspend fun addClient(client: Client)
 
     @Insert
@@ -30,8 +30,7 @@ interface VisitsDao {
             try {
                 addClient(visitCard.client)
             } catch (e: Exception) {
-                Log.e("room", "${visitCard.client} ${visitCard.client.phoneNum} ${visitCard.visitData.mainClientPhone}")
-                e.printStackTrace()
+                updateClientData(visitCard.client)
             }
             addVisitData(visitCard.visitData)
             true
@@ -55,7 +54,6 @@ interface VisitsDao {
         if (0 == updateClientData(visitCard.client)) {
             addClient(visitCard.client)
         }
-
         updateVisitData(visitCard.visitData)
     }
 

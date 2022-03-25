@@ -30,9 +30,7 @@ import androidx.compose.material.BottomDrawerValue
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FabPosition
-import androidx.compose.material.Icon
 import androidx.compose.material.NavigationRail
-import androidx.compose.material.NavigationRailItem
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberBottomDrawerState
 import androidx.compose.material.rememberScaffoldState
@@ -52,11 +50,11 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
-import das.omegaterapia.visits.activities.main.screens.addedit.AddVisitScreen
-import das.omegaterapia.visits.activities.main.screens.visitlists.AllVisitsScreen
-import das.omegaterapia.visits.activities.main.screens.addedit.EditVisitScreen
 import das.omegaterapia.visits.activities.main.screens.MainActivityScreens
+import das.omegaterapia.visits.activities.main.screens.addedit.AddVisitScreen
+import das.omegaterapia.visits.activities.main.screens.addedit.EditVisitScreen
 import das.omegaterapia.visits.activities.main.screens.profile.UserProfileScreen
+import das.omegaterapia.visits.activities.main.screens.visitlists.AllVisitsScreen
 import das.omegaterapia.visits.activities.main.screens.visitlists.TodaysVisitsScreen
 import das.omegaterapia.visits.activities.main.screens.visitlists.VIPVisitsScreen
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
@@ -191,7 +189,7 @@ private fun MainActivityScreen(
                     exit = slideOutVertically(targetOffsetY = { 2 * it })
                 ) {
                     BottomNavBar(
-                        MainActivityScreens.fromRoute(currentRoute?.destination?.route).title,
+                        currentScreenTitle = MainActivityScreens.fromRoute(currentRoute?.destination?.route).title,
                         onMenuOpen = { scope.launch { drawerState.open() } },
                         onSettings = {
                             navController.navigate(MainActivityScreens.Account.route) {
@@ -255,7 +253,6 @@ private fun MainActivityScreen(
                                     }
                                 )
                             }
-
                         }
                         NavRailIcon(
                             icon = MainActivityScreens.Account.icon,
@@ -283,8 +280,7 @@ private fun MainActivityScreen(
                         TodaysVisitsScreen(
                             visitViewModel = visitViewModel,
                             onScrollStateChange = { isScrolling = it },
-
-                            )
+                        )
                     }
 
 
@@ -304,8 +300,8 @@ private fun MainActivityScreen(
                     }
 
 
-                    composable(route = MainActivityScreens.Account.route){
-                        UserProfileScreen()
+                    composable(route = MainActivityScreens.Account.route) {
+                        UserProfileScreen(MainActivityScreens.Account.title)
                     }
 
 
@@ -331,6 +327,7 @@ private fun MainActivityScreen(
                         },
                     ) {
                         AddVisitScreen(
+                            title = MainActivityScreens.AddVisit.title,
                             addVisitCard = visitViewModel::addVisitCard,
                             onBackPressed = {
                                 scope.launch(Dispatchers.Main) {
@@ -372,6 +369,7 @@ private fun MainActivityScreen(
                             }
                         } else {
                             EditVisitScreen(
+                                title = MainActivityScreens.EditVisit.title,
                                 visitCard = visitViewModel.currentToEditVisit!!,
                                 onEditVisitCard = visitViewModel::updateVisitCard,
                                 onBackPressed = {

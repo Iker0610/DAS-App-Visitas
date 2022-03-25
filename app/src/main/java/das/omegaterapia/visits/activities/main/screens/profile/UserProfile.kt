@@ -8,10 +8,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import das.omegaterapia.visits.ui.components.navigation.BackArrowTopBar
 
 @Composable
-fun UserProfileScreen(){
-    Scaffold() {
+fun UserProfileScreen(
+    title: String,
+    onBackPressed: () -> Unit = {},
+) {
+    Scaffold(topBar = { BackArrowTopBar(title, onBackPressed) }) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("Estamos en proceso....", style = MaterialTheme.typography.h4)
         }

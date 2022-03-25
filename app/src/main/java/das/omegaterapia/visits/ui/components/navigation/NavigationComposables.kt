@@ -1,5 +1,6 @@
 package das.omegaterapia.visits.ui.components.navigation
 
+import android.icu.text.CaseMap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
@@ -108,4 +110,22 @@ fun NavDrawerHeader(
             Icon(Icons.Filled.Close, contentDescription = "Close navigation drawer.")
         }
     }
+}
+
+
+@Composable
+fun BackArrowTopBar(
+    title: String,
+    onBackPressed: () -> Unit,
+    modifier: Modifier = Modifier
+){
+    TopAppBar(
+        modifier = modifier,
+        title = { Text(text = title) },
+        navigationIcon = {
+            IconButton(onClick = onBackPressed) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Close screen")
+            }
+        }
+    )
 }

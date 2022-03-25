@@ -3,7 +3,9 @@ package das.omegaterapia.visits.activities.main.composables
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -27,6 +29,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.data.visitList
 import das.omegaterapia.visits.model.entities.VisitCard
@@ -42,6 +45,7 @@ fun VisitList(
     onItemDelete: (VisitId) -> Unit = {},
     lazyListState: LazyListState = rememberLazyListState(),
     onScrollStateChange: (Boolean) -> Unit = {},
+    paddingAtBottom: Dp = 0.dp,
 ) {
     val (expandedVisitCardId, setExpandedVisitCardId) = rememberSaveable { mutableStateOf<String?>(null) }
     val (swipedVisitCardId, setSwipedVisitCardId) = rememberSaveable { mutableStateOf<String?>(null) }
@@ -104,6 +108,8 @@ fun VisitList(
                 )
             }
         }
+
+        item { Spacer(modifier = Modifier.height(paddingAtBottom)) }
     }
 
     LaunchedEffect(lazyListState.isScrollInProgress) {

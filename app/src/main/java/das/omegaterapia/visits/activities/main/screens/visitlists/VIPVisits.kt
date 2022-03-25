@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.activities.main.VisitsViewModel
 import das.omegaterapia.visits.activities.main.composables.VisitList
 import das.omegaterapia.visits.utils.WindowSize
@@ -18,6 +20,7 @@ fun VIPVisitsScreen(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     onScrollStateChange: (Boolean) -> Unit = {},
+    paddingAtBottom: Dp = 0.dp,
 ) {
     val groupedVisits by visitViewModel.vipVisits.collectAsState(emptyMap())
     VisitList(
@@ -28,6 +31,8 @@ fun VIPVisitsScreen(
         onItemDelete = visitViewModel::deleteVisitCard,
 
         lazyListState = lazyListState,
-        onScrollStateChange = onScrollStateChange
+        onScrollStateChange = onScrollStateChange,
+
+        paddingAtBottom = paddingAtBottom
     )
 }

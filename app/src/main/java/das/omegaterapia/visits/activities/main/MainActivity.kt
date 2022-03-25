@@ -276,10 +276,13 @@ private fun MainActivityScreen(
                     startDestination = MainActivityScreens.TodaysVisits.route
                 ) {
 
+                    val bottomPadding = if (enableBottomNavigation) 80.dp else 0.dp
+
                     composable(route = MainActivityScreens.TodaysVisits.route) {
                         TodaysVisitsScreen(
                             visitViewModel = visitViewModel,
                             onScrollStateChange = { isScrolling = it },
+                            paddingAtBottom = bottomPadding,
                         )
                     }
 
@@ -288,6 +291,7 @@ private fun MainActivityScreen(
                         AllVisitsScreen(
                             visitViewModel = visitViewModel,
                             onScrollStateChange = { isScrolling = it },
+                            paddingAtBottom = bottomPadding,
                         )
                     }
 
@@ -296,6 +300,7 @@ private fun MainActivityScreen(
                         VIPVisitsScreen(
                             visitViewModel = visitViewModel,
                             onScrollStateChange = { isScrolling = it },
+                            paddingAtBottom = bottomPadding,
                         )
                     }
 

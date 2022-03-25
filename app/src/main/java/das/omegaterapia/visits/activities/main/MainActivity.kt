@@ -57,6 +57,7 @@ import das.omegaterapia.visits.activities.main.screens.profile.UserProfileScreen
 import das.omegaterapia.visits.activities.main.screens.visitlists.AllVisitsScreen
 import das.omegaterapia.visits.activities.main.screens.visitlists.TodaysVisitsScreen
 import das.omegaterapia.visits.activities.main.screens.visitlists.VIPVisitsScreen
+import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.DrawerButton
 import das.omegaterapia.visits.ui.components.generic.NavRailIcon
@@ -123,12 +124,31 @@ private fun MainActivityScreen(
         }
     }
 
+    //----------------------------------------------------------------------
+    // Elementos comunes en varias secciones
+
     @Composable
     fun FAB() {
         AddFloatingActionButton(
             onAdd = { navController.navigate(MainActivityScreens.AddVisit.route) },
         )
     }
+
+
+    val navigateBack: () -> Unit = {
+        scope.launch(Dispatchers.Main) {
+            if (!navController.popBackStack()) {
+                navController.navigate(MainActivityScreens.TodaysVisits.route)
+            }
+        }
+    }
+
+    val onVisitEdit: (VisitCard) -> Unit = {
+        visitViewModel.currentToEditVisit = it
+        navController.navigate(MainActivityScreens.EditVisit.route)
+    }
+
+    //----------------------------------------------------------------------
 
     BottomDrawer(
         gesturesEnabled = gesturesEnabled,
@@ -279,6 +299,7 @@ private fun MainActivityScreen(
                     composable(route = MainActivityScreens.TodaysVisits.route) {
                         TodaysVisitsScreen(
                             visitViewModel = visitViewModel,
+                            onItemEdit = onVisitEdit,
                             onScrollStateChange = { isScrolling = it },
                             paddingAtBottom = enableBottomNavigation
                         )
@@ -288,6 +309,7 @@ private fun MainActivityScreen(
                     composable(route = MainActivityScreens.AllVisits.route) {
                         AllVisitsScreen(
                             visitViewModel = visitViewModel,
+                            onItemEdit = onVisitEdit,
                             onScrollStateChange = { isScrolling = it },
                             paddingAtBottom = enableBottomNavigation
                         )
@@ -297,6 +319,7 @@ private fun MainActivityScreen(
                     composable(route = MainActivityScreens.VIPs.route) {
                         VIPVisitsScreen(
                             visitViewModel = visitViewModel,
+                            onItemEdit = onVisitEdit,
                             onScrollStateChange = { isScrolling = it },
                             paddingAtBottom = enableBottomNavigation
                         )
@@ -304,7 +327,10 @@ private fun MainActivityScreen(
 
 
                     composable(route = MainActivityScreens.Account.route) {
-                        UserProfileScreen(MainActivityScreens.Account.title)
+                        UserProfileScreen(
+                            MainActivityScreens.Account.title,
+                            onBackPressed = navigateBack
+                        )
                     }
 
 
@@ -332,13 +358,7 @@ private fun MainActivityScreen(
                         AddVisitScreen(
                             title = MainActivityScreens.AddVisit.title,
                             addVisitCard = visitViewModel::addVisitCard,
-                            onBackPressed = {
-                                scope.launch(Dispatchers.Main) {
-                                    if (!navController.popBackStack()) {
-                                        navController.navigate(MainActivityScreens.TodaysVisits.route)
-                                    }
-                                }
-                            }
+                            onBackPressed = navigateBack
                         )
                     }
 
@@ -377,24 +397,13 @@ private fun MainActivityScreen(
                                 onEditVisitCard = visitViewModel::updateVisitCard,
                                 onBackPressed = {
                                     visitViewModel.currentToEditVisit = null
-                                    scope.launch(Dispatchers.Main) {
-                                        if (!navController.popBackStack()) {
-                                            navController.navigate(MainActivityScreens.TodaysVisits.route)
-                                        }
-                                    }
+                                    navigateBack()
                                 }
                             )
                         }
                     }
                 }
             }
-        }
-    }
-
-    LaunchedEffect(visitViewModel.currentToEditVisit) {
-        Log.d("navigation", "Ha cambiado el estado. ${visitViewModel.currentToEditVisit}")
-        if (visitViewModel.currentToEditVisit != null && currentRoute?.destination?.route != MainActivityScreens.EditVisit.route) {
-            navController.navigate(MainActivityScreens.EditVisit.route)
         }
     }
 

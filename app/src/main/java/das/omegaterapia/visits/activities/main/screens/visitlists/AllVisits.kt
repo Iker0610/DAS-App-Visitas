@@ -11,6 +11,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.activities.main.VisitsViewModel
 import das.omegaterapia.visits.activities.main.composables.VisitList
+import das.omegaterapia.visits.model.entities.VisitCard
+import das.omegaterapia.visits.model.entities.VisitId
 import das.omegaterapia.visits.utils.WindowSize
 
 
@@ -18,6 +20,8 @@ import das.omegaterapia.visits.utils.WindowSize
 fun AllVisitsScreen(
     visitViewModel: VisitsViewModel,
     modifier: Modifier = Modifier,
+    onItemEdit: (VisitCard) -> Unit = visitViewModel::currentToEditVisit::set,
+    onItemDelete: (VisitId) -> Unit = { visitViewModel.deleteVisitCard(it) },
     lazyListState: LazyListState = rememberLazyListState(),
     onScrollStateChange: (Boolean) -> Unit = {},
     paddingAtBottom: Boolean = false,
@@ -27,8 +31,8 @@ fun AllVisitsScreen(
         groupedVisitCards = groupedVisits,
         modifier = modifier.fillMaxSize(),
 
-        onItemEdit = visitViewModel::currentToEditVisit::set,
-        onItemDelete = visitViewModel::deleteVisitCard,
+        onItemEdit = onItemEdit,
+        onItemDelete = onItemDelete,
 
         lazyListState = lazyListState,
         onScrollStateChange = onScrollStateChange,

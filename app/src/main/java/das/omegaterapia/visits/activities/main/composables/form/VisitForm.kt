@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.ui.components.datetime.AlternativeOutlinedDateTimeField
@@ -72,10 +73,11 @@ fun VisitForm(
     modifier: Modifier = Modifier,
     onSuccessfulSubmit: () -> Unit = {},
     initialVisitCard: VisitCard? = null,
-    visitFormViewModel: VisitFormViewModel = viewModel(),
 ) {
 
     // TODO: Añadir on IME action
+
+    val  visitFormViewModel: VisitFormViewModel = hiltViewModel()
 
     val editMode = initialVisitCard != null
     

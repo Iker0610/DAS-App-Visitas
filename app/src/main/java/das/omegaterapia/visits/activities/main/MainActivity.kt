@@ -45,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -76,8 +77,6 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val visitViewModel: VisitsViewModel by viewModels()
-
     /*--------------------------------------------------
     |            Activity Lifecycle Methods            |
     --------------------------------------------------*/
@@ -86,7 +85,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             OmegaterapiaTheme {
                 val windowSize = rememberWindowSizeClass()
-                MainActivityScreen(visitViewModel, windowSize = windowSize)
+                MainActivityScreen(windowSize = windowSize)
             }
         }
     }
@@ -96,7 +95,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
 private fun MainActivityScreen(
-    visitViewModel: VisitsViewModel = viewModel(),
+    visitViewModel: VisitsViewModel = hiltViewModel(),
     windowSize: WindowSize,
 ) {
     val scope = rememberCoroutineScope()

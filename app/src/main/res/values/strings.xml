@@ -83,4 +83,10 @@
     <string name="biometric_auth_prompt_title">Login as %1$s</string>
     <string name="biometric_auth_prompt_text">Log in using your device\'s biometric credentials</string>
     <string name="apply_button">APPLY</string>
+    <string name="month_temporal_converter">Month</string>
+    <string name="week_temporal_converter">Week</string>
+    <string name="day_temporal_converter">Day</string>
+    <string name="hour_temporal_converter">Hour</string>
+    <string name="hour_with_day_temporal_converter">Hour with day</string>
+    <string name="hour_with_full_date_temporal_converter">Full date-time</string>
 </resources>

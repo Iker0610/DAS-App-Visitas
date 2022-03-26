@@ -84,4 +84,10 @@
     <string name="biometric_auth_prompt_title">Iniciar sesión como %1$s</string>
     <string name="biometric_auth_prompt_text">Inicie sesión mediante las credenciales biométricas de tu dispositivo.</string>
     <string name="apply_button">APLICAR</string>
+    <string name="month_temporal_converter">Mes</string>
+    <string name="week_temporal_converter">Semana</string>
+    <string name="day_temporal_converter">Día</string>
+    <string name="hour_temporal_converter">Hora</string>
+    <string name="hour_with_day_temporal_converter">Día y Hora</string>
+    <string name="hour_with_full_date_temporal_converter">Fecha y Hora</string>
 </resources>

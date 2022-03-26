@@ -1,5 +1,6 @@
 package das.omegaterapia.visits.utils
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -53,7 +55,13 @@ enum class TemporalConverter(val configName: String, val example: String, val co
     HOUR_WITH_FULL_DATE("Full date-time", "2000 JAN 02 (Mon) - 17:45", { getHour(it, "yyyy MMM dd (EE) - HH:mm") })
     ;
 
+    fun configName(context: Context): String {
+        val titleStringID = context.resources.getIdentifier("${this.name.lowercase()}_temporal_converter", "string", context.packageName)
+        return context.getString(titleStringID)
+    }
+
     fun <T> groupDates(list: List<T>, key: (T) -> ZonedDateTime): Map<String, List<T>> = list.groupBy { this.converter(key(it)) }
+
 
     companion object {
         val oneDayDefault = HOUR_WITH_DAY
@@ -152,7 +160,7 @@ private fun ConverterPickerDialog(
                         ListItem(
                             modifier = Modifier.clickable { selected = format.name },
                             trailing = { Checkbox(checked = selected == format.name, onCheckedChange = { selected = format.name }) },
-                            text = { Text(text = format.configName, style = MaterialTheme.typography.body1) },
+                            text = { Text(text = format.configName(LocalContext.current), style = MaterialTheme.typography.body1) },
                             secondaryText = { Text(text = format.example) }
                         )
                     }

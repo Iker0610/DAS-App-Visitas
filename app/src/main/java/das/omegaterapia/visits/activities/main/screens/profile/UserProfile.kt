@@ -139,7 +139,7 @@ fun UserProfileScreen(
 
             ListItem(
                 icon = { Icon(Icons.Filled.Today, null, Modifier.padding(top = 7.dp)) },
-                secondaryText = { Text(text = TemporalConverter.valueOf(prefOneDayConverter).configName) },
+                secondaryText = { Text(text = TemporalConverter.valueOf(prefOneDayConverter).configName(LocalContext.current)) },
                 modifier = Modifier.clickable { showDayConverterDialog = true }
             ) {
                 Text(text = stringResource(R.string.today_visits_setting_title))
@@ -147,7 +147,7 @@ fun UserProfileScreen(
 
             ListItem(
                 icon = { Icon(Icons.Filled.CalendarMonth, null, Modifier.padding(top = 7.dp)) },
-                secondaryText = { Text(text = TemporalConverter.valueOf(prefMultipleDayConverter).configName) },
+                secondaryText = { Text(text = TemporalConverter.valueOf(prefMultipleDayConverter).configName(LocalContext.current)) },
                 modifier = Modifier.clickable { showMultipleDaysConverterDialog = true }
             ) {
                 Text(text = stringResource(R.string.other_visits_setting_title))

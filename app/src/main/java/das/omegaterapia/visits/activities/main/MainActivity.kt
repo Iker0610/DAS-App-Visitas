@@ -10,6 +10,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkHorizontally
@@ -155,10 +157,12 @@ private fun MainActivityScreen(
         }
     }
 
-    val onVisitEdit: (VisitCard) -> Unit = {
+    val onEditVisit: (VisitCard) -> Unit = {
         visitViewModel.currentToEditVisit = it
         navController.navigate(MainActivityScreens.EditVisit.route)
     }
+
+    val onNavigateToAccount = { navController.navigate(MainActivityScreens.Account.route + "/${visitViewModel.currentUser}") }
 
     //----------------------------------------------------------------------
 
@@ -224,15 +228,7 @@ private fun MainActivityScreen(
                     BottomNavBar(
                         currentScreenTitle = MainActivityScreens.fromRoute(currentRoute?.destination?.route).title(LocalContext.current),
                         onMenuOpen = { scope.launch { drawerState.open() } },
-                        onSettings = {
-                            navController.navigate(MainActivityScreens.Account.route + "/${visitViewModel.currentUser}") {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
+                        onSettings = onNavigateToAccount
                     )
                 }
             },
@@ -291,15 +287,7 @@ private fun MainActivityScreen(
                             icon = MainActivityScreens.Account.icon,
                             contentDescription = MainActivityScreens.Account.title(LocalContext.current),
                             isSelected = currentRoute?.destination?.route == MainActivityScreens.Account.route,
-                            action = {
-                                navController.navigate(MainActivityScreens.Account.route + "/${visitViewModel.currentUser}") {
-                                    popUpTo(navController.graph.startDestinationId) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
+                            action = onNavigateToAccount
                         )
                     }
                 }
@@ -309,30 +297,42 @@ private fun MainActivityScreen(
                     startDestination = MainActivityScreens.TodaysVisits.route
                 ) {
 
-                    composable(route = MainActivityScreens.TodaysVisits.route) {
+                    composable(
+                        route = MainActivityScreens.TodaysVisits.route,
+                        enterTransition = { fadeIn() },
+                        exitTransition = { fadeOut() },
+                    ) {
                         TodaysVisitsScreen(
                             visitViewModel = visitViewModel,
-                            onItemEdit = onVisitEdit,
+                            onItemEdit = onEditVisit,
                             onScrollStateChange = { isScrolling = it },
                             paddingAtBottom = enableBottomNavigation
                         )
                     }
 
 
-                    composable(route = MainActivityScreens.AllVisits.route) {
+                    composable(
+                        route = MainActivityScreens.AllVisits.route,
+                        enterTransition = { fadeIn() },
+                        exitTransition = { fadeOut() },
+                    ) {
                         AllVisitsScreen(
                             visitViewModel = visitViewModel,
-                            onItemEdit = onVisitEdit,
+                            onItemEdit = onEditVisit,
                             onScrollStateChange = { isScrolling = it },
                             paddingAtBottom = enableBottomNavigation
                         )
                     }
 
 
-                    composable(route = MainActivityScreens.VIPs.route) {
+                    composable(
+                        route = MainActivityScreens.VIPs.route,
+                        enterTransition = { fadeIn() },
+                        exitTransition = { fadeOut() },
+                    ) {
                         VIPVisitsScreen(
                             visitViewModel = visitViewModel,
-                            onItemEdit = onVisitEdit,
+                            onItemEdit = onEditVisit,
                             onScrollStateChange = { isScrolling = it },
                             paddingAtBottom = enableBottomNavigation
                         )
@@ -341,7 +341,25 @@ private fun MainActivityScreen(
 
                     composable(
                         route = "${MainActivityScreens.Account.route}/{username}",
-                        arguments = listOf(navArgument("username") { type = NavType.StringType })
+                        arguments = listOf(navArgument("username") { type = NavType.StringType }),
+                        enterTransition = {
+                            slideInHorizontally(
+                                initialOffsetX = { it },
+                                animationSpec = spring(
+                                    dampingRatio = 2f,
+                                    stiffness = Spring.StiffnessMedium
+                                )
+                            )
+                        },
+                        exitTransition = {
+                            slideOutHorizontally(
+                                targetOffsetX = { it },
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioNoBouncy,
+                                    stiffness = Spring.StiffnessMedium
+                                )
+                            )
+                        },
                     ) {
                         UserProfileScreen(
                             MainActivityScreens.Account.title(LocalContext.current),

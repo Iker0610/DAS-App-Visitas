@@ -1,6 +1,12 @@
 package das.omegaterapia.visits.ui.components.form
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -42,7 +48,7 @@ fun FormSubsection(
     title: String,
     modifier: Modifier = Modifier,
     trailingContent: @Composable RowScope.() -> Unit = {},
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable ColumnScope.() -> Unit = {},
 ) {
     Column(
         modifier = modifier

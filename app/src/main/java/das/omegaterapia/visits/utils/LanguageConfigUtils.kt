@@ -3,27 +3,35 @@ package das.omegaterapia.visits.utils
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SnackbarDefaults.backgroundColor
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import dagger.hilt.android.qualifiers.ApplicationContext
-import das.omegaterapia.visits.OmegaterapiaVisitsApp
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -76,28 +84,49 @@ class LanguageManager @Inject constructor() {
 fun LanguagePickerDialog(
     selectedLanguage: AppLanguage,
     onLanguageSelected: (AppLanguage) -> Unit,
-    title: String = "SelectLanguage",
+    title: String,
     onDismiss: () -> Unit,
 ) {
     var selected by rememberSaveable { mutableStateOf(selectedLanguage.code) }
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RectangleShape,
+            color = MaterialTheme.colors.surface,
+            contentColor = contentColorFor(backgroundColor),
+        ) {
+            Column {
+                Column(Modifier
+                    .padding(horizontal = 24.dp)
+                    .height(64.dp), verticalArrangement = Arrangement.Center) {
+                    Text(text = title, style = MaterialTheme.typography.h6)
+                }
 
-    AlertDialog(
-        title = { Text(text = title) },
-        onDismissRequest = onDismiss,
-        confirmButton = { TextButton(onClick = { onLanguageSelected(AppLanguage.getFromCode(selected)) }) { Text(text = "APPLY") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(text = "CANCEL") } },
-        text = {
-            Divider()
-            Column(Modifier.verticalScroll(rememberScrollState())) {
-                AppLanguage.values().forEach { lang ->
-                    ListItem(
-                        modifier = Modifier.clickable { selected = lang.code },
-                        trailing = { Checkbox(checked = selected == lang.code, onCheckedChange = { selected = lang.code }) },
-                        text = { Text(text = lang.language) }
-                    )
+                Divider()
+
+                Column(Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp)
+                ) {
+                    AppLanguage.values().forEach { lang ->
+                        ListItem(
+                            modifier = Modifier.clickable { selected = lang.code },
+                            trailing = { Checkbox(checked = selected == lang.code, onCheckedChange = { selected = lang.code }) },
+                            text = { Text(text = lang.language, style = MaterialTheme.typography.body1) }
+                        )
+                    }
+                }
+
+                Divider()
+
+                CenteredRow(Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp), horizontalArrangement = Arrangement.End) {
+                    CenteredRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TextButton(onClick = onDismiss) { Text(text = "CANCEL") }
+                        TextButton(onClick = { onLanguageSelected(AppLanguage.getFromCode(selected)) }) { Text(text = "APPLY") }
+                    }
                 }
             }
-            Divider()
         }
-    )
+    }
 }

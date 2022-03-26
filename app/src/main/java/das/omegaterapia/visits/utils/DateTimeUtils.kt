@@ -25,8 +25,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import das.omegaterapia.visits.R
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.theme.getButtonShape
 import java.time.DayOfWeek.MONDAY
@@ -162,9 +164,9 @@ private fun ConverterPickerDialog(
                     .fillMaxWidth()
                     .padding(8.dp), horizontalArrangement = Arrangement.End) {
                     CenteredRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        TextButton(onClick = onDismiss, shape = getButtonShape()) { Text(text = "CANCEL") }
+                        TextButton(onClick = onDismiss, shape = getButtonShape()) { Text(text = stringResource(R.string.cancel_button)) }
                         TextButton(onClick = { onConverterSelected(selected) },
-                            shape = getButtonShape()) { Text(text = "APPLY") }
+                            shape = getButtonShape()) { Text(text = stringResource(R.string.apply_button)) }
                     }
                 }
             }

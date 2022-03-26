@@ -71,7 +71,7 @@ fun BottomNavBar(currentScreenTitle: String, onMenuOpen: () -> Unit, onSettings:
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable(onClick = onMenuOpen)) {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                     IconButton(onClick = onMenuOpen) {
-                        Icon(Icons.Filled.Menu, contentDescription = "Open navigation menu")
+                        Icon(Icons.Filled.Menu, contentDescription = stringResource(R.string.navigation_menu_button_description))
                     }
                     Text(text = currentScreenTitle, style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold))
                 }

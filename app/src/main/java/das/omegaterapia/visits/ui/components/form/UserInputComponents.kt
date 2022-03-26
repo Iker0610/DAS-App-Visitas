@@ -33,10 +33,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import das.omegaterapia.visits.R
 import das.omegaterapia.visits.ui.theme.getButtonShape
 import das.omegaterapia.visits.utils.canBePassword
 
@@ -46,9 +48,9 @@ fun PasswordField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    label: @Composable (() -> Unit) = { Text("Password") },
-    placeholder: @Composable (() -> Unit)? = { Text("Password") },
-    leadingIcon: @Composable (() -> Unit)? = { Icon(Icons.Filled.VpnKey, contentDescription = "Password") },
+    label: @Composable (() -> Unit) = { Text(stringResource(R.string.password_label)) },
+    placeholder: @Composable (() -> Unit)? = { Text(stringResource(R.string.password_placeholder)) },
+    leadingIcon: @Composable (() -> Unit)? = { Icon(Icons.Filled.VpnKey, contentDescription = stringResource(R.string.password_label)) },
     isValid: Boolean = true,
     ignoreFirstTime: Boolean = false,
 ) {
@@ -70,7 +72,7 @@ fun PasswordField(
 
         leadingIcon = leadingIcon,
         trailingIcon = {
-            val description = if (passwordVisible) "Password visible" else "Password hid"
+            val description = if (passwordVisible) stringResource(R.string.password_icon_visible) else stringResource(R.string.password_icon_hidden)
 
             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                 AnimatedVisibility(passwordVisible, enter = fadeIn(), exit = fadeOut()) {
@@ -162,7 +164,7 @@ fun TextIconButton(
         colors = colors,
         contentPadding = contentPadding,
     ) {
-        Icon(icon, "Search in Google Maps", Modifier.size(15.dp))
+        Icon(icon, null, Modifier.size(15.dp))
         Spacer(modifier = Modifier.width(2.dp))
         Text(text = text)
     }

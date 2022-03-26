@@ -14,7 +14,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -29,7 +28,7 @@ fun OutlinedDateTimeField(
 
     label: @Composable () -> Unit = { Text(text = "Date-Time") },
     placeholder: @Composable (() -> Unit)? = { Text(text = dateFormatPattern) },
-    leadingIcon: @Composable (() -> Unit)? = { Icon(Icons.Default.Event, contentDescription = "Date and Time") },
+    leadingIcon: @Composable (() -> Unit)? = { Icon(Icons.Default.Event, null) },
     trailingIcon: @Composable (() -> Unit)? = null,
 
     enabled: Boolean = true,

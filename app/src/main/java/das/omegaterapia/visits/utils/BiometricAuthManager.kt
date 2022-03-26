@@ -11,6 +11,7 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import das.omegaterapia.visits.R
 
 enum class DeviceBiometricsSupport {
     SUPPORTED,
@@ -35,7 +36,7 @@ class BiometricAuthManager(
 
             override fun onAuthenticationFailed() {
                 super.onAuthenticationFailed()
-                Toast.makeText(context, "Authentication Failed. Try again.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.biometric_auth_failed_toast_message), Toast.LENGTH_SHORT).show()
             }
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
@@ -43,7 +44,7 @@ class BiometricAuthManager(
                 if (errorCode == BiometricPrompt.ERROR_LOCKOUT) {
                     Toast.makeText(context, "$errString", Toast.LENGTH_SHORT).show()
                 } else if (errorCode != BiometricPrompt.ERROR_CANCELED && errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON && errorCode != BiometricPrompt.ERROR_USER_CANCELED) {
-                    Toast.makeText(context, "Authentication error: $errString", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.biometric_auth_error_toast_message, errString), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -51,9 +52,9 @@ class BiometricAuthManager(
 
     private val biometricPromptInfo: BiometricPrompt.PromptInfo =
         BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Login as $authUser")
-            .setSubtitle("Log in using your biometric credential")
-            .setNegativeButtonText("Cancel")
+            .setTitle(context.getString(R.string.biometric_auth_prompt_title, authUser))
+            .setSubtitle(context.getString(R.string.biometric_auth_prompt_text))
+            .setNegativeButtonText(context.getString(R.string.cancel_button))
             .build()
 
 

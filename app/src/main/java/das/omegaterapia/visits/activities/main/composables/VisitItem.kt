@@ -134,7 +134,10 @@ fun VisitCardItem(
             ) {
                 CenteredColumn {
                     if (visitCard.isVIP) {
-                        Icon(Icons.Filled.Star, "VIP Client", Modifier.height(16.dp), tint = MaterialTheme.colors.secondary)
+                        Icon(Icons.Filled.Star,
+                            stringResource(R.string.vip_icon_description),
+                            Modifier.height(16.dp),
+                            tint = MaterialTheme.colors.secondary)
                         Spacer(modifier = Modifier.height(3.dp))
                     }
                     Text(text = date, style = typography.overline)
@@ -154,7 +157,7 @@ fun VisitCardItem(
                     Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier
                         .requiredWidth(IntrinsicSize.Max)
                         .padding(start = 16.dp)) {
-                        Icon(expandCollapseIcon, contentDescription = "Show more", Modifier.size(24.dp))
+                        Icon(expandCollapseIcon, contentDescription = stringResource(R.string.show_more_button), Modifier.size(24.dp))
                     }
                 }
             }
@@ -168,7 +171,7 @@ fun VisitCardItem(
                 Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
                     if (visitCard.companions.isNotEmpty()) {
                         Text(
-                            "Client's Companions",
+                            stringResource(R.string.visit_card_companions),
                             style = typography.subtitle2,
                             color = MaterialTheme.colors.primary,
                             modifier = Modifier.padding(bottom = 4.dp)
@@ -181,7 +184,7 @@ fun VisitCardItem(
                     }
                     if (visitCard.observations.isNotBlank()) {
                         Text(
-                            "Observations",
+                            stringResource(R.string.visit_card_observations),
                             style = typography.subtitle2,
                             color = MaterialTheme.colors.primary,
                             modifier = Modifier.padding(bottom = 4.dp)

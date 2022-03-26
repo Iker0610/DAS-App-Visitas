@@ -25,9 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import das.omegaterapia.visits.R
 import das.omegaterapia.visits.data.visitList
 import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.model.entities.VisitId
@@ -53,15 +55,15 @@ fun VisitList(
     if (toDeleteItemId != null) {
         val dismissCallback = { toDeleteItemId = null }
         AlertDialog(
-            title = { Text(text = "Do you want to delete this Visit Card?") },
+            title = { Text(text = stringResource(R.string.delete_visit_card_dialog_title)) },
             confirmButton = {
                 TextButton(onClick = { onItemDelete(VisitId(toDeleteItemId!!)); toDeleteItemId = null }, shape = getButtonShape()) {
-                    Text(text = "DELETE")
+                    Text(text = stringResource(R.string.delete_button))
                 }
             },
             dismissButton = {
                 TextButton(onClick = dismissCallback, shape = getButtonShape()) {
-                    Text(text = "DISMISS")
+                    Text(text = stringResource(R.string.dismiss_button))
                 }
             },
             onDismissRequest = dismissCallback,

@@ -44,9 +44,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import das.omegaterapia.visits.R
 import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.ui.components.datetime.AlternativeOutlinedDateTimeField
 import das.omegaterapia.visits.ui.components.form.FormSection
@@ -96,23 +98,23 @@ fun VisitForm(
         if (editMode) {
             AlertDialog(
                 shape = RectangleShape,
-                title = { Text(text = "Couldn't edit the Visit Card") },
-                text = { Text(text = "An error occurred when editing the Visit Card. Try again.") },
+                title = { Text(text = stringResource(R.string.visit_card_edit_failed_dialog_title)) },
+                text = { Text(text = stringResource(R.string.visit_card_edit_failed_dialog_text)) },
                 onDismissRequest = { showErrorDialog = false },
                 confirmButton = {
                     TextButton(onClick = { showErrorDialog = false },
-                        shape = getButtonShape()) { Text(text = "DISMISS") }
+                        shape = getButtonShape()) { Text(text = stringResource(R.string.dismiss_button)) }
                 }
             )
         } else {
             AlertDialog(
                 shape = RectangleShape,
-                title = { Text(text = "Couldn't add a new Visit Card") },
-                text = { Text(text = "An error occurred when adding the Visit Card. Try again.") },
+                title = { Text(text = stringResource(R.string.visit_card_creation_failed_dialog_title)) },
+                text = { Text(text = stringResource(R.string.visit_card_creation_failed_dialog_text)) },
                 onDismissRequest = { showErrorDialog = false },
                 confirmButton = {
                     TextButton(onClick = { showErrorDialog = false },
-                        shape = getButtonShape()) { Text(text = "DISMISS") }
+                        shape = getButtonShape()) { Text(text = stringResource(R.string.dismiss_button)) }
                 }
             )
         }
@@ -128,7 +130,7 @@ fun VisitForm(
             .padding(horizontal = 16.dp, vertical = 32.dp)
     ) {
 
-        FormSection(title = "Visit Data") {
+        FormSection(title = stringResource(R.string.visit_card_visit_data_section_title)) {
             CenteredRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 val iconSize = 28.dp
                 OutlinedChoiceChip(
@@ -139,13 +141,13 @@ fun VisitForm(
                     selected = visitFormViewModel.isVIP,
                     leadingIcon = {
                         if (visitFormViewModel.isVIP) {
-                            Icon(Icons.Filled.Star, contentDescription = "VIP Client",
+                            Icon(Icons.Filled.Star, null,
                                 Modifier
                                     .size(iconSize)
                                     .padding(start = 8.dp))
                         } else {
                             Icon(
-                                Icons.Filled.StarOutline, contentDescription = "Not VIP Client",
+                                Icons.Filled.StarOutline, null,
                                 Modifier
                                     .size(iconSize)
                                     .padding(start = 8.dp)
@@ -153,7 +155,7 @@ fun VisitForm(
                         }
                     },
                 ) {
-                    Text(text = "VIP", style = MaterialTheme.typography.body1, modifier = Modifier.padding(end = 8.dp))
+                    Text(text = stringResource(R.string.vip_chip), style = MaterialTheme.typography.body1, modifier = Modifier.padding(end = 8.dp))
                 }
 
                 AlternativeOutlinedDateTimeField(
@@ -161,20 +163,20 @@ fun VisitForm(
                     onDateTimeSelected = visitFormViewModel::visitDate::set,
                     requireFutureDateTime = !editMode,
 
-                    dateLabel = { Text(text = "Date*") },
-                    timeLabel = { Text(text = "Time*") },
+                    dateLabel = { Text(text = "${stringResource(R.string.visit_card_date_label)}*") },
+                    timeLabel = { Text(text = "${stringResource(R.string.visit_card_time_label)}*") },
                 )
             }
         }
 
-        FormSection(title = "Clients") {
-            FormSubsection(title = "Main Client") {
+        FormSection(title = stringResource(R.string.visit_card_clients_section_title)) {
+            FormSubsection(title = stringResource(R.string.visit_card_main_client)) {
 
                 ValidatorOutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
 
-                    label = { Text(text = "Client Name*") },
-                    leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Client name and surname") },
+                    label = { Text(text = "${stringResource(R.string.visit_card_client_name_label)}*") },
+                    leadingIcon = { Icon(Icons.Default.Person, stringResource(R.string.visit_card_client_name_label)) },
 
                     value = visitFormViewModel.clientNameText,
                     onValueChange = { if (isText(it)) visitFormViewModel.clientNameText = it },
@@ -188,7 +190,7 @@ fun VisitForm(
                 ValidatorOutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
 
-                    label = { Text(text = "Client Surname*") },
+                    label = { Text(text = "${stringResource(R.string.visit_card_client_surname_label)}*") },
 
                     value = visitFormViewModel.clientSurnameText,
                     onValueChange = { if (isText(it)) visitFormViewModel.clientSurnameText = it },
@@ -200,20 +202,22 @@ fun VisitForm(
                 )
             }
 
-            FormSubsection(title = "Client's Companions") {
+            FormSubsection(title = stringResource(R.string.visit_card_companions)) {
                 visitFormViewModel.clientCompanions.forEachIndexed { index, companion ->
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
 
-                        label = { Text(text = "Name and Surname") },
-                        leadingIcon = { Icon(Icons.Default.People, contentDescription = "Client's companion name and surname") },
+                        label = { Text(text = stringResource(R.string.visit_card_companion_name_label)) },
+                        leadingIcon = { Icon(Icons.Default.People, stringResource(R.string.visit_card_companion_name_label)) },
                         trailingIcon = {
                             IconButton(onClick = {
                                 visitFormViewModel.clientCompanions.removeAt(index)
                                 if (visitFormViewModel.clientCompanions.isEmpty()) visitFormViewModel.clientCompanions.add("")
                             }
                             ) {
-                                Icon(Icons.Filled.RemoveCircle, contentDescription = "Delete Companion", tint = MaterialTheme.colors.secondary)
+                                Icon(Icons.Filled.RemoveCircle,
+                                    stringResource(R.string.remove_companion_button),
+                                    tint = MaterialTheme.colors.secondary)
                             }
                         },
 
@@ -225,18 +229,18 @@ fun VisitForm(
                     )
                 }
                 FixedOutlinedButton(onClick = { visitFormViewModel.clientCompanions.add("") }, Modifier.align(Alignment.CenterHorizontally)) {
-                    Text(text = "Add Companion")
+                    Text(text = stringResource(R.string.add_companion_button))
                 }
             }
         }
 
-        FormSection(title = "Location Data") {
+        FormSection(title = stringResource(R.string.visit_card_location_section_title)) {
 
             ValidatorOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
 
-                label = { Text(text = "Phone Number*") },
-                leadingIcon = { Icon(Icons.Default.ContactPhone, contentDescription = "Phone Number") },
+                label = { Text(text = "${stringResource(R.string.visit_card_phone_label)}*") },
+                leadingIcon = { Icon(Icons.Default.ContactPhone, null) },
 
                 value = visitFormViewModel.phoneText,
                 onValueChange = { if (canBePhoneNumber(it)) visitFormViewModel.phoneText = formatPhoneNumber(it) },
@@ -250,8 +254,8 @@ fun VisitForm(
             ValidatorOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
 
-                label = { Text(text = "Address*") },
-                leadingIcon = { Icon(Icons.Default.MapsHomeWork, contentDescription = "Address") },
+                label = { Text(text = "${stringResource(R.string.visit_card_address_label)}*") },
+                leadingIcon = { Icon(Icons.Default.MapsHomeWork, stringResource(R.string.visit_card_address_label)) },
 
                 value = visitFormViewModel.addressText,
                 onValueChange = visitFormViewModel::addressText::set,
@@ -267,8 +271,8 @@ fun VisitForm(
                 ValidatorOutlinedTextField(
                     modifier = Modifier.weight(2f),
 
-                    label = { Text(text = "Town*") },
-                    leadingIcon = { Icon(Icons.Default.PinDrop, contentDescription = "Town") },
+                    label = { Text(text = "${stringResource(R.string.visit_card_town_label)}*") },
+                    leadingIcon = { Icon(Icons.Default.PinDrop, stringResource(R.string.visit_card_town_label)) },
 
                     value = visitFormViewModel.townText,
                     onValueChange = { if (isText(it)) visitFormViewModel.townText = it },
@@ -282,8 +286,11 @@ fun VisitForm(
                 ValidatorOutlinedTextField(
                     modifier = Modifier.weight(1f),
 
-                    label = { Text(text = "ZIP*") },
-                    leadingIcon = { Icon(Icons.Default.MyLocation, contentDescription = "ZIP Code") },
+                    label = { Text(text = "${stringResource(R.string.visit_card_zip_label)}*") },
+                    leadingIcon = {
+                        Icon(Icons.Default.MyLocation,
+                            contentDescription = stringResource(R.string.visit_card_zip_label_icon_description))
+                    },
 
                     value = visitFormViewModel.zipCodeText,
                     onValueChange = { if (canBeZIP(it)) visitFormViewModel.zipCodeText = it },
@@ -296,14 +303,14 @@ fun VisitForm(
             }
         }
 
-        FormSection(title = "Observations") {
+        FormSection(title = stringResource(R.string.visit_card_observations)) {
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(),
 
-                label = { Text(text = "Observations") },
-                leadingIcon = { Icon(Icons.Default.Visibility, contentDescription = "Observations") },
+                label = { Text(text = stringResource(R.string.visit_card_observations)) },
+                leadingIcon = { Icon(Icons.Default.Visibility, contentDescription = stringResource(R.string.visit_card_observations)) },
 
                 value = visitFormViewModel.observationText,
                 onValueChange = visitFormViewModel::observationText::set
@@ -323,7 +330,7 @@ fun VisitForm(
             },
             enabled = visitFormViewModel.areAllValid
         ) {
-            Text(text = if (initialVisitCard == null) "Add new Visit Card" else "Update Visit Card")
+            Text(text = if (initialVisitCard == null) stringResource(R.string.add_visit_card_button) else stringResource(R.string.edit_visit_card_button))
         }
     }
 }

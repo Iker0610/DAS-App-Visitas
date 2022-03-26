@@ -144,7 +144,7 @@ private fun MainActivityScreen(
     @Composable
     fun FAB() {
         AddFloatingActionButton(
-            onAdd = { navController.navigate(MainActivityScreens.AddVisit.route) },
+            onAdd = { navController.navigate(MainActivityScreens.AddVisit.route) { launchSingleTop = true } },
         )
     }
 
@@ -159,10 +159,11 @@ private fun MainActivityScreen(
 
     val onEditVisit: (VisitCard) -> Unit = {
         visitViewModel.currentToEditVisit = it
-        navController.navigate(MainActivityScreens.EditVisit.route)
+        navController.navigate(MainActivityScreens.EditVisit.route) { launchSingleTop = true }
     }
 
-    val onNavigateToAccount = { navController.navigate(MainActivityScreens.Account.route + "/${visitViewModel.currentUser}") }
+    val onNavigateToAccount =
+        { navController.navigate(MainActivityScreens.Account.route + "/${visitViewModel.currentUser}") { launchSingleTop = true } }
 
     //----------------------------------------------------------------------
 

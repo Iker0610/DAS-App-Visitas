@@ -33,9 +33,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import das.omegaterapia.visits.R
 import das.omegaterapia.visits.activities.authorization.AuthViewModel
 import das.omegaterapia.visits.ui.components.form.PasswordField
 import das.omegaterapia.visits.ui.components.form.ValidatorOutlinedTextField
@@ -109,25 +111,28 @@ fun LoginSection(
     if (showLoginErrorDialog) {
         AlertDialog(
             shape = RectangleShape,
-            title = { Text(text = "Incorrect username or password.") },
+            title = { Text(text = stringResource(R.string.incorrect_login_error_message)) },
             onDismissRequest = { showLoginErrorDialog = false },
-            confirmButton = { TextButton(onClick = { showLoginErrorDialog = false }, shape = getButtonShape()) { Text(text = "OK") } }
+            confirmButton = {
+                TextButton(onClick = { showLoginErrorDialog = false },
+                    shape = getButtonShape()) { Text(text = stringResource(R.string.ok_button)) }
+            }
         )
     }
 
     if (showBiometricErrorDialogState) {
         AlertDialog(
             shape = RectangleShape,
-            title = { Text(text = "Invalid Account") },
+            title = { Text(text = stringResource(R.string.invalid_account_login_dialog_title)) },
             text = {
                 Text(
-                    text = "You haven't logged with a valid account before. Log with into an account with a valid password in order to enable biometrics.",
+                    text = stringResource(R.string.invalid_account_login_dialog_text),
                 )
             },
             onDismissRequest = { showBiometricErrorDialogState = false },
             confirmButton = {
                 TextButton(onClick = { showBiometricErrorDialogState = false },
-                    shape = getButtonShape()) { Text(text = "OK") }
+                    shape = getButtonShape()) { Text(text = stringResource(R.string.ok_button)) }
             }
         )
     }
@@ -135,12 +140,12 @@ fun LoginSection(
     if (showBiometricEnrollDialogState) {
         AlertDialog(
             shape = RectangleShape,
-            title = { Text(text = "No biometrics enrolled") },
+            title = { Text(text = stringResource(R.string.no_biometrics_enrolled_dialog_title)) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.body1) {
-                        Text(text = "Your device is capable of biometric login but none is enrolled.")
-                        Text(text = "Do you want to configure them?")
+                        Text(text = stringResource(R.string.no_biometrics_enrolled_dialog_text_1))
+                        Text(text = stringResource(R.string.no_biometrics_enrolled_dialog_text_2))
                     }
                 }
             },
@@ -152,11 +157,11 @@ fun LoginSection(
                         showBiometricEnrollDialogState = false
                         BiometricAuthManager.makeBiometricEnroll(context)
                     }
-                ) { Text(text = "ENROLL") }
+                ) { Text(text = stringResource(R.string.enroll_button)) }
             },
             dismissButton = {
                 TextButton(onClick = { showBiometricEnrollDialogState = false },
-                    shape = getButtonShape()) { Text(text = "CANCEL") }
+                    shape = getButtonShape()) { Text(text = stringResource(R.string.cancel_button)) }
             }
         )
     }
@@ -166,7 +171,7 @@ fun LoginSection(
     CenteredColumn(
         modifier = modifier.width(IntrinsicSize.Min)
     ) {
-        Text(text = "Login", style = MaterialTheme.typography.h5)
+        Text(text = stringResource(R.string.login), style = MaterialTheme.typography.h5)
 
         Spacer(Modifier.height(8.dp))
 
@@ -174,8 +179,8 @@ fun LoginSection(
             modifier = Modifier.widthIn(max = 280.dp),
             value = authViewModel.loginUsername,
             onValueChange = { if (canBeValidUsername(it)) authViewModel.loginUsername = it },
-            leadingIcon = { Icon(Icons.Filled.Person, contentDescription = "person") },
-            label = { Text(text = "Username") },
+            leadingIcon = { Icon(Icons.Filled.Person, null) },
+            label = { Text(text = stringResource(R.string.username)) },
             isValid = authViewModel.isLoginCorrect,
             ignoreFirstTime = true
         )
@@ -196,7 +201,7 @@ fun LoginSection(
             shape = getButtonShape(),
             enabled = authViewModel.loginUsername.isNotBlank() && authViewModel.loginPassword.isNotBlank()
         ) {
-            Text(text = "Login")
+            Text(text = stringResource(R.string.login_button))
         }
 
         Spacer(Modifier.height(8.dp))
@@ -207,9 +212,9 @@ fun LoginSection(
                 onClick = onBiometricAuthButtonClick,
                 shape = getButtonShape()
             ) {
-                Icon(Icons.Filled.Fingerprint, contentDescription = "Biometric Authentication")
+                Icon(Icons.Filled.Fingerprint, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Biometric Authentication")
+                Text(text = stringResource(R.string.biometrics_button))
             }
         }
     }

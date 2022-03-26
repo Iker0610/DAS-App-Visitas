@@ -17,8 +17,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Today
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -79,7 +81,7 @@ fun UserProfileScreen(
             //------------------------------------------------------------------------------------
             if (showSelectLangDialog) {
                 LanguagePickerDialog(
-                    title = "Select Language",
+                    title = stringResource(R.string.select_lang_dialog_title),
                     selectedLanguage = prefLanguage,
                     onLanguageSelected = { preferencesViewModel.changeLang(it, context); showSelectLangDialog = false },
                     onDismiss = { showSelectLangDialog = false }
@@ -88,7 +90,7 @@ fun UserProfileScreen(
 
             if (showDayConverterDialog) {
                 DayConverterPickerDialog(
-                    title = "Select date grouping and formatting",
+                    title = stringResource(R.string.select_date_grouping_dialog_title),
                     selectedConverter = prefOneDayConverter,
                     onConverterSelected = { preferencesViewModel.setOneDayConverterPreference(it); showDayConverterDialog = false },
                     onDismiss = { showDayConverterDialog = false }
@@ -97,7 +99,7 @@ fun UserProfileScreen(
 
             if (showMultipleDaysConverterDialog) {
                 MultipleDaysConverterPickerDialog(
-                    title = "Select date grouping and formatting",
+                    title = stringResource(R.string.select_date_grouping_dialog_title),
                     selectedConverter = prefMultipleDayConverter,
                     onConverterSelected = { preferencesViewModel.setMultipleDayConverterPreference(it); showMultipleDaysConverterDialog = false },
                     onDismiss = { showMultipleDaysConverterDialog = false }
@@ -129,25 +131,26 @@ fun UserProfileScreen(
                 secondaryText = { Text(text = prefLanguage.language) },
                 modifier = Modifier.clickable { showSelectLangDialog = true }
             ) {
-                Text(text = "Application Language")
+                Text(text = stringResource(R.string.app_lang_setting_title))
             }
 
-            FormSubsection(title = "Visits Screen Section's Date Format", Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp))
+            FormSubsection(title = stringResource(R.string.date_format_setting_section_title),
+                Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp))
 
             ListItem(
-                icon = { Icon(Icons.Filled.Language, null, Modifier.padding(top = 7.dp)) },
+                icon = { Icon(Icons.Filled.Today, null, Modifier.padding(top = 7.dp)) },
                 secondaryText = { Text(text = TemporalConverter.valueOf(prefOneDayConverter).configName) },
                 modifier = Modifier.clickable { showDayConverterDialog = true }
             ) {
-                Text(text = "Today's Visits' Date Format")
+                Text(text = stringResource(R.string.today_visits_setting_title))
             }
 
             ListItem(
-                icon = { Icon(Icons.Filled.Language, null, Modifier.padding(top = 7.dp)) },
+                icon = { Icon(Icons.Filled.CalendarMonth, null, Modifier.padding(top = 7.dp)) },
                 secondaryText = { Text(text = TemporalConverter.valueOf(prefMultipleDayConverter).configName) },
                 modifier = Modifier.clickable { showMultipleDaysConverterDialog = true }
             ) {
-                Text(text = "All and Vip Visits' Section Date Format")
+                Text(text = stringResource(R.string.other_visits_setting_title))
             }
 
 
@@ -181,12 +184,12 @@ private fun SaveAsJSONSection(visitsViewModel: VisitsViewModel) {
         }
     }
 
-    val filename = "visits_${LocalDate.now().format(DateTimeFormatter.ISO_DATE)}.json"
+    val filename = stringResource(R.string.visit_json_name_template, LocalDate.now().format(DateTimeFormatter.ISO_DATE))
     val action = { saverLauncher.launch(filename) }
 
     ListItem(
         Modifier.clickable(onClick = action),
-        icon = { Icon(Icons.Filled.Save, "Save today's visits", Modifier.padding(top = 7.dp)) },
+        icon = { Icon(Icons.Filled.Save, stringResource(R.string.save_visits_button_description), Modifier.padding(top = 7.dp)) },
         secondaryText = { Text(text = filename) }
     ) {
         Text(text = stringResource(R.string.save_json_section_title), style = MaterialTheme.typography.subtitle1)

@@ -28,9 +28,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import das.omegaterapia.visits.R
 import das.omegaterapia.visits.activities.authorization.AuthViewModel
 import das.omegaterapia.visits.ui.components.form.PasswordField
 import das.omegaterapia.visits.ui.components.form.ValidatorOutlinedTextField
@@ -69,8 +71,11 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, o
     if (showSignInErrorDialog) {
         AlertDialog(
             onDismissRequest = { showSignInErrorDialog = false },
-            confirmButton = { TextButton(onClick = { showSignInErrorDialog = false }, shape = getButtonShape()) { Text(text = "OK") } },
-            text = { Text(text = "This account username already exists.", style = MaterialTheme.typography.body1) },
+            confirmButton = {
+                TextButton(onClick = { showSignInErrorDialog = false },
+                    shape = getButtonShape()) { Text(text = stringResource(id = R.string.ok_button)) }
+            },
+            text = { Text(text = stringResource(R.string.existing_account_signin_dialog_title), style = MaterialTheme.typography.body1) },
             shape = RectangleShape
         )
     }
@@ -80,7 +85,7 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, o
     CenteredColumn(
         modifier = modifier.width(IntrinsicSize.Min)
     ) {
-        Text(text = "Sign In", style = MaterialTheme.typography.h5)
+        Text(text = stringResource(R.string.sign_in), style = MaterialTheme.typography.h5)
 
         Spacer(Modifier.height(8.dp))
 
@@ -89,8 +94,8 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, o
 
             value = authViewModel.signInUsername,
             onValueChange = { if (canBeValidUsername(it)) authViewModel.signInUsername = it; authViewModel.signInUserExists = false },
-            leadingIcon = { Icon(Icons.Filled.Person, contentDescription = "person") },
-            label = { Text(text = "Username") },
+            leadingIcon = { Icon(Icons.Filled.Person, contentDescription = null) },
+            label = { Text(text = stringResource(R.string.username)) },
             isValid = authViewModel.signInUsername.isBlank() || (authViewModel.isSignInUsernameValid && !authViewModel.signInUserExists),
             ignoreFirstTime = true
         )
@@ -106,7 +111,7 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, o
             )
             if (authViewModel.signInPassword.isNotBlank() && !authViewModel.isSignInPasswordValid) {
                 Text(
-                    text = "Must include at least 5 alphanumeric values",
+                    text = stringResource(R.string.invalid_new_password_error_text),
                     color = MaterialTheme.colors.error,
                     style = MaterialTheme.typography.caption,
                     modifier = Modifier.padding(start = 8.dp)
@@ -123,8 +128,8 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, o
             isValid = authViewModel.signInConfirmationPassword.isBlank() || authViewModel.isSignInPasswordConfirmationValid,
             ignoreFirstTime = true,
 
-            label = { Text(text = "Confirm Password") },
-            placeholder = { Text(text = "Confirm Password") },
+            label = { Text(text = stringResource(R.string.confirm_password_field_label)) },
+            placeholder = { Text(text = stringResource(R.string.confirm_password_field_placeholder)) },
         )
 
         Divider(Modifier.padding(top = 24.dp, bottom = 16.dp))
@@ -135,7 +140,7 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, o
             shape = getButtonShape(),
             enabled = authViewModel.isSignInUsernameValid && authViewModel.isSignInPasswordConfirmationValid
         ) {
-            Text(text = "Sign In")
+            Text(text = stringResource(R.string.signin_button))
         }
     }
 }

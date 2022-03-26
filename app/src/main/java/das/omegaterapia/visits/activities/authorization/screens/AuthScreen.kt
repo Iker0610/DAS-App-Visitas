@@ -25,9 +25,11 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import das.omegaterapia.visits.R
 import das.omegaterapia.visits.activities.authorization.AuthViewModel
 import das.omegaterapia.visits.activities.authorization.composables.LoginCard
 import das.omegaterapia.visits.activities.authorization.composables.LoginSection
@@ -113,9 +115,9 @@ fun AuthScreen(
 
                         Divider(modifier = Modifier.padding(top = 32.dp, bottom = 24.dp))
 
-                        Text(text = "Don't have an account?", style = MaterialTheme.typography.body2)
+                        Text(text = stringResource(R.string.go_to_signin_label), style = MaterialTheme.typography.body2)
                         TextButton(onClick = authViewModel::switchScreen, shape = getButtonShape()) {
-                            Text(text = "Sign In")
+                            Text(text = stringResource(R.string.signin_button))
                         }
                     }
 
@@ -145,9 +147,9 @@ fun AuthScreen(
 
                         Divider(modifier = Modifier.padding(top = 32.dp, bottom = 24.dp))
 
-                        Text(text = "Already have an account?", style = MaterialTheme.typography.body2)
+                        Text(text = stringResource(R.string.go_to_login_label), style = MaterialTheme.typography.body2)
                         TextButton(onClick = authViewModel::switchScreen, shape = getButtonShape()) {
-                            Text(text = "Login")
+                            Text(text = stringResource(R.string.login_button))
                         }
                     }
                 }

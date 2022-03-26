@@ -95,8 +95,8 @@ class AuthActivity : FragmentActivity() {
         // Show user created notification
         val builder = NotificationCompat.Builder(this, "AUTH_CHANNEL")
             .setSmallIcon(R.drawable.ic_stat_name)
-            .setContentTitle("User created")
-            .setContentText("The User $username has been successfully created.")
+            .setContentTitle(getString(R.string.user_created_dialog_title))
+            .setContentText(getString(R.string.user_created_dialog_text, username))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
 

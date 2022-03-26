@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">App-Visitas</string>
-    <string name="save_json_section_title">Guardar las visitas de hoy como JSON</string>
-    <string name="save_button">Guardar</string>
-    <string name="open_in_maps">Abrir en Maps</string>
-</resources>

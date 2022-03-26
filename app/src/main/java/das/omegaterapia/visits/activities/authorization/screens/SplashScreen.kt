@@ -1,6 +1,5 @@
 package das.omegaterapia.visits.activities.authorization.screens
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -20,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.R
 import das.omegaterapia.visits.ui.theme.BlueGrey600
@@ -28,30 +26,61 @@ import kotlinx.coroutines.delay
 import kotlin.math.max
 import kotlin.math.min
 
+
+/*******************************************************************************
+ ****                             Splash Screen                             ****
+ *******************************************************************************/
+
+/**
+ * Application's Intro Splash Screen for aesthetic and professional feel purposes.
+ *
+ * @param onAnimationFinished Callback for splash screen animation end event.
+ */
 @Composable
 fun AnimatedSplashScreen(onAnimationFinished: () -> Unit) {
+
+    /*------------------------------------------------
+    |                     States                     |
+    ------------------------------------------------*/
     var startAnimation by rememberSaveable { mutableStateOf(false) }
+
+    // Animate the opacity of the icon with an dynamic float state
     val alphaAnim by animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
         animationSpec = tween(delayMillis = 150, durationMillis = 1750)
     )
 
-    LaunchedEffect(key1 = true) {
+
+    /*------------------------------------------------
+    |                     Events                     |
+    ------------------------------------------------*/
+
+    // Start the animation (icon fades in)
+    // then wait 2 seconds showing the icon before finishing
+    // ** Due to the key being "true" this effect will launch once at start
+    LaunchedEffect(true) {
         startAnimation = true
         delay(2000)
         onAnimationFinished()
     }
+
+
+    /*------------------------------------------------
+    |                 User Interface                 |
+    ------------------------------------------------*/
     Splash(alpha = alphaAnim)
 }
 
 @Composable
 fun Splash(alpha: Float) {
+    // Background Box
     Box(
         modifier = Modifier
             .background(BlueGrey600)
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+        //--------------   Icon Shadow   ---------------//
         Icon(
             modifier = Modifier
                 .size(200.dp)
@@ -61,6 +90,8 @@ fun Splash(alpha: Float) {
             contentDescription = null,
             tint = Color.DarkGray
         )
+
+        //------------------   Icon   ------------------//
         Icon(
             modifier = Modifier
                 .size(200.dp)
@@ -70,16 +101,4 @@ fun Splash(alpha: Float) {
             tint = Color.White
         )
     }
-}
-
-@Composable
-@Preview
-fun SplashScreenPreview() {
-    Splash(alpha = 1f)
-}
-
-@Composable
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-fun SplashScreenDarkPreview() {
-    Splash(alpha = 1f)
 }

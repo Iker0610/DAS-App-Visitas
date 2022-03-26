@@ -1,6 +1,5 @@
 package das.omegaterapia.visits
 
-import android.app.Activity
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -23,9 +22,6 @@ Avoiding code  repetition
 
 @HiltAndroidApp
 class OmegaterapiaVisitsApp : Application() {
-
-    lateinit var currentActivity: Activity
-
     override fun onCreate() {
         super.onCreate()
 

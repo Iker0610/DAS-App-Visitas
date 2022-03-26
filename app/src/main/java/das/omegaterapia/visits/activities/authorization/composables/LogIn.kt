@@ -35,6 +35,19 @@ import das.omegaterapia.visits.ui.theme.getButtonShape
 import das.omegaterapia.visits.utils.DeviceBiometricsSupport
 import das.omegaterapia.visits.utils.canBeValidUsername
 
+/*******************************************************************************
+ ****                               Login Card                              ****
+ *******************************************************************************/
+
+/**
+ * UI element that envelops a Login Section in a Card composable.
+ *
+ * @param authViewModel [AuthViewModel] that contains required states and event calls.
+ * @param modifier
+ * @param biometricSupport instance of [DeviceBiometricsSupport] indicating this device's biometric capabilities.
+ * @param onLogin Callback for login event.
+ * @param onBiometricAuth Callback for login with biometric authentication.
+ */
 @Composable
 fun LoginCard(
     authViewModel: AuthViewModel,
@@ -54,6 +67,20 @@ fun LoginCard(
     }
 }
 
+
+/*******************************************************************************
+ ****                             Login Section                             ****
+ *******************************************************************************/
+
+/**
+ * UI element that defines the login form.
+ *
+ * @param authViewModel [AuthViewModel] that contains required states and event calls.
+ * @param modifier
+ * @param biometricSupport instance of [DeviceBiometricsSupport] indicating this device's biometric capabilities.
+ * @param onLogin Callback for login event.
+ * @param onBiometricAuth Callback for login with biometric authentication.
+ */
 @Composable
 fun LoginSection(
     authViewModel: AuthViewModel,
@@ -62,22 +89,22 @@ fun LoginSection(
     onLogin: () -> Unit = {},
     onBiometricAuth: () -> Unit = {},
 ) {
-    //--------------------------------------------------------------------------------------------------------------
-    // MAIN UI
     CenteredColumn(
         modifier = modifier.width(IntrinsicSize.Min)
     ) {
+        //--------------   Login Title   ---------------//
         Text(text = stringResource(R.string.login), style = MaterialTheme.typography.h5)
 
         Spacer(Modifier.height(8.dp))
 
+        //--------   User and Password Fields   --------//
         ValidatorOutlinedTextField(
             modifier = Modifier.widthIn(max = 280.dp),
             value = authViewModel.loginUsername,
-            onValueChange = { if (canBeValidUsername(it)) authViewModel.loginUsername = it },
+            onValueChange = { if (canBeValidUsername(it)) authViewModel.loginUsername = it }, // Change text if it's valid only
             leadingIcon = { Icon(Icons.Filled.Person, null) },
             label = { Text(text = stringResource(R.string.username)) },
-            isValid = authViewModel.isLoginCorrect,
+            isValid = authViewModel.isLoginCorrect, // Check if text is valid in order to show textfield's error state
             ignoreFirstTime = true
         )
 
@@ -91,10 +118,13 @@ fun LoginSection(
 
         Divider(Modifier.padding(top = 24.dp, bottom = 16.dp))
 
+        //--------------   Login Button   --------------//
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onLogin,
             shape = getButtonShape(),
+
+            // We only enable the button if user and password have possible valid values (does not check if user and pass are in database)
             enabled = authViewModel.loginUsername.isNotBlank() && authViewModel.loginPassword.isNotBlank()
         ) {
             Text(text = stringResource(R.string.login_button))
@@ -102,6 +132,9 @@ fun LoginSection(
 
         Spacer(Modifier.height(8.dp))
 
+        //-----------   Biometrics Button   ------------//
+
+        // Only showed if the device has some kind of biometric capability
         if (biometricSupport != DeviceBiometricsSupport.UNSUPPORTED) {
             TextButton(
                 modifier = Modifier.fillMaxWidth(),

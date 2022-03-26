@@ -55,7 +55,6 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
-import das.omegaterapia.visits.OmegaterapiaVisitsApp
 import das.omegaterapia.visits.activities.main.screens.MainActivityScreens
 import das.omegaterapia.visits.activities.main.screens.addedit.AddVisitScreen
 import das.omegaterapia.visits.activities.main.screens.addedit.EditVisitScreen
@@ -90,8 +89,6 @@ class MainActivity : ComponentActivity() {
     --------------------------------------------------*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (this.application as OmegaterapiaVisitsApp).currentActivity = this
-
         setContent {
             preferencesViewModel.reloadLang(preferencesViewModel.prefLang.collectAsState(initial = preferencesViewModel.currentSetLang).value,
                 this)

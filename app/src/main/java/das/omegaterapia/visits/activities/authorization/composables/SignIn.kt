@@ -33,6 +33,18 @@ import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.ui.theme.getButtonShape
 import das.omegaterapia.visits.utils.canBeValidUsername
 
+
+/*******************************************************************************
+ ****                              Sign In Card                              ****
+ *******************************************************************************/
+
+/**
+ * UI element that defines the login form.
+ *
+ * @param authViewModel [AuthViewModel] that contains required states and event calls.
+ * @param modifier
+ * @param onSignIn Callback for sign in event.
+ */
 @Composable
 fun SignInCard(authViewModel: AuthViewModel, modifier: Modifier = Modifier, onSignIn: () -> Unit = {}) {
     Card(modifier = modifier, elevation = 8.dp) {
@@ -40,17 +52,30 @@ fun SignInCard(authViewModel: AuthViewModel, modifier: Modifier = Modifier, onSi
     }
 }
 
+
+/*******************************************************************************
+ ****                           Sign In Section                             ****
+ *******************************************************************************/
+
+/**
+ * UI element that defines the sign in form.
+ *
+ * @param authViewModel [AuthViewModel] that contains required states and event calls.
+ * @param modifier
+ * @param onSignIn Callback for sign in event.
+ */
 @Composable
 fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, onSignIn: () -> Unit = {}) {
-
-    //--------------------------------------------------------------------------------------------------------------
-    // MAIN UI
     CenteredColumn(
         modifier = modifier.width(IntrinsicSize.Min)
     ) {
+        //-------------   Sign In Title   --------------//
         Text(text = stringResource(R.string.sign_in), style = MaterialTheme.typography.h5)
 
         Spacer(Modifier.height(8.dp))
+
+
+        //--------   User and Password Fields   --------//
 
         ValidatorOutlinedTextField(
             modifier = Modifier.widthIn(max = 280.dp),
@@ -82,7 +107,6 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, o
             }
         }
 
-
         PasswordField(
             modifier = Modifier.widthIn(max = 280.dp),
 
@@ -97,10 +121,13 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, o
 
         Divider(Modifier.padding(top = 24.dp, bottom = 16.dp))
 
+        //-------------   Sign In Button   -------------//
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onSignIn,
             shape = getButtonShape(),
+
+            // We only enable the button if username and password have valid values (does not check if username already exist)
             enabled = authViewModel.isSignInUsernameValid && authViewModel.isSignInPasswordConfirmationValid
         ) {
             Text(text = stringResource(R.string.signin_button))

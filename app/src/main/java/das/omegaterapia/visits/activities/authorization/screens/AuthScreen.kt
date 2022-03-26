@@ -58,6 +58,27 @@ import das.omegaterapia.visits.utils.WindowSizeFormat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+
+/*******************************************************************************
+ ****                              Auth Screen                              ****
+ *******************************************************************************/
+
+/**
+ * Main screen for user authentication and creation.
+ *
+ * It's a dynamic layout that controls every part of the Login/Sign In Activity's screen.
+ *
+ * When there's not enough space it only shows the Login or the Sign In and allows to switch between them.
+ * If enough horizontal space is given it shows both Login and Sign In forms.
+ * Data is not lost when rotating/switching/resizing etc...
+ *
+ * @param authViewModel [AuthViewModel] that contains required states and event calls.
+ * @param windowSizeFormatClass [WindowSize] that contains relevant information in order to adjust layout to available space.
+ * @param biometricSupportChecker callback that returns device's biometrics' capabilities.
+ * @param onSuccessfulLogin callback for successful login event. Must get as parameter the successfully logged username.
+ * @param onSuccessfulSignIn callback for successful sign in event. Must get as parameter the successfully signed in username.
+ * @param onBiometricAuthRequested callback for successful login with biometrics event. Must get as parameter the successfully logged username.
+ */
 @Composable
 fun AuthScreen(
     authViewModel: AuthViewModel = viewModel(),
@@ -65,11 +86,19 @@ fun AuthScreen(
     biometricSupportChecker: () -> DeviceBiometricsSupport = { DeviceBiometricsSupport.UNSUPPORTED },
     onSuccessfulLogin: (String) -> Unit = {},
     onSuccessfulSignIn: (String) -> Unit = {},
-    onSuccessfulBiometricLogin: () -> Unit = {},
+    onBiometricAuthRequested: () -> Unit = {},
 ) {
+
+    /*************************************************
+     **             Variables and States            **
+     *************************************************/
+
+    //-----------   Utility variables   ------------//
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
+
+    //-----------------   States   -----------------//
     var biometricSupport by rememberSaveable { mutableStateOf(biometricSupportChecker()) }
 
     var showSignInErrorDialog by rememberSaveable { mutableStateOf(false) }
@@ -77,9 +106,14 @@ fun AuthScreen(
     var showBiometricErrorDialogState by rememberSaveable { mutableStateOf(false) }
     var showBiometricEnrollDialogState by rememberSaveable { mutableStateOf(false) }
 
-    // On login clicked action
+
+    //-----------------   Events   -----------------//
+
+    // On sign in clicked action
     val onSignIn: () -> Unit = {
+        // Launch as coroutine in IO to avoid blocking Main(UI) thread
         coroutineScope.launch(Dispatchers.IO) {
+            // Check if user has been correctly created
             val username = authViewModel.checkSignIn()
             if (username != null) {
                 onSuccessfulSignIn(username)
@@ -87,9 +121,12 @@ fun AuthScreen(
         }
     }
 
+
     // On login clicked action
     val onLogin: () -> Unit = {
+        // Launch as coroutine in IO to avoid blocking Main(UI) thread
         coroutineScope.launch(Dispatchers.IO) {
+            // Check if login has been successful
             val username = authViewModel.checkLogin()
             if (username != null) {
                 onSuccessfulLogin(username)
@@ -97,43 +134,61 @@ fun AuthScreen(
         }
     }
 
+    // On biometrics clicked action
     val onBiometricAuth: () -> Unit = {
+        // Check device's support and act accordingly
         biometricSupport = biometricSupportChecker()
         when {
+            // If there's not been a previous logged user show error dialog
             authViewModel.lastLoggedUser == null -> showBiometricErrorDialogState = true
+
+            // If device supports biometrics but are not configured show enrollment dialog
             biometricSupport == DeviceBiometricsSupport.NON_CONFIGURED -> showBiometricEnrollDialogState = true
-            biometricSupport != DeviceBiometricsSupport.UNSUPPORTED -> onSuccessfulBiometricLogin()
+
+            // Else if it is supported, ask for biometrics authorization
+            biometricSupport != DeviceBiometricsSupport.UNSUPPORTED -> onBiometricAuthRequested()
         }
     }
 
 
-    //--------------------------------------------------------------------------------------------------------------
-    // DIALOGS
+    /*************************************************
+     **                User Interface               **
+     *************************************************/
+
+
+    /*------------------------------------------------
+    |                    Dialogs                     |
+    ------------------------------------------------*/
+
+    //----------   Sign In Error Dialog   ----------//
     if (showSignInErrorDialog) {
         AlertDialog(
             text = { Text(text = stringResource(R.string.existing_account_signin_dialog_title)) },
             onDismissRequest = { showSignInErrorDialog = false },
             confirmButton = {
-                TextButton(onClick = { showSignInErrorDialog = false },
-                    shape = getButtonShape()) { Text(text = stringResource(id = R.string.ok_button)) }
+                TextButton(onClick = { showSignInErrorDialog = false }, shape = getButtonShape()) {
+                    Text(text = stringResource(id = R.string.ok_button))
+                }
             },
             shape = RectangleShape
         )
     }
 
-
+    //-----------   Login Error Dialog   -----------//
     if (showLoginErrorDialog) {
         AlertDialog(
             text = { Text(text = stringResource(R.string.incorrect_login_error_message)) },
             onDismissRequest = { showLoginErrorDialog = false },
             confirmButton = {
-                TextButton(onClick = { showLoginErrorDialog = false },
-                    shape = getButtonShape()) { Text(text = stringResource(R.string.ok_button)) }
+                TextButton(onClick = { showLoginErrorDialog = false }, shape = getButtonShape()) {
+                    Text(text = stringResource(R.string.ok_button))
+                }
             },
             shape = RectangleShape
         )
     }
 
+    //---   Biometric Login User Error Dialog   ----//
     if (showBiometricErrorDialogState) {
         AlertDialog(
             shape = RectangleShape,
@@ -145,12 +200,14 @@ fun AuthScreen(
             },
             onDismissRequest = { showBiometricErrorDialogState = false },
             confirmButton = {
-                TextButton(onClick = { showBiometricErrorDialogState = false },
-                    shape = getButtonShape()) { Text(text = stringResource(R.string.ok_button)) }
+                TextButton(onClick = { showBiometricErrorDialogState = false }, shape = getButtonShape()) {
+                    Text(text = stringResource(R.string.ok_button))
+                }
             }
         )
     }
 
+    //-------   Biometric's Enroll Dialog   --------//
     if (showBiometricEnrollDialogState) {
         AlertDialog(
             shape = RectangleShape,
@@ -164,6 +221,8 @@ fun AuthScreen(
                 }
             },
             onDismissRequest = { showBiometricEnrollDialogState = false },
+
+            // If the user agrees, take them to settings in order to configure biometric authentication
             confirmButton = {
                 TextButton(
                     shape = getButtonShape(),
@@ -181,9 +240,9 @@ fun AuthScreen(
     }
 
 
-    //--------------------------------------------------------------------------------------------------------------
-    // MAIN UI
-
+    /*------------------------------------------------
+    |                  Main Screen                   |
+    ------------------------------------------------*/
     Scaffold { padding ->
         Box(
             contentAlignment = Alignment.Center,
@@ -193,12 +252,19 @@ fun AuthScreen(
                 .verticalScroll(rememberScrollState())
                 .horizontalScroll(rememberScrollState())
         ) {
+
+            // Check available width
             if (windowSizeFormatClass.width != WindowSizeFormat.Compact) {
+
+                //------------   Expanded Layout   -------------//
+
+                // Group both section in an unified Card for better aesthetic
                 Card(elevation = 8.dp) {
                     CenteredRow(Modifier
                         .height(IntrinsicSize.Max)
                         .padding(horizontal = 32.dp, vertical = 16.dp)
                     ) {
+                        // Login Section
                         LoginSection(
                             authViewModel,
                             biometricSupport = biometricSupport,
@@ -206,19 +272,30 @@ fun AuthScreen(
                             onBiometricAuth = onBiometricAuth
                         )
 
+                        // Vertical Divider
                         Divider(modifier = Modifier
                             .padding(horizontal = 64.dp)
                             .fillMaxHeight()
                             .width(1.dp)
                         )
 
+                        // Sign In Section
                         SignInSection(authViewModel, onSignIn = onSignIn)
                     }
                 }
-
             } else {
+
+                //-------------   Compact Layout   -------------//
+
+                /*
+                    In this case we only show one of the 2 forms.
+                    Which one is shown is decided with a boolean state [authViewModel.isLogin]
+
+                    For better user experience, we animate the visibility of both forms with horizontal slide animations.
+                */
                 val animationTime = 275
 
+                // Animation spec (acts as an IF statement)
                 AnimatedVisibility(
                     authViewModel.isLogin,
                     enter = slideInHorizontally(
@@ -245,6 +322,7 @@ fun AuthScreen(
                             onBiometricAuth = onBiometricAuth
                         )
 
+                        //--------   Switch to Sign In Button   --------//
                         Divider(modifier = Modifier.padding(top = 32.dp, bottom = 24.dp))
 
                         Text(text = stringResource(R.string.go_to_signin_label), style = MaterialTheme.typography.body2)
@@ -277,6 +355,7 @@ fun AuthScreen(
                     ) {
                         SignInCard(authViewModel, onSignIn = onSignIn)
 
+                        //---------   Switch to Login Button   ---------//
                         Divider(modifier = Modifier.padding(top = 32.dp, bottom = 24.dp))
 
                         Text(text = stringResource(R.string.go_to_login_label), style = MaterialTheme.typography.body2)

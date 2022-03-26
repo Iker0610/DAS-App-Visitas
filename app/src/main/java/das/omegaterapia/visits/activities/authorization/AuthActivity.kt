@@ -17,7 +17,6 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 import das.omegaterapia.visits.NotificationID
-import das.omegaterapia.visits.OmegaterapiaVisitsApp
 import das.omegaterapia.visits.R
 import das.omegaterapia.visits.activities.authorization.screens.AnimatedSplashScreen
 import das.omegaterapia.visits.activities.authorization.screens.AuthScreen
@@ -26,22 +25,36 @@ import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.utils.BiometricAuthManager
 import das.omegaterapia.visits.utils.rememberWindowSizeClass
 
+
+/*******************************************************************************
+ ****                         Authorization Activity                        ****
+ *******************************************************************************/
+
+/**
+ * Activity for authorization related aspects (login and sign in) and intro splash screen.
+ *
+ * This activity will call a Main Activity when a correct authentication takes place and adds the
+ * authenticated username as extra with the key "LOGGED_USERNAME".
+ */
 @AndroidEntryPoint
 class AuthActivity : FragmentActivity() {
+
+    /*************************************************
+     **     ViewModels and other manager classes    **
+     *************************************************/
+
     private val authViewModel: AuthViewModel by viewModels()
     private lateinit var biometricAuthManager: BiometricAuthManager
 
 
-    /*--------------------------------------------------
-    |            Activity Lifecycle Methods            |
-    --------------------------------------------------*/
+    /*************************************************
+     **          Activity Lifecycle Methods         **
+     *************************************************/
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        (this.application as OmegaterapiaVisitsApp).currentActivity = this
-
         super.onCreate(savedInstanceState)
 
-        // Inicializamos la autenticación biométrica
+        // Initialize biometric authentication manager
         biometricAuthManager =
             BiometricAuthManager(
                 context = this,
@@ -49,24 +62,34 @@ class AuthActivity : FragmentActivity() {
                 onAuthenticationSucceeded = this::onSuccessfulLogin
             )
 
+        /*------------------------------------------------
+        |                 User Interface                 |
+        ------------------------------------------------*/
         setContent {
+            // Apply Theme
             OmegaterapiaTheme {
+
+                // Get processed window size
                 val windowSizeClass = rememberWindowSizeClass()
 
+                // Initialize Navigation (used for transition between splash screen and auth screen)
                 val navController = rememberAnimatedNavController()
                 AnimatedNavHost(
                     navController = navController,
                     startDestination = "splash_screen"
                 ) {
+                    //-------------   Splash Screen   --------------//
                     composable(
                         route = "splash_screen",
                         exitTransition = { fadeOut(animationSpec = tween(500)) }
                     ) {
                         AnimatedSplashScreen {
-                            navController.popBackStack()
+                            navController.popBackStack() // Empty the backstack so the user doesn't return to splash screen
                             navController.navigate("auth_screen")
                         }
                     }
+
+                    //----------   Authorization Screen   ----------//
                     composable(
                         route = "auth_screen",
                         enterTransition = { fadeIn(animationSpec = tween(500)) }
@@ -77,7 +100,7 @@ class AuthActivity : FragmentActivity() {
                             biometricSupportChecker = biometricAuthManager::checkBiometricSupport,
                             onSuccessfulLogin = ::onSuccessfulLogin,
                             onSuccessfulSignIn = ::onSuccessfulSignIn,
-                            onSuccessfulBiometricLogin = biometricAuthManager::submitBiometricAuthorization
+                            onBiometricAuthRequested = biometricAuthManager::submitBiometricAuthorization
                         )
                     }
                 }
@@ -86,10 +109,16 @@ class AuthActivity : FragmentActivity() {
     }
 
 
-    /*-------------------------------------------------
-    |              Login Sign In actions              |
-    -------------------------------------------------*/
+    /*************************************************
+     **           Login and Sign In Events          **
+     *************************************************/
 
+    /**
+     * If the username has Signed In successfully, launch a local notification
+     * and automatically login the new user.
+     *
+     * @param username Signed in username
+     */
     private fun onSuccessfulSignIn(username: String) {
 
         // Show user created notification
@@ -108,11 +137,16 @@ class AuthActivity : FragmentActivity() {
         onSuccessfulLogin(username)
     }
 
+    /**
+     * It updates the last logged user on the Datastore and launches the Main Activity
+     *
+     * @param username Logged in user's username
+     */
     private fun onSuccessfulLogin(username: String) {
         // Set the last logged user
         authViewModel.updateLastLoggedUsername(username)
 
-        // Open the amin activity
+        // Open the main activity
         val intent = Intent(this, MainActivity::class.java).apply {
             putExtra("LOGGED_USERNAME", username)
         }

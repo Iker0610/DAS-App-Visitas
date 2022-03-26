@@ -31,6 +31,7 @@ import das.omegaterapia.visits.R
 import das.omegaterapia.visits.activities.main.VisitsViewModel
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.navigation.BackArrowTopBar
+import das.omegaterapia.visits.ui.theme.getButtonShape
 import das.omegaterapia.visits.utils.LanguagePickerDialog
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -72,7 +73,7 @@ fun UserProfileScreen(
 
             Text("Estamos en proceso...", style = MaterialTheme.typography.h6)
 
-            Button(onClick = { showSelectLangDialog = true }) {
+            Button(onClick = { showSelectLangDialog = true }, shape = getButtonShape()) {
 
             }
 
@@ -108,7 +109,8 @@ private fun SaveAsJSONSection(visitsViewModel: VisitsViewModel) {
         CenteredColumn(Modifier.padding(horizontal = 32.dp, vertical = 16.dp)) {
             Text(text = stringResource(R.string.save_json_section_title), style = MaterialTheme.typography.subtitle1)
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { saverLauncher.launch("visits_${LocalDate.now().format(DateTimeFormatter.ISO_DATE)}.json") }) {
+            Button(onClick = { saverLauncher.launch("visits_${LocalDate.now().format(DateTimeFormatter.ISO_DATE)}.json") },
+                shape = getButtonShape()) {
                 Text(text = stringResource(R.string.save_button))
             }
         }

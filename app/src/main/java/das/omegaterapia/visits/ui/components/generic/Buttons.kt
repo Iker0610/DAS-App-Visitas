@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ButtonElevation
@@ -34,7 +32,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.ui.theme.getButtonShape
 
@@ -183,7 +180,7 @@ fun NavRailIcon(
     Surface(
         onClick = action,
         modifier = modifier.size(48.dp),
-        shape = CutCornerShape(topStartPercent = 25, bottomEndPercent = 25),
+        shape = getButtonShape(),
         color = backgroundColor
     ) {
         NavigationIcon(

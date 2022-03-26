@@ -45,4 +45,4 @@ fun OmegaterapiaTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Comp
 }
 
 @Composable
-fun getButtonShape() = CutCornerShape(25)
+fun getButtonShape() = CutCornerShape(topStartPercent = 25, bottomEndPercent = 25)

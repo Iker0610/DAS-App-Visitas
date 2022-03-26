@@ -32,6 +32,7 @@ import das.omegaterapia.visits.data.visitList
 import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.model.entities.VisitId
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
+import das.omegaterapia.visits.ui.theme.getButtonShape
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -54,12 +55,12 @@ fun VisitList(
         AlertDialog(
             title = { Text(text = "Do you want to delete this Visit Card?") },
             confirmButton = {
-                TextButton(onClick = { onItemDelete(VisitId(toDeleteItemId!!)); toDeleteItemId = null }) {
+                TextButton(onClick = { onItemDelete(VisitId(toDeleteItemId!!)); toDeleteItemId = null }, shape = getButtonShape()) {
                     Text(text = "DELETE")
                 }
             },
             dismissButton = {
-                TextButton(onClick = dismissCallback) {
+                TextButton(onClick = dismissCallback, shape = getButtonShape()) {
                     Text(text = "DISMISS")
                 }
             },

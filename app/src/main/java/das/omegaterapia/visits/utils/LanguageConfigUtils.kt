@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
+import das.omegaterapia.visits.ui.theme.getButtonShape
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -124,8 +125,9 @@ fun LanguagePickerDialog(
                     .fillMaxWidth()
                     .padding(8.dp), horizontalArrangement = Arrangement.End) {
                     CenteredRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        TextButton(onClick = onDismiss) { Text(text = "CANCEL") }
-                        TextButton(onClick = { onLanguageSelected(AppLanguage.getFromCode(selected)) }) { Text(text = "APPLY") }
+                        TextButton(onClick = onDismiss, shape = getButtonShape()) { Text(text = "CANCEL") }
+                        TextButton(onClick = { onLanguageSelected(AppLanguage.getFromCode(selected)) },
+                            shape = getButtonShape()) { Text(text = "APPLY") }
                     }
                 }
             }

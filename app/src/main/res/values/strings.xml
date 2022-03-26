@@ -1,16 +1,15 @@
 <resources>
-    <string name="app_name">App-Visitas</string>
+    <string name="app_name">Omegaterapia Visits</string>
     <string name="auth_channel_name">Authorization Channel</string>
     <string name="auth_channel_description">Notification channel for authorization events.</string>
-    <string name="fab_add">Add</string>
-    <string name="fab_icon_description">Add new item</string>
+    <string name="fab_icon_description">Add new visit card</string>
     <string name="save_json_section_title">Save today\'s visits as JSON</string>
     <string name="save_button">Save</string>
     <string name="open_in_maps">Open in Maps</string>
     <string name="app_lang_setting_title">Application Language</string>
-    <string name="date_format_setting_section_title">Visits Screens\' Date Format</string>
-    <string name="today_visits_setting_title">Today\'s Visits\' date format</string>
-    <string name="other_visits_setting_title">Other Visits Section\' date format</string>
+    <string name="date_format_setting_section_title">"Visits Screens' Date Grouping and Format "</string>
+    <string name="today_visits_setting_title">Today\'s Visits\' date grouping and format</string>
+    <string name="other_visits_setting_title">Other Visits Section\' date grouping and format</string>
     <string name="select_lang_dialog_title">Select Language</string>
     <string name="select_date_grouping_dialog_title">Select date grouping and formatting</string>
     <string name="save_visits_button_description">Save today\'s visits</string>
@@ -37,7 +36,7 @@
     <string name="go_to_signin_label">Don\'t have an account?</string>
     <string name="go_to_login_label">Already have an account?</string>
     <string name="user_created_dialog_title">User created</string>
-    <string name="user_created_dialog_text">The User %1$s has been successfully created.</string>
+    <string name="user_created_dialog_text">The user %1$s has been successfully created.</string>
     <string name="visit_card_edit_failed_dialog_title">Couldn\'t edit the Visit Card</string>
     <string name="visit_card_edit_failed_dialog_text">An error occurred when editing the Visit Card. Try again.</string>
     <string name="dismiss_button">DISMISS</string>
@@ -82,6 +81,6 @@
     <string name="biometric_auth_failed_toast_message">Authentication Failed. Try again.</string>
     <string name="biometric_auth_error_toast_message">Authentication error: %1$s</string>
     <string name="biometric_auth_prompt_title">Login as %1$s</string>
-    <string name="biometric_auth_prompt_text">Log in using your biometric credential</string>
+    <string name="biometric_auth_prompt_text">Log in using your device\'s biometric credentials</string>
     <string name="apply_button">APPLY</string>
 </resources>

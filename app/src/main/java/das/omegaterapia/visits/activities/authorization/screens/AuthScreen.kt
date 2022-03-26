@@ -29,7 +29,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import das.omegaterapia.visits.activities.authorization.AuthViewModel
-import das.omegaterapia.visits.activities.authorization.DeviceBiometricsSupport
 import das.omegaterapia.visits.activities.authorization.composables.LoginCard
 import das.omegaterapia.visits.activities.authorization.composables.LoginSection
 import das.omegaterapia.visits.activities.authorization.composables.SignInCard
@@ -38,6 +37,7 @@ import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.ui.theme.getButtonShape
+import das.omegaterapia.visits.utils.DeviceBiometricsSupport
 import das.omegaterapia.visits.utils.WindowSize
 import das.omegaterapia.visits.utils.WindowSizeFormat
 

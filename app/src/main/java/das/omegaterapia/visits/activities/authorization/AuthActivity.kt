@@ -23,6 +23,7 @@ import das.omegaterapia.visits.activities.authorization.screens.AnimatedSplashSc
 import das.omegaterapia.visits.activities.authorization.screens.AuthScreen
 import das.omegaterapia.visits.activities.main.MainActivity
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
+import das.omegaterapia.visits.utils.BiometricAuthManager
 import das.omegaterapia.visits.utils.rememberWindowSizeClass
 
 @AndroidEntryPoint

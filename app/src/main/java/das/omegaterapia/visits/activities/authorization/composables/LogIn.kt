@@ -37,13 +37,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import das.omegaterapia.visits.activities.authorization.AuthViewModel
-import das.omegaterapia.visits.activities.authorization.BiometricAuthManager
-import das.omegaterapia.visits.activities.authorization.DeviceBiometricsSupport
 import das.omegaterapia.visits.ui.components.form.PasswordField
 import das.omegaterapia.visits.ui.components.form.ValidatorOutlinedTextField
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.ui.theme.getButtonShape
+import das.omegaterapia.visits.utils.BiometricAuthManager
+import das.omegaterapia.visits.utils.DeviceBiometricsSupport
 import das.omegaterapia.visits.utils.canBeValidUsername
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

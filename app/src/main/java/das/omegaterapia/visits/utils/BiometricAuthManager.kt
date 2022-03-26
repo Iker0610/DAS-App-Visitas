@@ -1,4 +1,4 @@
-package das.omegaterapia.visits.activities.authorization
+package das.omegaterapia.visits.utils
 
 import android.content.ActivityNotFoundException
 import android.content.Context

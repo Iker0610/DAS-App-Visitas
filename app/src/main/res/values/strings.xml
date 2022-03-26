@@ -89,4 +89,6 @@
     <string name="hour_temporal_converter">Hour</string>
     <string name="hour_with_day_temporal_converter">Hour with day</string>
     <string name="hour_with_full_date_temporal_converter">Full date-time</string>
+    <string name="exit_button">EXIT</string>
+    <string name="app_exit_dialog_text">Are you sure you want to exit?</string>
 </resources>

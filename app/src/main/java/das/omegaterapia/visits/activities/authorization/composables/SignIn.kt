@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
@@ -17,17 +16,10 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,45 +32,16 @@ import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.ui.theme.getButtonShape
 import das.omegaterapia.visits.utils.canBeValidUsername
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
-fun SignInCard(authViewModel: AuthViewModel, modifier: Modifier = Modifier, onSignInSuccessful: (String) -> Unit = {}) {
+fun SignInCard(authViewModel: AuthViewModel, modifier: Modifier = Modifier, onSignIn: () -> Unit = {}) {
     Card(modifier = modifier, elevation = 8.dp) {
-        SignInSection(authViewModel, Modifier.padding(horizontal = 32.dp, vertical = 16.dp), onSignInSuccessful)
+        SignInSection(authViewModel, Modifier.padding(horizontal = 32.dp, vertical = 16.dp), onSignIn)
     }
 }
 
 @Composable
-fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, onSignInSuccessful: (String) -> Unit = {}) {
-    // States
-    val coroutineScope = rememberCoroutineScope()
-    var showSignInErrorDialog by rememberSaveable { mutableStateOf(false) }
-
-    // On login clicked action
-    val onSignIn: () -> Unit = {
-        coroutineScope.launch(Dispatchers.IO) {
-            val username = authViewModel.checkSignIn()
-            if (username != null) {
-                onSignInSuccessful(username)
-            } else showSignInErrorDialog = authViewModel.signInUserExists
-        }
-    }
-
-    //--------------------------------------------------------------------------------------------------------------
-    // DIALOGS
-    if (showSignInErrorDialog) {
-        AlertDialog(
-            onDismissRequest = { showSignInErrorDialog = false },
-            confirmButton = {
-                TextButton(onClick = { showSignInErrorDialog = false },
-                    shape = getButtonShape()) { Text(text = stringResource(id = R.string.ok_button)) }
-            },
-            text = { Text(text = stringResource(R.string.existing_account_signin_dialog_title), style = MaterialTheme.typography.body1) },
-            shape = RectangleShape
-        )
-    }
+fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, onSignIn: () -> Unit = {}) {
 
     //--------------------------------------------------------------------------------------------------------------
     // MAIN UI

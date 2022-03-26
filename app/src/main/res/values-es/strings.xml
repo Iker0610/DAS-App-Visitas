@@ -90,4 +90,6 @@
     <string name="hour_temporal_converter">Hora</string>
     <string name="hour_with_day_temporal_converter">Día y Hora</string>
     <string name="hour_with_full_date_temporal_converter">Fecha y Hora</string>
+    <string name="exit_button">CERRAR</string>
+    <string name="app_exit_dialog_text">¿Está seguro de que quiere cerrar la aplicación?</string>
 </resources>

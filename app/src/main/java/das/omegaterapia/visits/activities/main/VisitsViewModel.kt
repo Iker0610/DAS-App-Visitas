@@ -38,16 +38,31 @@ class VisitsViewModel @Inject constructor(
 
     // States
     val currentUser = savedStateHandle.get("LOGGED_USERNAME") as? String ?: ""
+
     val allVisits = visitsRepository.getUsersVisits(currentUser)
-        .map { visitList -> TemporalConverter.WEEK.groupDates(visitList, key = VisitCard::visitDate::get) }
+        .map { visitList -> getMultipleDayFormatter().groupDates(visitList, key = VisitCard::visitDate::get) }
 
     val vipVisits = visitsRepository.getUsersVIPVisits(currentUser)
-        .map { visitList -> TemporalConverter.WEEK.groupDates(visitList, key = VisitCard::visitDate::get) }
+        .map { visitList -> getMultipleDayFormatter().groupDates(visitList, key = VisitCard::visitDate::get) }
 
     val todaysVisits = visitsRepository.getUsersTodaysVisits(currentUser)
-        .map { visitList -> TemporalConverter.HOUR_WITH_DAY.groupDates(visitList, key = VisitCard::visitDate::get) }
+        .map { visitList -> getDayFormatter().groupDates(visitList, key = VisitCard::visitDate::get) }
+
 
     var currentToEditVisit: VisitCard? by mutableStateOf(null)
+
+
+    private fun getDayFormatter(): TemporalConverter {
+        return runBlocking {
+            return@runBlocking preferencesRepository.userDayConverter(currentUser).map { TemporalConverter.valueOf(it) }.first()
+        }
+    }
+
+    private fun getMultipleDayFormatter(): TemporalConverter {
+        return runBlocking {
+            return@runBlocking preferencesRepository.userMultipleDayConverter(currentUser).map { TemporalConverter.valueOf(it) }.first()
+        }
+    }
 
     // Events
     suspend fun addVisitCard(visitCard: VisitCard) = visitsRepository.addVisitCard(visitCard.also { it.user = currentUser })
@@ -75,4 +90,5 @@ class VisitsViewModel @Inject constructor(
             return@runBlocking gsonBuilder.toJson(todaysVisit)
         }
     }
+
 }

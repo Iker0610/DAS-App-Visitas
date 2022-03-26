@@ -83,7 +83,7 @@ fun OutlinedChoiceChip(
         enabled = true,
         interactionSource = interactionSource,
         shape = shape,
-        border = BorderStroke(1.dp, color = colors.leadingIconContentColor(enabled = true).value),
+        border = BorderStroke(1.dp, color = colors.contentColor(enabled = true).value.copy(alpha = 0.36f)),
         colors = colors,
         leadingIcon = leadingIcon,
         content = content

@@ -44,7 +44,7 @@ fun FixedOutlinedButton(
     elevation: ButtonElevation? = null,
     shape: Shape = getButtonShape(),
     border: BorderStroke? = BorderStroke(ButtonDefaults.OutlinedBorderSize,
-        MaterialTheme.colors.onSurface.copy(alpha = 0.24f)
+        MaterialTheme.colors.onSurface.copy(alpha = 0.36f)
     ),
     colors: ButtonColors = ButtonDefaults.outlinedButtonColors(),
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,

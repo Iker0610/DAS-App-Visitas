@@ -1,7 +1,5 @@
 package das.omegaterapia.visits.utils
 
-import android.app.Application
-import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
@@ -24,20 +22,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ActivityScoped
 import das.omegaterapia.visits.OmegaterapiaVisitsApp
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
-fun Context.getActivity(): ComponentActivity? = when (this) {
+private fun Context.getActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
-    is OmegaterapiaVisitsApp -> this.currentActivity as ComponentActivity
     is ContextWrapper -> baseContext.getActivity()
     else -> null
 }
+
 
 enum class AppLanguage(val language: String, val code: String) {
     EN("English", "en"),
@@ -53,33 +49,25 @@ enum class AppLanguage(val language: String, val code: String) {
 
 
 @Singleton
-class LanguageManager @Inject constructor(
-    @ApplicationContext val context: Context,
-) {
-    var currentLang: AppLanguage = AppLanguage.getFromCode(Locale.getDefault().language)
+class LanguageManager @Inject constructor() {
+    var currentLang: AppLanguage = AppLanguage.getFromCode(Locale.getDefault().language.lowercase())
 
-
-    fun changeLang(newLang: AppLanguage, recreate: Boolean = true) {
-        Log.d("lang", "call to change: ${newLang.code} ${currentLang.code} $context")
-        if (newLang != currentLang || currentLang.code != Locale.getDefault().language) {
-            currentLang = newLang
+    fun changeLang(lang: AppLanguage, context: Context, recreate: Boolean = true) {
+        if (lang != currentLang || currentLang.code != Locale.getDefault().language) {
+            currentLang = lang
 
             context.resources.apply {
-                val locale = Locale(newLang.code)
+                val locale = Locale(lang.code)
                 val config = Configuration(configuration)
 
                 context.createConfigurationContext(configuration)
                 Locale.setDefault(locale)
                 config.setLocale(locale)
-                @Suppress("DEPRECATION")
                 context.resources.updateConfiguration(config, displayMetrics)
             }
-
-            if (recreate) (context as Application).getActivity()?.recreate()
+            if (recreate) context.getActivity()?.recreate()
         }
     }
-
-    fun reloadLang() = changeLang(currentLang, false)
 }
 
 

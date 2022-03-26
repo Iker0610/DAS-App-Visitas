@@ -45,6 +45,8 @@ fun UserProfileScreen(
     preferencesViewModel: PreferencesViewModel = hiltViewModel(),
     onBackPressed: () -> Unit = {},
 ) {
+    val context = LocalContext.current
+
     Scaffold(topBar = { BackArrowTopBar(title, onBackPressed) }) {
         CenteredColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -63,7 +65,7 @@ fun UserProfileScreen(
                 LanguagePickerDialog(
                     title = "Select Language",
                     selectedLanguage = userSelectedLanguage,
-                    onLanguageSelected = { preferencesViewModel.changeLang(it); showSelectLangDialog = false },
+                    onLanguageSelected = { preferencesViewModel.changeLang(it, context); showSelectLangDialog = false },
                     onDismiss = { showSelectLangDialog = false }
                 )
             }
@@ -107,7 +109,7 @@ private fun SaveAsJSONSection(visitsViewModel: VisitsViewModel) {
             Text(text = stringResource(R.string.save_json_section_title), style = MaterialTheme.typography.subtitle1)
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = { saverLauncher.launch("visits_${LocalDate.now().format(DateTimeFormatter.ISO_DATE)}.json") }) {
-                Text(text = "Save")
+                Text(text = stringResource(R.string.save_button))
             }
         }
     }

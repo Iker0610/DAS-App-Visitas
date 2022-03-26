@@ -5,4 +5,6 @@
     <string name="fab_add">Add</string>
     <string name="fab_icon_description">Add new item</string>
     <string name="save_json_section_title">Save today\'s visits as JSON</string>
+    <string name="save_button">Save</string>
+    <string name="open_in_maps">Open in Maps</string>
 </resources>

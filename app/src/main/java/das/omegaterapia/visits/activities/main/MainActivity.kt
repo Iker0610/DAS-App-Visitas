@@ -46,7 +46,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -80,7 +79,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     private val preferencesViewModel: PreferencesViewModel by viewModels()
 
 
@@ -92,7 +90,9 @@ class MainActivity : ComponentActivity() {
         (this.application as OmegaterapiaVisitsApp).currentActivity = this
 
         setContent {
-            preferencesViewModel.reloadLang()
+            preferencesViewModel.reloadLang(preferencesViewModel.currentPrefLang.collectAsState(initial = preferencesViewModel.currentSetLang).value,
+                this)
+
             OmegaterapiaTheme {
                 val windowSize = rememberWindowSizeClass()
                 MainActivityScreen(preferencesViewModel = preferencesViewModel, windowSize = windowSize)

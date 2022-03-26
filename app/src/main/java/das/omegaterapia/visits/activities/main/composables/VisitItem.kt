@@ -56,11 +56,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import das.omegaterapia.visits.R
 import das.omegaterapia.visits.data.visitList
 import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.ui.components.form.TextIconButton
@@ -209,7 +211,7 @@ fun VisitCardItem(
 
                 TextIconButton(
                     icon = Icons.Filled.PinDrop,
-                    text = "Open in Maps",
+                    text = stringResource(R.string.open_in_maps),
                     contentPadding = PaddingValues(vertical = 0.dp, horizontal = 16.dp),
                     onClick = { context.startActivity(mapsIntent) })
             }

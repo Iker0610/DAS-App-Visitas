@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import dagger.hilt.android.scopes.ActivityScoped
+import das.omegaterapia.visits.utils.TemporalConverter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -21,6 +21,8 @@ private object PreferencesKeys {
     val LAST_LOGGED_USER = stringPreferencesKey("last_logged_user")
 
     fun USER_LANG(user: String) = stringPreferencesKey("${user}_lang")
+    fun USER_DAY_CONVERTER(user: String) = stringPreferencesKey("${user}_day_converter")
+    fun USER_MULTIPLE_DAY_CONVERTER(user: String) = stringPreferencesKey("${user}_multiple_day_converter")
 }
 
 
@@ -35,12 +37,33 @@ class PreferencesRepository @Inject constructor(private val context: Context) : 
         }
     }
 
+
     override fun userLanguage(user: String): Flow<String> =
         context.dataStore.data.map { it[PreferencesKeys.USER_LANG(user)] ?: Locale.getDefault().language }
 
     override suspend fun setUserLanguage(user: String, langCode: String) {
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.USER_LANG(user)] = langCode
+        }
+    }
+
+
+    override fun userDayConverter(user: String): Flow<String> =
+        context.dataStore.data.map { it[PreferencesKeys.USER_DAY_CONVERTER(user)] ?: TemporalConverter.oneDayDefault.name }
+
+    override suspend fun setDayConverter(user: String, converter: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.USER_DAY_CONVERTER(user)] = converter
+        }
+    }
+
+
+    override fun userMultipleDayConverter(user: String): Flow<String> =
+        context.dataStore.data.map { it[PreferencesKeys.USER_MULTIPLE_DAY_CONVERTER(user)] ?: TemporalConverter.multipleDayDefault.name }
+
+    override suspend fun setUserMultipleDayConverter(user: String, converter: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.USER_MULTIPLE_DAY_CONVERTER(user)] = converter
         }
     }
 }

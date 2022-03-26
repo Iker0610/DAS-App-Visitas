@@ -37,7 +37,10 @@ import das.omegaterapia.visits.activities.main.VisitsViewModel
 import das.omegaterapia.visits.ui.components.form.FormSubsection
 import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.navigation.BackArrowTopBar
+import das.omegaterapia.visits.utils.DayConverterPickerDialog
 import das.omegaterapia.visits.utils.LanguagePickerDialog
+import das.omegaterapia.visits.utils.MultipleDaysConverterPickerDialog
+import das.omegaterapia.visits.utils.TemporalConverter
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
@@ -63,8 +66,13 @@ fun UserProfileScreen(
                 .padding(vertical = 16.dp)
         ) {
 
+            val prefLanguage by preferencesViewModel.prefLang.collectAsState(initial = preferencesViewModel.currentSetLang)
+            val prefOneDayConverter by preferencesViewModel.prefOneDayConverter.collectAsState(initial = TemporalConverter.oneDayDefault.name)
+            val prefMultipleDayConverter by preferencesViewModel.prefMultipleDayConverter.collectAsState(initial = TemporalConverter.multipleDayDefault.name)
+
             var showSelectLangDialog by rememberSaveable { mutableStateOf(false) }
-            val userSelectedLanguage by preferencesViewModel.currentPrefLang.collectAsState(initial = preferencesViewModel.currentSetLang)
+            var showDayConverterDialog by rememberSaveable { mutableStateOf(false) }
+            var showMultipleDaysConverterDialog by rememberSaveable { mutableStateOf(false) }
 
             //------------------------------------------------------------------------------------
             // DIALOGS
@@ -72,9 +80,27 @@ fun UserProfileScreen(
             if (showSelectLangDialog) {
                 LanguagePickerDialog(
                     title = "Select Language",
-                    selectedLanguage = userSelectedLanguage,
+                    selectedLanguage = prefLanguage,
                     onLanguageSelected = { preferencesViewModel.changeLang(it, context); showSelectLangDialog = false },
                     onDismiss = { showSelectLangDialog = false }
+                )
+            }
+
+            if (showDayConverterDialog) {
+                DayConverterPickerDialog(
+                    title = "Select date grouping and formatting",
+                    selectedConverter = prefOneDayConverter,
+                    onConverterSelected = { preferencesViewModel.setOneDayConverterPreference(it); showDayConverterDialog = false },
+                    onDismiss = { showDayConverterDialog = false }
+                )
+            }
+
+            if (showMultipleDaysConverterDialog) {
+                MultipleDaysConverterPickerDialog(
+                    title = "Select date grouping and formatting",
+                    selectedConverter = prefMultipleDayConverter,
+                    onConverterSelected = { preferencesViewModel.setMultipleDayConverterPreference(it); showMultipleDaysConverterDialog = false },
+                    onDismiss = { showMultipleDaysConverterDialog = false }
                 )
             }
 
@@ -87,7 +113,7 @@ fun UserProfileScreen(
             // Title
 
             Icon(
-                modifier = Modifier.size(160.dp),
+                modifier = Modifier.size(140.dp),
                 painter = painterResource(id = R.mipmap.ic_launcher_foreground),
                 contentDescription = null,
                 tint = Color.Unspecified
@@ -100,7 +126,7 @@ fun UserProfileScreen(
 
             ListItem(
                 icon = { Icon(Icons.Filled.Language, null, Modifier.padding(top = 7.dp)) },
-                secondaryText = { Text(text = userSelectedLanguage.language) },
+                secondaryText = { Text(text = prefLanguage.language) },
                 modifier = Modifier.clickable { showSelectLangDialog = true }
             ) {
                 Text(text = "Application Language")
@@ -110,20 +136,19 @@ fun UserProfileScreen(
 
             ListItem(
                 icon = { Icon(Icons.Filled.Language, null, Modifier.padding(top = 7.dp)) },
-                secondaryText = { Text(text = userSelectedLanguage.language) },
-                modifier = Modifier.clickable { showSelectLangDialog = true }
+                secondaryText = { Text(text = TemporalConverter.valueOf(prefOneDayConverter).configName) },
+                modifier = Modifier.clickable { showDayConverterDialog = true }
             ) {
                 Text(text = "Today's Visits' Date Format")
             }
 
             ListItem(
                 icon = { Icon(Icons.Filled.Language, null, Modifier.padding(top = 7.dp)) },
-                secondaryText = { Text(text = userSelectedLanguage.language) },
-                modifier = Modifier.clickable { showSelectLangDialog = true }
+                secondaryText = { Text(text = TemporalConverter.valueOf(prefMultipleDayConverter).configName) },
+                modifier = Modifier.clickable { showMultipleDaysConverterDialog = true }
             ) {
                 Text(text = "All and Vip Visits' Section Date Format")
             }
-
 
 
             Divider(Modifier.padding(top = 16.dp, bottom = 16.dp))

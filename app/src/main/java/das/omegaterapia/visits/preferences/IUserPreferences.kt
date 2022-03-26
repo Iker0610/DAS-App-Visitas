@@ -8,7 +8,7 @@ interface IUserPreferences {
     suspend fun setUserLanguage(user: String, langCode: String)
 
     fun userDayConverter(user: String): Flow<String>
-    suspend fun setDayConverter(user: String, converter: String)
+    suspend fun setUserDayConverter(user: String, converter: String)
 
     fun userMultipleDayConverter(user: String): Flow<String>
     suspend fun setUserMultipleDayConverter(user: String, converter: String)

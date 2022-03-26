@@ -39,16 +39,16 @@ import java.time.temporal.TemporalAdjusters
 import java.util.*
 
 
-enum class TemporalConverter(val configName: String, val converter: (ZonedDateTime) -> String) {
-    MONTH("Month (2022 - January)", { it.with(TemporalAdjusters.firstDayOfMonth()).format(DateTimeFormatter.ofPattern("yyyy - MMMM")).uppercase() }),
-    WEEK("Week (2022 FEB 28 - MAR 06)", ::getWeek),
-    DAY("Day (2000 - JAN 02, Tuesday)", ::getDay),
-    HOUR("Hour (17:45)", ::getHour),
-    HOUR_WITH_DAY("Hour with day (Monday 26 - 17:45)", {
+enum class TemporalConverter(val configName: String, val example: String, val converter: (ZonedDateTime) -> String) {
+    MONTH("Month", "2022 - January", { it.with(TemporalAdjusters.firstDayOfMonth()).format(DateTimeFormatter.ofPattern("yyyy - MMMM")).uppercase() }),
+    WEEK("Week", "2022 FEB 28 - MAR 06", ::getWeek),
+    DAY("Day", "2000 - JAN 02, Tuesday", ::getDay),
+    HOUR("Hour", "17:45", ::getHour),
+    HOUR_WITH_DAY("Hour with day", "Monday 26 - 17:45", {
         getHour(it, "EEEE dd - HH:mm")
             .replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase(Locale.getDefault()) else char.toString() }
     }),
-    HOUR_WITH_FULL_DATE("Full date-time (2000 JAN 02 (Mon) - 17:45)", { getHour(it, "yyyy MMM dd (EE) - HH:mm") })
+    HOUR_WITH_FULL_DATE("Full date-time", "2000 JAN 02 (Mon) - 17:45", { getHour(it, "yyyy MMM dd (EE) - HH:mm") })
     ;
 
     fun <T> groupDates(list: List<T>, key: (T) -> ZonedDateTime): Map<String, List<T>> = list.groupBy { this.converter(key(it)) }
@@ -150,7 +150,8 @@ private fun ConverterPickerDialog(
                         ListItem(
                             modifier = Modifier.clickable { selected = format.name },
                             trailing = { Checkbox(checked = selected == format.name, onCheckedChange = { selected = format.name }) },
-                            text = { Text(text = format.configName, style = MaterialTheme.typography.body1) }
+                            text = { Text(text = format.configName, style = MaterialTheme.typography.body1) },
+                            secondaryText = { Text(text = format.example) }
                         )
                     }
                 }

@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.model.entities.VisitId
 import das.omegaterapia.visits.model.repositories.IVisitsRepository
+import das.omegaterapia.visits.preferences.IUserPreferences
 import das.omegaterapia.visits.utils.TemporalConverter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -23,6 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class VisitsViewModel @Inject constructor(
     private val visitsRepository: IVisitsRepository,
+    private val preferencesRepository: IUserPreferences,
+
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 

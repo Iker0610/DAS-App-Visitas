@@ -20,10 +20,31 @@ class PreferencesViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
+    // Current logged user
     val currentUser = (savedStateHandle.get("username") as? String ?: savedStateHandle.get("LOGGED_USERNAME") as? String)!!
 
+
+    // PREFERENCES
+
+    // Current lag and set lang (may not be the same)
     val currentSetLang by languageManager::currentLang
-    val currentPrefLang = preferencesRepository.userLanguage(currentUser).map { AppLanguage.getFromCode(it) }
+    val prefLang = preferencesRepository.userLanguage(currentUser).map { AppLanguage.getFromCode(it) }
+
+    // Date Time Converter Related
+    val prefOneDayConverter = preferencesRepository.userDayConverter(currentUser)
+    val prefMultipleDayConverter = preferencesRepository.userMultipleDayConverter(currentUser)
+
+
+    // EVENTS
+
+    // Date Time Converter Related
+    fun setOneDayConverterPreference(converter: String) {
+        viewModelScope.launch(Dispatchers.IO) { preferencesRepository.setUserDayConverter(currentUser, converter) }
+    }
+
+    fun setMultipleDayConverterPreference(converter: String) {
+        viewModelScope.launch(Dispatchers.IO) { preferencesRepository.setUserMultipleDayConverter(currentUser, converter) }
+    }
 
     // Language related
     fun changeLang(newLang: AppLanguage, context: Context) {

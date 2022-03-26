@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity() {
         (this.application as OmegaterapiaVisitsApp).currentActivity = this
 
         setContent {
-            preferencesViewModel.reloadLang(preferencesViewModel.currentPrefLang.collectAsState(initial = preferencesViewModel.currentSetLang).value,
+            preferencesViewModel.reloadLang(preferencesViewModel.prefLang.collectAsState(initial = preferencesViewModel.currentSetLang).value,
                 this)
 
             OmegaterapiaTheme {

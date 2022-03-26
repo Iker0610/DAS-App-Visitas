@@ -51,7 +51,7 @@ class PreferencesRepository @Inject constructor(private val context: Context) : 
     override fun userDayConverter(user: String): Flow<String> =
         context.dataStore.data.map { it[PreferencesKeys.USER_DAY_CONVERTER(user)] ?: TemporalConverter.oneDayDefault.name }
 
-    override suspend fun setDayConverter(user: String, converter: String) {
+    override suspend fun setUserDayConverter(user: String, converter: String) {
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.USER_DAY_CONVERTER(user)] = converter
         }

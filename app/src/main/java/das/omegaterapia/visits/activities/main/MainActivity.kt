@@ -44,6 +44,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -183,7 +184,7 @@ private fun MainActivityScreen(
                 items(MainActivityScreens.navigableScreens.toList()) {
                     DrawerButton(
                         icon = it.icon,
-                        label = it.title,
+                        label = it.title(LocalContext.current),
                         isSelected = currentRoute?.destination?.route == it.route,
                         action = {
                             scope.launch {
@@ -221,7 +222,7 @@ private fun MainActivityScreen(
                     exit = slideOutVertically(targetOffsetY = { 2 * it })
                 ) {
                     BottomNavBar(
-                        currentScreenTitle = MainActivityScreens.fromRoute(currentRoute?.destination?.route).title,
+                        currentScreenTitle = MainActivityScreens.fromRoute(currentRoute?.destination?.route).title(LocalContext.current),
                         onMenuOpen = { scope.launch { drawerState.open() } },
                         onSettings = {
                             navController.navigate(MainActivityScreens.Account.route + "/${visitViewModel.currentUser}") {
@@ -255,7 +256,7 @@ private fun MainActivityScreen(
                                 // Solución por defecto de google
 
 //                                  NavigationRailItem(
-//                                    icon = { Icon(screen.icon, contentDescription = screen.title) },
+//                                    icon = { Icon(screen.icon, contentDescription = screen.title(LocalContext.current)) },
 //                                    label = null,
 //                                    selected = currentRoute?.destination?.route == screen.route,
 //                                    onClick = {
@@ -272,7 +273,7 @@ private fun MainActivityScreen(
                                 // Usamos este botón debido a que resalta mejor la ventana actual
                                 NavRailIcon(
                                     icon = screen.icon,
-                                    contentDescription = screen.title,
+                                    contentDescription = screen.title(LocalContext.current),
                                     isSelected = currentRoute?.destination?.route == screen.route,
                                     action = {
                                         navController.navigate(screen.route) {
@@ -288,7 +289,7 @@ private fun MainActivityScreen(
                         }
                         NavRailIcon(
                             icon = MainActivityScreens.Account.icon,
-                            contentDescription = MainActivityScreens.Account.title,
+                            contentDescription = MainActivityScreens.Account.title(LocalContext.current),
                             isSelected = currentRoute?.destination?.route == MainActivityScreens.Account.route,
                             action = {
                                 navController.navigate(MainActivityScreens.Account.route + "/${visitViewModel.currentUser}") {
@@ -343,7 +344,7 @@ private fun MainActivityScreen(
                         arguments = listOf(navArgument("username") { type = NavType.StringType })
                     ) {
                         UserProfileScreen(
-                            MainActivityScreens.Account.title,
+                            MainActivityScreens.Account.title(LocalContext.current),
                             onBackPressed = navigateBack,
                             visitsViewModel = visitViewModel,
                             preferencesViewModel = preferencesViewModel
@@ -373,7 +374,7 @@ private fun MainActivityScreen(
                         },
                     ) {
                         AddVisitScreen(
-                            title = MainActivityScreens.AddVisit.title,
+                            title = MainActivityScreens.AddVisit.title(LocalContext.current),
                             addVisitCard = visitViewModel::addVisitCard,
                             onBackPressed = navigateBack
                         )
@@ -409,7 +410,7 @@ private fun MainActivityScreen(
                             }
                         } else {
                             EditVisitScreen(
-                                title = MainActivityScreens.EditVisit.title,
+                                title = MainActivityScreens.EditVisit.title(LocalContext.current),
                                 visitCard = visitViewModel.currentToEditVisit!!,
                                 onEditVisitCard = visitViewModel::updateVisitCard,
                                 onBackPressed = {

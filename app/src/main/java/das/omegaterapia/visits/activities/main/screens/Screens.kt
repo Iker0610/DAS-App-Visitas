@@ -1,5 +1,6 @@
 package das.omegaterapia.visits.activities.main.screens
 
+import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
@@ -10,15 +11,20 @@ import androidx.compose.material.icons.filled.Today
 import androidx.compose.ui.graphics.vector.ImageVector
 
 
-enum class MainActivityScreens(var title: String, var route: String, var icon: ImageVector) {
-    TodaysVisits("Today's Visits", "todays_visits", Icons.Filled.Today),
-    AllVisits("All Visits", "all_visits", Icons.Filled.RecentActors),
-    VIPs("VIP Visits", "vip_visits", Icons.Filled.Star),
-    AddVisit("Add Visit", "add_visit", Icons.Filled.Add),
-    EditVisit("Edit Visit", "edit_visit", Icons.Filled.Edit),
-    Account("Account Settings", "account", Icons.Filled.AccountCircle);
+enum class MainActivityScreens(var route: String, var icon: ImageVector) {
+    TodaysVisits("todays_visits", Icons.Filled.Today),
+    AllVisits("all_visits", Icons.Filled.RecentActors),
+    VIPs("vip_visits", Icons.Filled.Star),
+    AddVisit("add_visit", Icons.Filled.Add),
+    EditVisit("edit_visit", Icons.Filled.Edit),
+    Account("account", Icons.Filled.AccountCircle);
 
     fun isNavigable(): Boolean = this in navigableScreens
+
+    fun title(context: Context): String {
+        val titleStringID = context.resources.getIdentifier(this.route + "_screen_title", "string", context.packageName)
+        return context.getString(titleStringID)
+    }
 
     companion object {
         val navigableScreens = setOf(TodaysVisits, AllVisits, VIPs)

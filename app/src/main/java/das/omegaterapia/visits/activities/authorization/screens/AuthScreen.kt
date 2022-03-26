@@ -38,9 +38,8 @@ import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.generic.CenteredRow
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.ui.theme.getButtonShape
-import das.omegaterapia.visits.ui.theme.getMaterialRectangleShape
-import das.omegaterapia.visits.utils.WindowSizeFormat
 import das.omegaterapia.visits.utils.WindowSize
+import das.omegaterapia.visits.utils.WindowSizeFormat
 
 @Composable
 fun AuthScreen(

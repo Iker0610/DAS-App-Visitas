@@ -27,16 +27,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import das.omegaterapia.visits.activities.authorization.AuthViewModel
-import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.components.form.PasswordField
 import das.omegaterapia.visits.ui.components.form.ValidatorOutlinedTextField
+import das.omegaterapia.visits.ui.components.generic.CenteredColumn
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.ui.theme.getButtonShape
-import das.omegaterapia.visits.ui.theme.getMaterialRectangleShape
 import das.omegaterapia.visits.utils.canBeValidUsername
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,7 +71,7 @@ fun SignInSection(authViewModel: AuthViewModel, modifier: Modifier = Modifier, o
             onDismissRequest = { showSignInErrorDialog = false },
             confirmButton = { TextButton(onClick = { showSignInErrorDialog = false }) { Text(text = "OK") } },
             text = { Text(text = "This account username already exists.", style = MaterialTheme.typography.body1) },
-            shape = getMaterialRectangleShape()
+            shape = RectangleShape
         )
     }
 

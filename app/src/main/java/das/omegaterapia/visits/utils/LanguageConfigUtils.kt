@@ -71,6 +71,8 @@ class LanguageManager @Inject constructor() {
                 context.createConfigurationContext(configuration)
                 Locale.setDefault(locale)
                 config.setLocale(locale)
+
+                @Suppress("DEPRECATION")
                 context.resources.updateConfiguration(config, displayMetrics)
             }
             if (recreate) context.getActivity()?.recreate()

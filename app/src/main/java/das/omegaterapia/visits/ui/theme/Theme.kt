@@ -6,8 +6,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 
 private val DarkColorPalette = darkColors(
     primary = BlueGrey200,
@@ -45,9 +43,6 @@ fun OmegaterapiaTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Comp
         content = content
     )
 }
-
-@Composable
-fun getMaterialRectangleShape() = CutCornerShape(0.dp)
 
 @Composable
 fun getButtonShape() = CutCornerShape(25)

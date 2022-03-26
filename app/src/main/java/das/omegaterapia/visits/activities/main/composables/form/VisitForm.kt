@@ -43,10 +43,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import das.omegaterapia.visits.model.entities.VisitCard
 import das.omegaterapia.visits.ui.components.datetime.AlternativeOutlinedDateTimeField
 import das.omegaterapia.visits.ui.components.form.FormSection
@@ -57,7 +57,6 @@ import das.omegaterapia.visits.ui.components.generic.FixedOutlinedButton
 import das.omegaterapia.visits.ui.components.generic.OutlinedChoiceChip
 import das.omegaterapia.visits.ui.theme.OmegaterapiaTheme
 import das.omegaterapia.visits.ui.theme.getButtonShape
-import das.omegaterapia.visits.ui.theme.getMaterialRectangleShape
 import das.omegaterapia.visits.utils.canBePhoneNumber
 import das.omegaterapia.visits.utils.canBeZIP
 import das.omegaterapia.visits.utils.formatPhoneNumber
@@ -77,10 +76,10 @@ fun VisitForm(
 
     // TODO: Añadir on IME action
 
-    val  visitFormViewModel: VisitFormViewModel = hiltViewModel()
+    val visitFormViewModel: VisitFormViewModel = hiltViewModel()
 
     val editMode = initialVisitCard != null
-    
+
     LaunchedEffect(true) {
         if (initialVisitCard != null) visitFormViewModel.initializeWithVisitCard(initialVisitCard)
     }
@@ -96,7 +95,7 @@ fun VisitForm(
     if (showErrorDialog) {
         if (editMode) {
             AlertDialog(
-                shape = getMaterialRectangleShape(),
+                shape = RectangleShape,
                 title = { Text(text = "Couldn't edit the Visit Card") },
                 text = { Text(text = "An error occurred when editing the Visit Card. Try again.") },
                 onDismissRequest = { showErrorDialog = false },
@@ -107,7 +106,7 @@ fun VisitForm(
             )
         } else {
             AlertDialog(
-                shape = getMaterialRectangleShape(),
+                shape = RectangleShape,
                 title = { Text(text = "Couldn't add a new Visit Card") },
                 text = { Text(text = "An error occurred when adding the Visit Card. Try again.") },
                 onDismissRequest = { showErrorDialog = false },

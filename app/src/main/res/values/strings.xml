@@ -91,4 +91,6 @@
     <string name="hour_with_full_date_temporal_converter">Full date-time</string>
     <string name="exit_button">EXIT</string>
     <string name="app_exit_dialog_text">Are you sure you want to exit?</string>
+    <string name="close_navigation_drawer_button_description">Close navigation drawer.</string>
+    <string name="top_app_bar_back_button_description">Close screen</string>
 </resources>

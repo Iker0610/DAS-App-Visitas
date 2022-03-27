@@ -18,7 +18,23 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.ui.theme.getButtonShape
 
+
+/*******************************************************************************
+ ****                                 Chips                                 ****
+ *******************************************************************************/
+
+
+/*************************************************
+ **               Style Parameters              **
+ *************************************************/
+
+/**
+ * These parameters are adjusted versions of Compose's Material [ChipDefaults].chipColors()
+ * in order to create an outlined version with secondary color as selected color.
+ */
+
 private const val SurfaceOverlayOpacity = 0.12f
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -65,6 +81,14 @@ fun unselectedOutlinedChoiceChipColors(
     disabledLeadingIconContentColor = disabledLeadingIconContentColor
 )
 
+
+/*************************************************
+ **               Chip Composable               **
+ *************************************************/
+
+/**
+ * Composable that adds custom color and border to Compose's Material's [Chip].
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OutlinedChoiceChip(

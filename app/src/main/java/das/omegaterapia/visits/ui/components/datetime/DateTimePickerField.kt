@@ -17,6 +17,23 @@ import androidx.compose.ui.unit.dp
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
+
+/**
+ * Personalized OutlinedTextField for date and time.
+ *
+ * It doesn't allow the user to enter the date with the keyboard and shows a date-time picker dialog.
+ *
+ * @param modifier
+ * @param date Current date value.
+ * @param onDateTimeSelected Callback for onSelection event.
+ * @param dateFormatPattern Pattern used to show the current selected Date Time in the field.
+ * @param requireFutureDateTime If true, only accepts dates after "now"
+ * @param label
+ * @param placeholder
+ * @param leadingIcon Socket for an icon at the start of the field.
+ * @param trailingIcon Socket for an icon at the end of the field.
+ * @param enabled
+ */
 @Composable
 fun OutlinedDateTimeField(
     modifier: Modifier = Modifier,
@@ -33,15 +50,25 @@ fun OutlinedDateTimeField(
 
     enabled: Boolean = true,
 ) {
-    val dateTimeText = date.format(DateTimeFormatter.ofPattern(dateFormatPattern))!!
+    //---------------   Variables   ----------------//
+
     val context = LocalContext.current
+
+    // Focus manager to open the dialog and remove focus once user finishes it's selection
     val focusManager = LocalFocusManager.current
 
+    // Formatted date as string
+    val dateTimeText = date.format(DateTimeFormatter.ofPattern(dateFormatPattern))!!
+
+
+    //-------------------   UI   -------------------//
     OutlinedTextField(
         modifier = modifier.onFocusChanged {
+            // If the field is focused open the picker dialog
             if (it.isFocused) {
                 openDateTimePickerDialog(context, requireFutureDateTime, onDismissAction = { focusManager.clearFocus() }) { dateTime ->
                     onDateTimeSelected(dateTime)
+                    // Once the user finishes their selection clear the focus from this field
                     focusManager.clearFocus()
                 }
             }
@@ -64,7 +91,13 @@ fun OutlinedDateTimeField(
     )
 }
 
-
+/**
+ * Custom pair of synchronized TextFields for date and time.
+ *
+ * They are 2 separate TextFields that share the same state and date, are focused at the same time, etc.
+ * Date TextField takes 3/5 of the max width given to this composable and Time TextField takes the remaining space (2/5).
+ * This option it's much more clear and aesthetic than only one TextField with both: date and time.
+ */
 @Composable
 fun AlternativeOutlinedDateTimeField(
     modifier: Modifier = Modifier,
@@ -91,6 +124,8 @@ fun AlternativeOutlinedDateTimeField(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+
+        //---------------   Date Field   ---------------//
         OutlinedDateTimeField(
             modifier = Modifier.weight(1.5f),
 
@@ -107,6 +142,7 @@ fun AlternativeOutlinedDateTimeField(
             enabled = enabled,
         )
 
+        //---------------   Time Field   ---------------//
         OutlinedDateTimeField(
             modifier = Modifier.weight(1f),
 

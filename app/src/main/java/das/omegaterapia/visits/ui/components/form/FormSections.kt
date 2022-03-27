@@ -16,6 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
+/**
+ * A themed form section
+ *
+ * @param title Title of the section.
+ * @param modifier
+ * @param trailingContent Socket for optional features at the end of the title row.
+ * @param content Content of the section. If null it's equivalent to get only the section title
+ */
 @Composable
 fun FormSection(
     title: String,
@@ -43,6 +51,14 @@ fun FormSection(
     }
 }
 
+/**
+ * A themed form subsection
+ *
+ * @param title Title of the subsection.
+ * @param modifier
+ * @param trailingContent Socket for optional features at the end of the title row.
+ * @param content Content of the subsection. If null it's equivalent to get only the section title
+ */
 @Composable
 fun FormSubsection(
     title: String,

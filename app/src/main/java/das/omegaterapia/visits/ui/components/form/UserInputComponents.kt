@@ -42,50 +42,18 @@ import das.omegaterapia.visits.R
 import das.omegaterapia.visits.ui.theme.getButtonShape
 import das.omegaterapia.visits.utils.canBePassword
 
-
-@Composable
-fun PasswordField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    label: @Composable (() -> Unit) = { Text(stringResource(R.string.password_label)) },
-    placeholder: @Composable (() -> Unit)? = { Text(stringResource(R.string.password_placeholder)) },
-    leadingIcon: @Composable (() -> Unit)? = { Icon(Icons.Filled.VpnKey, contentDescription = stringResource(R.string.password_label)) },
-    isValid: Boolean = true,
-    ignoreFirstTime: Boolean = false,
-) {
-    var passwordVisible by remember { mutableStateOf(false) }
-
-    ValidatorOutlinedTextField(
-        value = value,
-        onValueChange = { if (canBePassword(it)) onValueChange(it) },
-
-        modifier = modifier,
-
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-
-        label = label,
-        placeholder = placeholder,
-        isValid = isValid,
-        ignoreFirstTime = ignoreFirstTime,
-
-        leadingIcon = leadingIcon,
-        trailingIcon = {
-            val description = if (passwordVisible) stringResource(R.string.password_icon_visible) else stringResource(R.string.password_icon_hidden)
-
-            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                AnimatedVisibility(passwordVisible, enter = fadeIn(), exit = fadeOut()) {
-                    Icon(imageVector = Icons.Filled.Visibility, description, tint = MaterialTheme.colors.secondary)
-                }
-                AnimatedVisibility(!passwordVisible, enter = fadeIn(), exit = fadeOut()) {
-                    Icon(imageVector = Icons.Filled.VisibilityOff, description)
-                }
-            }
-        }
-    )
-}
-
+/**
+ * Custom OutlinedTextField that takes a boolean parameter indicating if the current value is valid.
+ *
+ * If the value is not valid the TextField appearance changes (red border) to reflect it
+ * This field allows by default to not apply the validation before the user interacts for the first time with the TextField.
+ * With the [ignoreFirstTime] parameter it's posible to disable this feature.
+ *
+ * @param value Field's current value.
+ * @param onValueChange Callback for onValueChange event, it must take the new value as parameter.
+ * @param isValid If the field's current value is valid. If false the field changes it's appearance to reflect this state.
+ * @param ignoreFirstTime Apply [isValid] even if the user hasn't interacted with the field yet.
+ */
 @Composable
 fun ValidatorOutlinedTextField(
     value: String,
@@ -139,6 +107,65 @@ fun ValidatorOutlinedTextField(
     )
 }
 
+
+/**
+ * Predefined and styled password field.
+ *
+ * It uses a [ValidatorOutlinedTextField] and thus, it has the same capabilities.
+ *
+ * @param value Field's current value.
+ * @param onValueChange Callback for onValueChange event, it must take the new value as parameter.
+ * @param leadingIcon Socket for field's icon at the start.
+ * @param isValid If the field's current value is valid. If false the field changes it's appearance to reflect this state.
+ * @param ignoreFirstTime Apply [isValid] even if the user hasn't interacted with the field yet.
+ */
+@Composable
+fun PasswordField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: @Composable (() -> Unit) = { Text(stringResource(R.string.password_label)) },
+    placeholder: @Composable (() -> Unit)? = { Text(stringResource(R.string.password_placeholder)) },
+    leadingIcon: @Composable (() -> Unit)? = { Icon(Icons.Filled.VpnKey, contentDescription = stringResource(R.string.password_label)) },
+    isValid: Boolean = true,
+    ignoreFirstTime: Boolean = false,
+) {
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    ValidatorOutlinedTextField(
+        value = value,
+        onValueChange = { if (canBePassword(it)) onValueChange(it) }, // Update value only if the new value can be a valid password.
+
+        modifier = modifier,
+
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+
+        label = label,
+        placeholder = placeholder,
+        isValid = isValid,
+        ignoreFirstTime = ignoreFirstTime,
+
+        leadingIcon = leadingIcon,
+
+        // Trailing icon to show/hide password
+        trailingIcon = {
+            val description = if (passwordVisible) stringResource(R.string.password_icon_visible) else stringResource(R.string.password_icon_hidden)
+
+            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                AnimatedVisibility(passwordVisible, enter = fadeIn(), exit = fadeOut()) {
+                    Icon(imageVector = Icons.Filled.Visibility, description, tint = MaterialTheme.colors.secondary)
+                }
+                AnimatedVisibility(!passwordVisible, enter = fadeIn(), exit = fadeOut()) {
+                    Icon(imageVector = Icons.Filled.VisibilityOff, description)
+                }
+            }
+        }
+    )
+}
+
+
+// Predesigned item to have a material textbutton with an icon at the start
 @Composable
 fun TextIconButton(
     onClick: () -> Unit,

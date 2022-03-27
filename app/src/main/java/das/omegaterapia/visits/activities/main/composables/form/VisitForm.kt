@@ -76,11 +76,9 @@ fun VisitForm(
     initialVisitCard: VisitCard? = null,
 ) {
 
-    // TODO: Añadir on IME action
-
     val visitFormViewModel: VisitFormViewModel = hiltViewModel()
-
     val editMode = initialVisitCard != null
+
 
     LaunchedEffect(true) {
         if (initialVisitCard != null) visitFormViewModel.initializeWithVisitCard(initialVisitCard)

@@ -225,8 +225,8 @@ private fun MainActivityScreen(
                 ) {
                     BottomNavBar(
                         currentScreenTitle = MainActivityScreens.fromRoute(currentRoute?.destination?.route).title(LocalContext.current),
-                        onMenuOpen = { scope.launch { drawerState.open() } },
-                        onSettings = onNavigateToAccount
+                        onOpenMenu = { scope.launch { drawerState.open() } },
+                        onAccountClicked = onNavigateToAccount
                     )
                 }
             },

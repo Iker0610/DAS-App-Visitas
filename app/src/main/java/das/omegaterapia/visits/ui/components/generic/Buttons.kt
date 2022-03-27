@@ -35,6 +35,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import das.omegaterapia.visits.ui.theme.getButtonShape
 
+
+// Fixed OutlinedButton to show a proper border color contrast with the surface color. (default is for some reason to light)
 @Composable
 fun FixedOutlinedButton(
     onClick: () -> Unit,
@@ -71,6 +73,10 @@ fun FixedOutlinedButton(
 *  Code from Google's JetNews Application for Compose (it implements the *button styles* needed for navigation drawers)
 */
 
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+// Pre designed Button for bottom navigation drawer routes
 @Composable
 fun DrawerButton(
     icon: ImageVector,
@@ -128,7 +134,7 @@ fun DrawerButton(
     }
 }
 
-
+// Pre designed navigation icon
 @Composable
 fun NavigationIcon(
     icon: ImageVector,
@@ -160,6 +166,8 @@ fun NavigationIcon(
 }
 
 
+// Pre designed Navigation icon for navigation rail.
+// This icon has a colored area when selected that indicates much better the current selected route on the navigation rail.
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NavRailIcon(
@@ -191,4 +199,5 @@ fun NavRailIcon(
         )
     }
 }
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------

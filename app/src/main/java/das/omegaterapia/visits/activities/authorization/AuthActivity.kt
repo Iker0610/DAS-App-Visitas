@@ -54,13 +54,15 @@ class AuthActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize biometric authentication manager
-        biometricAuthManager =
-            BiometricAuthManager(
-                context = this,
-                authUser = authViewModel.lastLoggedUser ?: "",
-                onAuthenticationSucceeded = this::onSuccessfulLogin
-            )
+        // Initialize biometric authentication manager (only if it is uninitialized)
+        if (!this::biometricAuthManager.isInitialized) {
+            biometricAuthManager =
+                BiometricAuthManager(
+                    context = this,
+                    authUser = authViewModel.lastLoggedUser ?: "",
+                    onAuthenticationSucceeded = this::onSuccessfulLogin
+                )
+        }
 
         /*------------------------------------------------
         |                 User Interface                 |

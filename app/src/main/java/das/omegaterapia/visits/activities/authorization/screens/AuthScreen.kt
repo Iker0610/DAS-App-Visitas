@@ -143,7 +143,7 @@ fun AuthScreen(
             authViewModel.lastLoggedUser == null -> showBiometricErrorDialogState = true
 
             // If device supports biometrics but are not configured show enrollment dialog
-            biometricSupport == DeviceBiometricsSupport.NON_CONFIGURED -> showBiometricEnrollDialogState = true
+            biometricSupport == DeviceBiometricsSupport.NOT_CONFIGURED -> showBiometricEnrollDialogState = true
 
             // Else if it is supported, ask for biometrics authorization
             biometricSupport != DeviceBiometricsSupport.UNSUPPORTED -> onBiometricAuthRequested()

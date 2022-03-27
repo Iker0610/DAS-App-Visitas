@@ -67,6 +67,30 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
+/*******************************************************************************
+ ****                               Visit Form                              ****
+ *******************************************************************************/
+
+/**
+ * UI screen that defines the required fields and inputs in order to create or edit a [VisitCard].
+ * All it's states are saved in a [VisitFormViewModel].
+ *
+ * If [initialVisitCard] is null all the fields start empty (except the date-time one that ).
+ * In this case Date-Time picker defaults to the current timestamp and only allows future timestamps.
+ *
+ * Else if [initialVisitCard] is a [VisitCard] instance, all the fields start with [initialVisitCard]'s values.
+ * Date-Time picker allows previous dates in this case. And we ignore form the beginning [ValidatorOutlinedTextField] "first time" feature,
+ * so if [initialVisitCard] has an incorrect value it gets marked as an error from the beginning.
+ *
+ * Error dialogs and confirmation button change it's texts to reflect if we are adding a new [VisitCard]
+ * or editing [initialVisitCard].
+ *
+ * When all fields are valid the submission button gets enabled and if clicked it calls [submitVisitCard] that must return a [Boolean],
+ * indicating if the submission has been successful or not.
+ *
+ * If it returns false an error Alert Dialog shows (with custom text depending of whether or not [initialVisitCard] is null) and no more action are taked.
+ * If it returns true then [onSuccessfulSubmit] gets called.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun VisitForm(
@@ -76,23 +100,42 @@ fun VisitForm(
     initialVisitCard: VisitCard? = null,
 ) {
 
-    val visitFormViewModel: VisitFormViewModel = hiltViewModel()
+    /*************************************************
+     **             Variables and States            **
+     *************************************************/
+
+    //-----------   Utility variables   ------------//
+
+    val scope = rememberCoroutineScope()
+
+
+    //-----------------   States   -----------------//
+
+    var showErrorDialog by rememberSaveable { mutableStateOf(false) }
     val editMode = initialVisitCard != null
 
 
+    //---------------   View Model   ---------------//
+
+    val visitFormViewModel: VisitFormViewModel = hiltViewModel()
+
+    // Only on the first composition, initialize visitFormViewModel with initialVisitCard if this one is not null.
     LaunchedEffect(true) {
         if (initialVisitCard != null) visitFormViewModel.initializeWithVisitCard(initialVisitCard)
     }
 
 
-    // Courutine Scope
-    val scope = rememberCoroutineScope()
+    /*************************************************
+     **                User Interface               **
+     *************************************************/
 
-    // Dialog State
-    var showErrorDialog by rememberSaveable { mutableStateOf(false) }
-
-    // Dialogs
+    /*------------------------------------------------
+    |                    Dialogs                     |
+    ------------------------------------------------*/
     if (showErrorDialog) {
+
+        // Customize dialog depending of whether we are creating a new item or editing an existing one
+
         if (editMode) {
             AlertDialog(
                 shape = RectangleShape,
@@ -119,17 +162,24 @@ fun VisitForm(
     }
 
 
-    // UI
+    /*------------------------------------------------
+    |                  Main Screen                   |
+    ------------------------------------------------*/
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()) // Make the column scrollable vertically
             .padding(horizontal = 16.dp, vertical = 32.dp)
     ) {
 
+
+        //-----------   Visit Data Section   -----------//
+
         FormSection(title = stringResource(R.string.visit_card_visit_data_section_title)) {
             CenteredRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+
+                //-----------   VIP Selection Chip   -----------//
                 val iconSize = 28.dp
                 OutlinedChoiceChip(
                     modifier = Modifier
@@ -156,6 +206,7 @@ fun VisitForm(
                     Text(text = stringResource(R.string.vip_chip), style = MaterialTheme.typography.body1, modifier = Modifier.padding(end = 8.dp))
                 }
 
+                //------------   Date Time Picker   ------------//
                 AlternativeOutlinedDateTimeField(
                     date = visitFormViewModel.visitDate,
                     onDateTimeSelected = visitFormViewModel::visitDate::set,
@@ -167,9 +218,13 @@ fun VisitForm(
             }
         }
 
+
+        //----------   Client Data Section   -----------//
+
         FormSection(title = stringResource(R.string.visit_card_clients_section_title)) {
             FormSubsection(title = stringResource(R.string.visit_card_main_client)) {
 
+                //--------------   Client Name   ---------------//
                 ValidatorOutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
 
@@ -185,6 +240,7 @@ fun VisitForm(
                     maxLines = 1
                 )
 
+                //-------------   Client Surname   -------------//
                 ValidatorOutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
 
@@ -200,7 +256,10 @@ fun VisitForm(
                 )
             }
 
+            //----------   Client's Companions   -----------//
             FormSubsection(title = stringResource(R.string.visit_card_companions)) {
+
+                // For each client companion show a TextField
                 visitFormViewModel.clientCompanions.forEachIndexed { index, companion ->
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
@@ -208,6 +267,7 @@ fun VisitForm(
                         label = { Text(text = stringResource(R.string.visit_card_companion_name_label)) },
                         leadingIcon = { Icon(Icons.Default.People, stringResource(R.string.visit_card_companion_name_label)) },
                         trailingIcon = {
+                            // Button to delete this client's companion (it never leaves the list empty)
                             IconButton(onClick = {
                                 visitFormViewModel.clientCompanions.removeAt(index)
                                 if (visitFormViewModel.clientCompanions.isEmpty()) visitFormViewModel.clientCompanions.add("")
@@ -232,8 +292,12 @@ fun VisitForm(
             }
         }
 
+
+        //---------   Location Data Section   ----------//
+
         FormSection(title = stringResource(R.string.visit_card_location_section_title)) {
 
+            //--------------   Phone Number   --------------//
             ValidatorOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
 
@@ -249,6 +313,7 @@ fun VisitForm(
                 maxLines = 1
             )
 
+            //----------------   Address   -----------------//
             ValidatorOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
 
@@ -266,6 +331,7 @@ fun VisitForm(
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
 
+                //------------------   Town   ------------------//
                 ValidatorOutlinedTextField(
                     modifier = Modifier.weight(2f),
 
@@ -281,6 +347,7 @@ fun VisitForm(
                     maxLines = 1
                 )
 
+                //----------------   ZIP Code   ----------------//
                 ValidatorOutlinedTextField(
                     modifier = Modifier.weight(1f),
 
@@ -301,6 +368,9 @@ fun VisitForm(
             }
         }
 
+
+        //----------   Observation Sections   ----------//
+
         FormSection(title = stringResource(R.string.visit_card_observations)) {
             OutlinedTextField(
                 modifier = Modifier
@@ -315,17 +385,23 @@ fun VisitForm(
             )
         }
 
+
+        //-------------   Submit Button   --------------//
+
         Button(
             modifier = Modifier.fillMaxWidth(),
             shape = getButtonShape(),
             onClick = {
+                // Launch in another thread so it doesn't disturb main-ui thread
                 scope.launch(Dispatchers.IO) {
                     val operationOK = submitVisitCard(visitFormViewModel.generateVisitCard())
 
+                    // Show error dialog depending on submission result
                     if (operationOK) onSuccessfulSubmit()
                     else showErrorDialog = true
                 }
             },
+            // Enabled only if all the data is valid
             enabled = visitFormViewModel.areAllValid
         ) {
             Text(text = if (initialVisitCard == null) stringResource(R.string.add_visit_card_button) else stringResource(R.string.edit_visit_card_button))

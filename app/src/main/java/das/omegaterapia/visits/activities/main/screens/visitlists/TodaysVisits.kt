@@ -26,6 +26,22 @@ import das.omegaterapia.visits.model.entities.VisitId
 import das.omegaterapia.visits.ui.theme.getButtonShape
 
 
+/**
+ * Screen that displays all the current user's visit cards that take place TODAY.
+ * This screens uses a [VisitList] and passes to it the right parameters.
+ *
+ * It requires a [VisitsViewModel] to fetch the [VisitCard] list.
+ *
+ * As this is the main screen, it shows a dialog when the user tries to go back,
+ * asking if he want's to close de app or not.
+ *
+ * The screen hoists most of its parameters to be personalized in higher layers.
+ *
+ * @param onItemEdit Callback for editing an item.
+ * @param onItemDelete Callback for deleting an item.
+ * @param onScrollStateChange Callback that must take a boolean indicating whether theres scrolling or not.
+ * @param paddingAtBottom Whether to add a padding at the bottom of the list or not.
+ */
 @Composable
 fun TodaysVisitsScreen(
     visitViewModel: VisitsViewModel,
@@ -36,11 +52,33 @@ fun TodaysVisitsScreen(
     onScrollStateChange: (Boolean) -> Unit = {},
     paddingAtBottom: Boolean = false,
 ) {
+    /*************************************************
+     **             Variables and States            **
+     *************************************************/
+
+    //-----------   Utility variables   ------------//
     val context = LocalContext.current
+
+
+    //----------   ViewModel and State   -----------//
+    val groupedVisits by visitViewModel.todaysVisits.collectAsState(emptyMap())
     var showExitAlertDialog by rememberSaveable { mutableStateOf(false) }
+
+
+    /*************************************************
+     **                Event Handlers               **
+     *************************************************/
 
     BackHandler { showExitAlertDialog = true }
 
+
+    /*************************************************
+     **                User Interface               **
+     *************************************************/
+
+    /*------------------------------------------------
+    |                    Dialogs                     |
+    ------------------------------------------------*/
     if (showExitAlertDialog) {
         AlertDialog(
             title = { Text(stringResource(R.string.app_exit_dialog_text)) },
@@ -59,7 +97,9 @@ fun TodaysVisitsScreen(
         )
     }
 
-    val groupedVisits by visitViewModel.todaysVisits.collectAsState(emptyMap())
+    /*------------------------------------------------
+    |                  Main Screen                   |
+    ------------------------------------------------*/
     VisitList(
         groupedVisitCards = groupedVisits,
         modifier = modifier.fillMaxSize(),

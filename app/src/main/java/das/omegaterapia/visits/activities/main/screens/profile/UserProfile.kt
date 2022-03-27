@@ -1,5 +1,6 @@
 package das.omegaterapia.visits.activities.main.screens.profile
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -57,6 +58,8 @@ fun UserProfileScreen(
     preferencesViewModel: PreferencesViewModel = hiltViewModel(),
     onBackPressed: () -> Unit = {},
 ) {
+    BackHandler(onBack = onBackPressed)
+
     val context = LocalContext.current
 
     Scaffold(topBar = { BackArrowTopBar(title, onBackPressed) }) {

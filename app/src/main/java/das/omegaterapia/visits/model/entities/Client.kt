@@ -7,6 +7,14 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 
+/*******************************************************************************
+ ****                       Client Entity in Database                       ****
+ *******************************************************************************/
+
+
+/*************************************************
+ **              Client's Direction             **
+ *************************************************/
 data class Direction(
     var address: String,
     var town: String,
@@ -18,6 +26,19 @@ data class Direction(
 }
 
 
+/*************************************************
+ **                Client's Data                **
+ *************************************************/
+
+/**
+ * Data class representing the Client entity.
+ *
+ * It is represented by [name] and [surname], a [direction] and a [phoneNum].
+ * [phoneNum] is the primary key of the entity.
+ *
+ * [direction] is [Embedded], what means that in the database table of this entity,
+ * the fields defined in [Direction] class will be normal columns of [Client] entity.
+ */
 @Entity(indices = [Index(value = ["town", "zip"])])
 data class Client(
     var name: String,

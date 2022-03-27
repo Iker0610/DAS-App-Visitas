@@ -9,7 +9,17 @@ import das.omegaterapia.visits.model.entities.AuthUser
 import das.omegaterapia.visits.model.entities.Client
 import das.omegaterapia.visits.model.entities.VisitData
 
-@Database(entities = [AuthUser::class, VisitData::class, Client::class], version = 1, exportSchema = false)
+
+/**
+ * Room database definition abstract class (it's later instantiated in Hilt's module).
+ *
+ * Version: 1
+ *
+ * Entities: [AuthUser], [VisitData], [Client]
+ * Defined DAOs: [AuthenticationDao], [VisitsDao]
+ *
+ */
+@Database(entities = [AuthUser::class, VisitData::class, Client::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class OmegaterapiaVisitsDatabase : RoomDatabase() {
     abstract fun authenticationDao(): AuthenticationDao

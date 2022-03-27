@@ -69,9 +69,9 @@ class PreferencesRepository @Inject constructor(private val context: Context) : 
     override suspend fun getLastLoggedUser(): String? = context.dataStore.data.first()[PreferencesKeys.LAST_LOGGED_USER]
 
     // Set the last logged user on DataStore Preferences
-    override suspend fun setLastLoggedUser(value: String) {
+    override suspend fun setLastLoggedUser(username: String) {
         context.dataStore.edit { preferences ->
-            preferences[PreferencesKeys.LAST_LOGGED_USER] = value
+            preferences[PreferencesKeys.LAST_LOGGED_USER] = username
         }
     }
 

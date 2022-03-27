@@ -51,7 +51,7 @@ fun TodaysVisitsScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showExitAlertDialog = false }, shape = getButtonShape()) {
-                    Text(text = stringResource(id = R.string.dismiss_button))
+                    Text(text = stringResource(id = R.string.cancel_button))
                 }
             },
             onDismissRequest = { showExitAlertDialog = false },

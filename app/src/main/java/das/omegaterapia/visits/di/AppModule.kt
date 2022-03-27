@@ -20,17 +20,36 @@ import das.omegaterapia.visits.preferences.PreferencesRepository
 import javax.inject.Singleton
 
 
+/*******************************************************************************
+ ****                              Hilt Module                              ****
+ *******************************************************************************/
+
+/**
+ *  This module is installed in [SingletonComponent], witch means,
+ *  all the instance here are stored in the application level,
+ *  so they will not be destroyed until application is finished/killed;
+ *  and are shared between activities.
+ *
+ *  Hilt injects these instances in the required objects automatically.
+ */
+
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    @Singleton // Tell Dagger-Hilt to create a singleton accessible everywhere in ApplicationCompenent (i.e. everywhere in the application)
+    // With Singleton we tell Dagger-Hilt to create a singleton accessible everywhere in ApplicationComponent (i.e. everywhere in the application)
+
+    /*************************************************
+     **           ROOM Database Instances           **
+     *************************************************/
+    @Singleton
     @Provides
     fun providesOmegaterapiaVisitsDatabase(@ApplicationContext app: Context) =
         Room.databaseBuilder(app, OmegaterapiaVisitsDatabase::class.java, "omegaterapia_visits_database")
             .createFromAsset("database/omegaterapia_visits_database.db")
             .build()
 
+    //------------------   DAOs   ------------------//
     @Singleton
     @Provides
     fun provideAuthenticationDao(db: OmegaterapiaVisitsDatabase) = db.authenticationDao()
@@ -39,6 +58,18 @@ object AppModule {
     @Provides
     fun provideVisitsDao(db: OmegaterapiaVisitsDatabase) = db.visitsDao()
 
+
+    /*************************************************
+     **                 Repositories                **
+     *************************************************/
+
+    //-----------   Visits Repository   ------------//
+    @Singleton
+    @Provides
+    fun provideVisitsRepository(visitsDao: VisitsDao): IVisitsRepository = VisitsRepository(visitsDao)
+
+
+    //--   Settings & Preferences Repositories   ---//
     @Singleton
     @Provides
     fun provideLoginRepository(authDao: AuthenticationDao, loginSettings: ILoginSettings): ILoginRepository = LoginRepository(authDao, loginSettings)
@@ -51,7 +82,5 @@ object AppModule {
     @Provides
     fun provideUserPreferences(@ApplicationContext app: Context): IUserPreferences = PreferencesRepository(app)
 
-    @Singleton
-    @Provides
-    fun provideVisitsRepository(visitsDao: VisitsDao): IVisitsRepository = VisitsRepository(visitsDao)
+
 }

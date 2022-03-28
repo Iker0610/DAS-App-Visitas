@@ -76,6 +76,7 @@ import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 
 
+// Function to apply style and return a styled composable
 private fun applyTextStyle(
     textStyle: TextStyle,
     contentAlpha: Float,
@@ -89,6 +90,10 @@ private fun applyTextStyle(
 }
 
 
+/*******************************************************************************
+ ****                       Expandable Visit Card Item                      ****
+ *******************************************************************************/
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun VisitCardItem(
@@ -98,7 +103,9 @@ fun VisitCardItem(
     isExpanded: Boolean = false,
     onClick: (VisitCard) -> Unit = {},
 ) {
-    // Styling
+    /*************************************************
+     **              Composable Styling             **
+     *************************************************/
     val typography = MaterialTheme.typography
     val mainText = applyTextStyle(typography.subtitle1, ContentAlpha.high) {
         Text(text = visitCard.client.toString(), overflow = TextOverflow.Ellipsis)
@@ -111,10 +118,18 @@ fun VisitCardItem(
         }
     }
 
-    // Date Formatter
+
+    /*************************************************
+     **               Value Formatting              **
+     *************************************************/
+
     val date = visitCard.visitDate.format(DateTimeFormatter.ofPattern("d MMM")).trim('.').uppercase()
     val time = visitCard.visitDate.format(DateTimeFormatter.ofPattern("HH:mm"))
 
+
+    /*************************************************
+     **             Variables and States            **
+     *************************************************/
 
     // Collapse Logic
     val canBeExpanded = visitCard.companions.isNotEmpty() || visitCard.observations.isNotBlank()
@@ -122,9 +137,17 @@ fun VisitCardItem(
     val expandCollapseIcon = if (isExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore
 
 
-    // UI
+    /*************************************************
+     **           User Interface Component          **
+     *************************************************/
+
     Card(modifier = modifier.fillMaxWidth(), elevation = elevation) {
         Column {
+
+            /*------------------------------------------------
+            |         Header Section With Main Data          |
+            ------------------------------------------------*/
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -132,6 +155,8 @@ fun VisitCardItem(
                     .clickable { onClick(visitCard) }
                     .padding(16.dp)
             ) {
+                //---------------   Date-Time   ----------------//
+
                 CenteredColumn {
                     if (visitCard.isVIP) {
                         Icon(Icons.Filled.Star,
@@ -147,11 +172,17 @@ fun VisitCardItem(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
+
+                //-------   Direction and Client Name   --------//
+
                 Column(Modifier.weight(1f)) {
                     directionText()
                     Spacer(modifier = Modifier.height(4.dp))
                     mainText()
                 }
+
+
+                //--------   Expand/Collapse Chevron   ---------//
 
                 if (canBeExpanded) {
                     Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier
@@ -163,12 +194,15 @@ fun VisitCardItem(
             }
 
 
-            // Divider(modifier = Modifier.padding(horizontal = dividerPadding))
-
-            //-------------------------------
+            /*------------------------------------------------
+            |             Collapsible Extra Data             |
+            ------------------------------------------------*/
 
             AnimatedVisibility(showExpandedContent) {
                 Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+
+                    //----------   Client's Companions   -----------//
+
                     if (visitCard.companions.isNotEmpty()) {
                         Text(
                             stringResource(R.string.visit_card_companions),
@@ -182,6 +216,10 @@ fun VisitCardItem(
 
                         if (visitCard.observations.isNotBlank()) Spacer(Modifier.height(16.dp))
                     }
+
+
+                    //--------------   Observations   --------------//
+
                     if (visitCard.observations.isNotBlank()) {
                         Text(
                             stringResource(R.string.visit_card_observations),
@@ -194,7 +232,10 @@ fun VisitCardItem(
                 }
             }
 
-            //-------------------------------
+
+            /*------------------------------------------------
+            |             Action Button Section              |
+            ------------------------------------------------*/
 
             Divider()
 
@@ -223,6 +264,10 @@ fun VisitCardItem(
 }
 
 
+/*******************************************************************************
+ ****                Expandable and Swipeable Visit Card Item               ****
+ *******************************************************************************/
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SwipeableVisitCardItem(
@@ -230,17 +275,24 @@ fun SwipeableVisitCardItem(
     modifier: Modifier = Modifier,
     elevation: Dp = 4.dp,
     isExpanded: Boolean = false,
-    canBeSwippedToSide: Boolean = true,
+    canBeSwipedToSide: Boolean = true,
     onSwipe: (VisitCard) -> Unit = {},
     onClick: (VisitCard) -> Unit = {},
     onEdit: (VisitCard) -> Unit = {},
     onDelete: (VisitCard) -> Unit = {},
 ) {
+    /*************************************************
+     **             Variables and States            **
+     *************************************************/
+
+    //-----------   Utility variables   ------------//
+
     val scope = rememberCoroutineScope()
 
-    //-------------------------------------------------------------------------------------------------------------------------------
-    // Código para controlar el estado y evitar que puedas pasar de una punta a otra sin pasar por el centro.
-    // Y en caso de que lo intentes te fuerce a parar en el centro.
+
+    /*------------------------------------------------
+    |           Swipe State Control States           |
+    ------------------------------------------------*/
 
     var current by rememberSaveable { mutableStateOf(0) }
     var checkFailed by rememberSaveable { mutableStateOf(false) }
@@ -248,12 +300,14 @@ fun SwipeableVisitCardItem(
     val swipeableState = rememberSwipeableState(
         initialValue = 0,
         confirmStateChange = {
+            // Only allow swipes if are from center position or towards the center
+            // Doesn't allows changes from right side to left side or vice versa directly
             checkFailed = !(it == 0 || current == 0)
             !checkFailed
         },
     )
 
-
+    // Call onSwipe when the user swipes this card. (Only counts user interactions, not automatic swipes)
     LaunchedEffect(swipeableState.isAnimationRunning, swipeableState.targetValue) {
         if (swipeableState.isAnimationRunning && swipeableState.targetValue != 0 && swipeableState.currentValue == 0) {
             Log.d("swipe", "user swipe - current ${swipeableState.currentValue}, target: ${swipeableState.targetValue}")
@@ -261,18 +315,18 @@ fun SwipeableVisitCardItem(
         }
     }
 
-
+    // Update current value state each time swipeableState's currentValue changes (used for confirmStateChange)
     LaunchedEffect(swipeableState.currentValue) {
         current = swipeableState.currentValue
     }
 
-
-    if (!canBeSwippedToSide && swipeableState.currentValue != 0) {
+    // If the card is swiped but it's not allowed to un-swipe it
+    if (!canBeSwipedToSide && swipeableState.currentValue != 0) {
         checkFailed = true
     }
 
-
-
+    // Event that launches every time checkFailed changes.
+    // Forces the card to un-swipe (go to center position)
     LaunchedEffect(checkFailed) {
         if (checkFailed) {
             swipeableState.animateTo(0)
@@ -281,11 +335,21 @@ fun SwipeableVisitCardItem(
     }
     //-------------------------------------------------------------------------------------------------------------------------------
 
+
+    /*************************************************
+     **                User Interface               **
+     *************************************************/
+
     SwipeableItem(
         state = swipeableState,
         swipeEnabled = !checkFailed,
         modifier = modifier,
         background = {
+
+            /*------------------------------------------------
+            |            Visit Card Bottom Layer             |
+            ------------------------------------------------*/
+
             Surface(
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.fillMaxSize()
@@ -293,6 +357,8 @@ fun SwipeableVisitCardItem(
                 CenteredRow(
                     modifier = Modifier.fillMaxSize()
                 ) {
+                    //--------------   Edit Section   --------------//
+
                     CenteredRow(
                         horizontalArrangement = Arrangement.Start,
                         modifier = Modifier
@@ -313,6 +379,9 @@ fun SwipeableVisitCardItem(
                             Icon(Icons.Filled.Edit, contentDescription = null)
                         }
                     }
+
+
+                    //-------------   Delete Section   -------------//
 
                     CenteredRow(
                         horizontalArrangement = Arrangement.End,
@@ -337,6 +406,10 @@ fun SwipeableVisitCardItem(
             }
         }
     ) {
+        /*------------------------------------------------
+        |              Visit Card Top Layer              |
+        ------------------------------------------------*/
+
         VisitCardItem(
             visitCard = visitCard,
             modifier = Modifier,
@@ -347,7 +420,9 @@ fun SwipeableVisitCardItem(
     }
 }
 
+
 //-----------------------------------------------------------------------------------------------------------------------
+
 
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,

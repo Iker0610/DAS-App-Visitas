@@ -13,6 +13,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+/*******************************************************************************
+ ****                         Preferences View Model                        ****
+ *******************************************************************************/
+
 @HiltViewModel
 class PreferencesViewModel @Inject constructor(
     private val preferencesRepository: IUserPreferences,
@@ -20,24 +25,33 @@ class PreferencesViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    // Current logged user
+    /*************************************************
+     **                    States                   **
+     *************************************************/
+
+    // Retrieve current logged user
     val currentUser = (savedStateHandle.get("username") as? String ?: savedStateHandle.get("LOGGED_USERNAME") as? String)!!
 
 
-    // PREFERENCES
+    /*------------------------------------------------
+    |               Preferences States               |
+    ------------------------------------------------*/
 
-    // Current lag and set lang (may not be the same)
-    val currentSetLang by languageManager::currentLang
+    // Current app's language and preferred language (may not be the same at the beginning)
+    val currentSetLang by languageManager::currentLang // Used for initial flow state
     val prefLang = preferencesRepository.userLanguage(currentUser).map { AppLanguage.getFromCode(it) }
 
-    // Date Time Converter Related
+    //------   Date Time Converter Related   -------//
     val prefOneDayConverter = preferencesRepository.userDayConverter(currentUser)
     val prefMultipleDayConverter = preferencesRepository.userMultipleDayConverter(currentUser)
 
 
-    // EVENTS
+    /*************************************************
+     **                    Events                   **
+     *************************************************/
 
-    // Date Time Converter Related
+    //------   Date Time Converter Related   -------//
+
     fun setOneDayConverterPreference(converter: String) {
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.setUserDayConverter(currentUser, converter) }
     }
@@ -46,11 +60,15 @@ class PreferencesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.setUserMultipleDayConverter(currentUser, converter) }
     }
 
-    // Language related
+
+    //------------   Language Related   ------------//
+
+    // Change language preference, adjust the locale and reload de interface
     fun changeLang(newLang: AppLanguage, context: Context) {
         languageManager.changeLang(newLang, context)
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.setUserLanguage(currentUser, newLang.code) }
     }
 
+    // This method does not reload the interface, just adjust the locale
     fun reloadLang(lang: AppLanguage, context: Context) = languageManager.changeLang(lang, context, false)
 }

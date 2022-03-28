@@ -21,6 +21,11 @@ import kotlinx.coroutines.runBlocking
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
+
+/*******************************************************************************
+ ****                           Visits View Model                           ****
+ *******************************************************************************/
+
 @HiltViewModel
 class VisitsViewModel @Inject constructor(
     private val visitsRepository: IVisitsRepository,
@@ -28,30 +33,44 @@ class VisitsViewModel @Inject constructor(
 
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+    /*
+    // Data generator code to populate original database (right now it has no purpose)
 
-//    init {
-//        viewModelScope.launch {
-//            val user = savedStateHandle.get("LOGGED_USERNAME") as? String ?: ""
-//            visitsRepository.addVisitCards(visitList.map { it.user = user; it.visitData.mainClientPhone = it.client.phoneNum; return@map it })
-//        }
-//    }
+    init {
+        viewModelScope.launch {
+            val user = savedStateHandle.get("LOGGED_USERNAME") as? String ?: ""
+            visitsRepository.addVisitCards(visitList.map { it.user = user; it.visitData.mainClientPhone = it.client.phoneNum; return@map it })
+        }
+    }
+    */
 
-    // States
+    /*************************************************
+     **                    States                   **
+     *************************************************/
+
     val currentUser = savedStateHandle.get("LOGGED_USERNAME") as? String ?: ""
 
     val allVisits = visitsRepository.getUsersVisits(currentUser)
+        // Edit the flow to group list items by date with the user selected grouping
         .map { visitList -> getMultipleDayFormatter().groupDates(visitList, key = VisitCard::visitDate::get) }
 
     val vipVisits = visitsRepository.getUsersVIPVisits(currentUser)
+        // Edit the flow to group list items by date with the user selected grouping
         .map { visitList -> getMultipleDayFormatter().groupDates(visitList, key = VisitCard::visitDate::get) }
 
     val todaysVisits = visitsRepository.getUsersTodaysVisits(currentUser)
+        // Edit the flow to group list items by date with the user selected grouping
         .map { visitList -> getDayFormatter().groupDates(visitList, key = VisitCard::visitDate::get) }
 
 
+    // It should be null always except on Edit Visit Screen
     var currentToEditVisit: VisitCard? by mutableStateOf(null)
 
 
+    /*
+     * Methods to get the user's preferred TemporalConverter, they get the first item of the flow and return it.
+     * They are synchronous methods.
+     */
     private fun getDayFormatter(): TemporalConverter {
         return runBlocking {
             return@runBlocking preferencesRepository.userDayConverter(currentUser).map { TemporalConverter.valueOf(it) }.first()
@@ -64,14 +83,22 @@ class VisitsViewModel @Inject constructor(
         }
     }
 
-    // Events
+
+    /*************************************************
+     **                    Events                   **
+     *************************************************/
+
     suspend fun addVisitCard(visitCard: VisitCard) = visitsRepository.addVisitCard(visitCard.also { it.user = currentUser })
 
     suspend fun updateVisitCard(visitCard: VisitCard) = visitsRepository.updateVisitCard(visitCard)
 
     fun deleteVisitCard(visitId: VisitId) = viewModelScope.launch(Dispatchers.IO) { visitsRepository.deleteVisitCard(visitId) }
 
-    // Utils
+
+    /*************************************************
+     **                    Utils                    **
+     *************************************************/
+
     fun todaysVisitsJson(): String {
         val gsonBuilder = GsonBuilder().setPrettyPrinting().create()
 
@@ -90,5 +117,4 @@ class VisitsViewModel @Inject constructor(
             return@runBlocking gsonBuilder.toJson(todaysVisit)
         }
     }
-
 }

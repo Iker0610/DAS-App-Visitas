@@ -5,8 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import das.omegaterapia.visits.model.entities.Client
@@ -19,14 +17,27 @@ import das.omegaterapia.visits.utils.isZIP
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
+/*******************************************************************************
+ ****                         Visit Form View Model                         ****
+ *******************************************************************************/
 
+/**
+ * This ViewModel contains all the states and validations required for VisitForm interface
+ */
 @HiltViewModel
 class VisitFormViewModel @Inject constructor() : ViewModel() {
+
+    /*************************************************
+     **                    States                   **
+     *************************************************/
+
+    //-----------   Initial Visit Card   -----------//
 
     private var initialVisitCard: VisitCard? = null
 
 
-    // Variables para guardar los datos
+    //-------   Input Fields' Value States   -------//
+
     var isVIP by mutableStateOf(false)
     var visitDate: ZonedDateTime by mutableStateOf(ZonedDateTime.now())
 
@@ -42,7 +53,8 @@ class VisitFormViewModel @Inject constructor() : ViewModel() {
     var observationText by mutableStateOf("")
 
 
-    // Variable para comprobación de datos
+    //----   Input Fields' Validation States   -----//
+
     val isNameValid by derivedStateOf { isNonEmptyText(clientNameText) }
     val isSurnameValid by derivedStateOf { isNonEmptyText(clientSurnameText) }
 
@@ -54,6 +66,14 @@ class VisitFormViewModel @Inject constructor() : ViewModel() {
     val areAllValid by derivedStateOf { isNameValid && isSurnameValid && isAddressValid && isTownValid && isZIPValid && isPhoneValid }
 
 
+    /*************************************************
+     **                    Utils                    **
+     *************************************************/
+
+    /**
+     * Initialize the states with [visitCard] values.
+     * Should only be called when editing a [VisitCard] and only once per [VisitForm]
+     */
     fun initializeWithVisitCard(visitCard: VisitCard) {
         if (initialVisitCard == null) {
             initialVisitCard = visitCard
@@ -74,6 +94,13 @@ class VisitFormViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    /**
+     * Generates a [VisitCard] instance from the fields' values.
+     *
+     * If [initialVisitCard] it's not null, it copy that instance's values
+     * and overwrites them with field's values.
+     * (Always keeps the same UUID and user)
+     */
     fun generateVisitCard(): VisitCard {
         val clientData = Client(
             name = clientNameText,

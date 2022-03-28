@@ -50,6 +50,24 @@ import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+
+/*******************************************************************************
+ ****                     Account Screen User Interface                     ****
+ *******************************************************************************/
+
+/**
+ * It defines the user's account interface:
+ *
+ *  - A top app bar that has a [title] and back-arrow button that when clicked calls [onBackPressed]
+ *  - A header section with the logo and the username
+ *  - A section to choose preferences:
+ *      - Preferred language
+ *      - Preferred date grouping for Today's Visits screen
+ *      - Preferred date grouping for All Visits and VIP Visits screens
+ *
+ *
+ * Requires 2 viewmodels: [visitsViewModel] and [preferencesViewModel
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UserProfileScreen(
@@ -58,9 +76,38 @@ fun UserProfileScreen(
     preferencesViewModel: PreferencesViewModel = hiltViewModel(),
     onBackPressed: () -> Unit = {},
 ) {
+    /*************************************************
+     **                Event Handlers               **
+     *************************************************/
+
     BackHandler(onBack = onBackPressed)
 
+
+    /*************************************************
+     **             Variables and States            **
+     *************************************************/
+
+    //-----------   Utility variables   ------------//
     val context = LocalContext.current
+
+    /*------------------------------------------------
+    |                     States                     |
+    ------------------------------------------------*/
+
+    //--------------   Preferences   ---------------//
+    val prefLanguage by preferencesViewModel.prefLang.collectAsState(initial = preferencesViewModel.currentSetLang)
+    val prefOneDayConverter by preferencesViewModel.prefOneDayConverter.collectAsState(initial = TemporalConverter.oneDayDefault.name)
+    val prefMultipleDayConverter by preferencesViewModel.prefMultipleDayConverter.collectAsState(initial = TemporalConverter.multipleDayDefault.name)
+
+    //---------   Dialog Control States   ----------//
+    var showSelectLangDialog by rememberSaveable { mutableStateOf(false) }
+    var showDayConverterDialog by rememberSaveable { mutableStateOf(false) }
+    var showMultipleDaysConverterDialog by rememberSaveable { mutableStateOf(false) }
+
+
+    /*************************************************
+     **                User Interface               **
+     *************************************************/
 
     Scaffold(topBar = { BackArrowTopBar(title, onBackPressed) }) {
         CenteredColumn(
@@ -70,18 +117,10 @@ fun UserProfileScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(vertical = 16.dp)
         ) {
+            /*------------------------------------------------
+            |                    Dialogs                     |
+            ------------------------------------------------*/
 
-            val prefLanguage by preferencesViewModel.prefLang.collectAsState(initial = preferencesViewModel.currentSetLang)
-            val prefOneDayConverter by preferencesViewModel.prefOneDayConverter.collectAsState(initial = TemporalConverter.oneDayDefault.name)
-            val prefMultipleDayConverter by preferencesViewModel.prefMultipleDayConverter.collectAsState(initial = TemporalConverter.multipleDayDefault.name)
-
-            var showSelectLangDialog by rememberSaveable { mutableStateOf(false) }
-            var showDayConverterDialog by rememberSaveable { mutableStateOf(false) }
-            var showMultipleDaysConverterDialog by rememberSaveable { mutableStateOf(false) }
-
-            //------------------------------------------------------------------------------------
-            // DIALOGS
-            //------------------------------------------------------------------------------------
             if (showSelectLangDialog) {
                 LanguagePickerDialog(
                     title = stringResource(R.string.select_lang_dialog_title),
@@ -110,12 +149,11 @@ fun UserProfileScreen(
             }
 
 
-            //------------------------------------------------------------------------------------
-            // UI
-            //------------------------------------------------------------------------------------
+            /*------------------------------------------------
+            |                  Main Screen                   |
+            ------------------------------------------------*/
 
-
-            // Title
+            //-----------------   Header   -----------------//
 
             Icon(
                 modifier = Modifier.size(140.dp),
@@ -129,6 +167,8 @@ fun UserProfileScreen(
             Divider(Modifier.padding(top = 40.dp, bottom = 16.dp))
 
 
+            //------------   Language Section   ------------//
+
             ListItem(
                 icon = { Icon(Icons.Filled.Language, null, Modifier.padding(top = 7.dp)) },
                 secondaryText = { Text(text = prefLanguage.language) },
@@ -137,9 +177,13 @@ fun UserProfileScreen(
                 Text(text = stringResource(R.string.app_lang_setting_title))
             }
 
+
+            //-------   TemporalConverter Section   --------//
+
             FormSubsection(title = stringResource(R.string.date_format_setting_section_title),
                 Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp))
 
+            // Today's Visits' date grouping and format
             ListItem(
                 icon = { Icon(Icons.Filled.Today, null, Modifier.padding(top = 7.dp)) },
                 secondaryText = { Text(text = TemporalConverter.valueOf(prefOneDayConverter).configName(LocalContext.current)) },
@@ -148,6 +192,7 @@ fun UserProfileScreen(
                 Text(text = stringResource(R.string.today_visits_setting_title))
             }
 
+            // Other Visits Screens' date grouping and format
             ListItem(
                 icon = { Icon(Icons.Filled.CalendarMonth, null, Modifier.padding(top = 7.dp)) },
                 secondaryText = { Text(text = TemporalConverter.valueOf(prefMultipleDayConverter).configName(LocalContext.current)) },
@@ -156,8 +201,10 @@ fun UserProfileScreen(
                 Text(text = stringResource(R.string.other_visits_setting_title))
             }
 
-
             Divider(Modifier.padding(top = 16.dp, bottom = 16.dp))
+
+
+            //------   Save Today's Visits Section   -------//
 
             SaveAsJSONSection(visitsViewModel)
         }
@@ -165,10 +212,25 @@ fun UserProfileScreen(
     }
 }
 
+
+/*************************************************
+ **        Save Today's Visits Section UI       **
+ *************************************************/
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun SaveAsJSONSection(visitsViewModel: VisitsViewModel) {
+
+    /*------------------------------------------------
+    |              Variables and States              |
+    ------------------------------------------------*/
     val contentResolver = LocalContext.current.contentResolver
+    val filename = stringResource(R.string.visit_json_name_template, LocalDate.now().format(DateTimeFormatter.ISO_DATE))
+
+
+    /*------------------------------------------------
+    |           Intent Launcher and Event            |
+    ------------------------------------------------*/
     val saverLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.CreateDocument()) { uri ->
         if (uri != null) {
             try {
@@ -187,8 +249,12 @@ private fun SaveAsJSONSection(visitsViewModel: VisitsViewModel) {
         }
     }
 
-    val filename = stringResource(R.string.visit_json_name_template, LocalDate.now().format(DateTimeFormatter.ISO_DATE))
     val action = { saverLauncher.launch(filename) }
+
+
+    /*------------------------------------------------
+    |                 User Interface                 |
+    ------------------------------------------------*/
 
     ListItem(
         Modifier.clickable(onClick = action),

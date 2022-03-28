@@ -75,32 +75,50 @@ import das.omegaterapia.visits.utils.WindowSize
 import das.omegaterapia.visits.utils.WindowSizeFormat
 import das.omegaterapia.visits.utils.rememberWindowSizeClass
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
+/*******************************************************************************
+ ****                             Main Activity                             ****
+ *******************************************************************************/
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    /*************************************************
+     **                  ViewModel                  **
+     *************************************************/
+
     private val preferencesViewModel: PreferencesViewModel by viewModels()
 
 
-    /*--------------------------------------------------
-    |            Activity Lifecycle Methods            |
-    --------------------------------------------------*/
+    /*************************************************
+     **          Activity Lifecycle Methods         **
+     *************************************************/
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            preferencesViewModel.reloadLang(preferencesViewModel.prefLang.collectAsState(initial = preferencesViewModel.currentSetLang).value,
-                this)
 
+        setContent {
+            // Reload lang if it changed but do nor recreate it
+            preferencesViewModel.reloadLang(preferencesViewModel.prefLang.collectAsState(initial = preferencesViewModel.currentSetLang).value, this)
+
+            // Set theme
             OmegaterapiaTheme {
+                // Get window size
                 val windowSize = rememberWindowSizeClass()
+
+                // Load UI
                 MainActivityScreen(preferencesViewModel = preferencesViewModel, windowSize = windowSize)
             }
         }
     }
 }
 
+
+/*******************************************************************************
+ ****                              Main Screen                              ****
+ *******************************************************************************/
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -109,43 +127,70 @@ private fun MainActivityScreen(
     visitViewModel: VisitsViewModel = hiltViewModel(),
     windowSize: WindowSize,
 ) {
+    /*************************************************
+     **             Variables and States            **
+     *************************************************/
+
+    //-----------   Utility variables   ------------//
+
     val scope = rememberCoroutineScope()
+
+
+    //-------------   Nav-Controller   -------------//
 
     val navController = rememberAnimatedNavController()
     val currentRoute by navController.currentBackStackEntryFlow.collectAsState(initial = navController.currentBackStackEntry)
 
 
-    //-------------------------------------------------------------------
-    // Navigation booleans
+    //-----------   Navigation States   ------------//
+
+    /*
+     * We should ONLY show navigation elements on the 3 main screens ("navigable screens")
+     *
+     * If the WindowSize width's WindowSizeFormat is compact then we should show a bottom app bar
+     * and enable the bottom navigation drawer (bottom menu).
+     * If we are scrolling (up or down) we should hide these navigation elements so the user has better visibility.
+     *
+     *
+     * Else if the WindowSizeFormat is not compact we should only allow a Navigation Rail and hide previous elements.
+     *
+     *
+     * In conclusion:
+     *
+     * Width - Compact (<600) and NOT Scrolling -> Bottom app bar + Bottom navigation drawer (menu)
+     * Width - NOT Compact (600<) -> Navigation Rail
+     */
+
     val enableNavigation = MainActivityScreens.isNavigable(currentRoute?.destination?.route)
     val enableBottomNavigation = enableNavigation && windowSize.width == WindowSizeFormat.Compact
     val enableRailNavigation = enableNavigation && !enableBottomNavigation
 
     var isScrolling by rememberSaveable { mutableStateOf(false) }
     val showBottomNavigation = enableBottomNavigation && !isScrolling
-    //--------------------------------------------------------------------
+
+    val drawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
+    val gesturesEnabled = drawerState.currentValue != BottomDrawerValue.Closed // Enable gestures only when menu is open
 
     val scaffoldState = rememberScaffoldState()
-    val drawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
-    val gesturesEnabled = drawerState.currentValue != BottomDrawerValue.Closed
 
+
+    /*************************************************
+     **                    Events                   **
+     *************************************************/
+
+    // Close bottom navigation menu if it was open and we changed layout to the one with a navigation rail
     LaunchedEffect(enableBottomNavigation) {
         if (!enableBottomNavigation && drawerState.currentValue != BottomDrawerValue.Closed) {
             scope.launch { drawerState.close() }
         }
     }
 
-    //----------------------------------------------------------------------
-    // Elementos comunes en varias secciones
 
-    @Composable
-    fun FAB() {
-        AddFloatingActionButton(
-            onAdd = { navController.navigate(MainActivityScreens.AddVisit.route) { launchSingleTop = true } },
-        )
-    }
+    /*************************************************
+     **            Common Event Callbacks           **
+     *************************************************/
 
-
+    // Pop current screen from backstack (if we didn't pop anything make sure to travel to main screen)
     val navigateBack: () -> Unit = {
         scope.launch(Dispatchers.Main) {
             if (!navController.popBackStack()) {
@@ -154,44 +199,82 @@ private fun MainActivityScreen(
         }
     }
 
+    // Set the current "toEditVisit" in the view model and navigate to edit screen
     val onEditVisit: (VisitCard) -> Unit = {
         visitViewModel.currentToEditVisit = it
         navController.navigate(MainActivityScreens.EditVisit.route) { launchSingleTop = true }
     }
 
+    // Navigate to the current user's account page. (Passing the current user as a parameter in the route)
     val onNavigateToAccount =
         { navController.navigate(MainActivityScreens.Account.route + "/${visitViewModel.currentUser}") { launchSingleTop = true } }
 
-    //----------------------------------------------------------------------
+
+    /*************************************************
+     **              Common UI Elements             **
+     *************************************************/
+
+    @Composable
+    fun FAB() {
+        AddFloatingActionButton(
+            // Open Ass Visit Screen
+            onAdd = { navController.navigate(MainActivityScreens.AddVisit.route) { launchSingleTop = true } },
+        )
+    }
+
+
+    //----------------------------------------------//
+
+    /*************************************************
+     **                   Main UI                   **
+     *************************************************/
+
+    //----------------------------------------------//
+
+
+    /*************************************************
+     **    Bottom Navigation Drawer (Menu) Layout   **
+     *************************************************/
 
     BottomDrawer(
         gesturesEnabled = gesturesEnabled,
         drawerState = drawerState,
         drawerShape = CutCornerShape(topStartPercent = 7, topEndPercent = 7),
         drawerContent = {
+
+            /*------------------------------------------------
+            |    Bottom Navigation Drawer (Menu) Content     |
+            ------------------------------------------------*/
+
             LazyColumn(Modifier.padding(top = 16.dp, bottom = 22.dp)) {
+
+                //------------   Nav Menu Header   -------------//
+
                 item {
                     NavDrawerHeader(
                         currentUser = visitViewModel.currentUser,
-                        Modifier.padding(horizontal = 16.dp)
-                    ) {
-                        scope.launch { drawerState.close() }
-                    }
+                        onClose = { scope.launch { drawerState.close() } },
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
                     Divider(
                         Modifier
                             .padding(top = 8.dp, bottom = 8.dp)
                             .fillMaxWidth()
                     )
                 }
+
+
+                //--   Nav Menu Navigation Buttons (routes)   --//
+
                 items(MainActivityScreens.navigableScreens.toList()) {
                     DrawerButton(
                         icon = it.icon,
                         label = it.title(LocalContext.current),
                         isSelected = currentRoute?.destination?.route == it.route,
                         action = {
+                            // Close Drawer and then navigate to route
                             scope.launch {
-                                scope.launch { drawerState.close() }
-                                delay(100)
+                                drawerState.close()
                                 navController.navigate(it.route) {
                                     popUpTo(navController.graph.startDestinationId) { saveState = true }
                                     launchSingleTop = true
@@ -204,8 +287,16 @@ private fun MainActivityScreen(
             }
         },
     ) {
+
+        /*------------------------------------------------
+        |      Screen Content + Navigation Bar/Rail      |
+        ------------------------------------------------*/
+
         Scaffold(
             scaffoldState = scaffoldState,
+
+            //-----------   Bottom App Bar FAB   -----------//
+
             floatingActionButton = {
                 AnimatedVisibility(
                     showBottomNavigation,
@@ -217,6 +308,10 @@ private fun MainActivityScreen(
             },
             floatingActionButtonPosition = FabPosition.Center,
             isFloatingActionButtonDocked = true,
+
+
+            //-------------   Bottom App Bar   -------------//
+
             bottomBar = {
                 AnimatedVisibility(
                     showBottomNavigation,
@@ -232,22 +327,46 @@ private fun MainActivityScreen(
             },
         )
         {
+
+
             Row(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxSize()
             ) {
+
+
+                /*------------------------------------------------
+                |                Navigation Rail                 |
+                ------------------------------------------------*/
+
+                /*
+                 * Specs:
+                 *
+                 * - Animated  visibility with slide In/Out animations (other content size must adjust progressively)
+                 *
+                 * - Buttons:
+                 *      - FAB Button anchored on top
+             *          - Account button anchored on bottom
+                 *      - Main navigation buttons on column, centered in the remaining space between FAB and Account button
+                 */
+
                 AnimatedVisibility(
                     enableRailNavigation,
                     enter = slideInHorizontally(initialOffsetX = { -it }) + expandHorizontally(),
                     exit = slideOutHorizontally(targetOffsetX = { -it }) + shrinkHorizontally()
                 ) {
                     NavigationRail(
-                        header = { Box(Modifier.padding(8.dp)) { FAB() } },
+
+                        //----------   Navigation Rail FAB   -----------//
+                        header = { Box(Modifier.padding(8.dp)) { FAB() } }
+
                     ) {
+
+                        //---------   Main Navigation Routes   ---------//
+
                         CenteredColumn(Modifier.weight(1f, true)) {
                             MainActivityScreens.navigableScreens.forEach { screen ->
-                                // Solución por defecto de google
+                                // Google's recommended icons
 
 //                                  NavigationRailItem(
 //                                    icon = { Icon(screen.icon, contentDescription = screen.title(LocalContext.current)) },
@@ -264,7 +383,8 @@ private fun MainActivityScreen(
 //                                    }
 //                                )
 
-                                // Usamos este botón debido a que resalta mejor la ventana actual
+
+                                // Personalized icons that indicates better the current route
                                 NavRailIcon(
                                     icon = screen.icon,
                                     contentDescription = screen.title(LocalContext.current),
@@ -281,6 +401,9 @@ private fun MainActivityScreen(
                                 )
                             }
                         }
+
+                        //--------   Account Naviggation Icon   --------//
+
                         NavRailIcon(
                             icon = MainActivityScreens.Account.icon,
                             contentDescription = MainActivityScreens.Account.title(LocalContext.current),
@@ -290,11 +413,18 @@ private fun MainActivityScreen(
                     }
                 }
 
+
+                /*------------------------------------------------
+                |                 Screen Content                 |
+                ------------------------------------------------*/
+
+                // Nav host
                 AnimatedNavHost(
                     navController = navController,
                     startDestination = MainActivityScreens.TodaysVisits.route
                 ) {
 
+                    //---------   Today's Visits Screen   ----------//
                     composable(
                         route = MainActivityScreens.TodaysVisits.route,
                         enterTransition = { fadeIn() },
@@ -309,6 +439,7 @@ private fun MainActivityScreen(
                     }
 
 
+                    //-----------   All Visits Screen   ------------//
                     composable(
                         route = MainActivityScreens.AllVisits.route,
                         enterTransition = { fadeIn() },
@@ -323,6 +454,7 @@ private fun MainActivityScreen(
                     }
 
 
+                    //-----------   VIP Visits Screen   ------------//
                     composable(
                         route = MainActivityScreens.VIPs.route,
                         enterTransition = { fadeIn() },
@@ -337,6 +469,7 @@ private fun MainActivityScreen(
                     }
 
 
+                    //-------------   Account Screen   -------------//
                     composable(
                         route = "${MainActivityScreens.Account.route}/{username}",
                         arguments = listOf(navArgument("username") { type = NavType.StringType }),
@@ -368,6 +501,7 @@ private fun MainActivityScreen(
                     }
 
 
+                    //------------   Add Visit Screen   ------------//
                     composable(
                         route = MainActivityScreens.AddVisit.route,
                         enterTransition = {
@@ -397,6 +531,7 @@ private fun MainActivityScreen(
                     }
 
 
+                    //-----------   Edit Visit Screen   ------------//
                     composable(
                         route = MainActivityScreens.EditVisit.route,
                         enterTransition = {
@@ -418,6 +553,9 @@ private fun MainActivityScreen(
                             )
                         },
                     ) {
+                        /*
+                         * Make sure that the currentToEditVisit is not null, else go back
+                         */
                         if (visitViewModel.currentToEditVisit == null) {
                             if (currentRoute?.destination?.route == MainActivityScreens.EditVisit.route
                                 && !navController.popBackStack()
@@ -430,7 +568,7 @@ private fun MainActivityScreen(
                                 visitCard = visitViewModel.currentToEditVisit!!,
                                 onEditVisitCard = visitViewModel::updateVisitCard,
                                 onBackPressed = {
-                                    visitViewModel.currentToEditVisit = null
+                                    visitViewModel.currentToEditVisit = null // Reset currentToEditVisit on exit
                                     navigateBack()
                                 }
                             )
@@ -441,9 +579,11 @@ private fun MainActivityScreen(
         }
     }
 
+
+    //------------   Debug Log Screen   ------------//
     LaunchedEffect(currentRoute) {
         Log.d("navigation",
-            "Ha cambiado la pila. ${currentRoute?.destination?.route} \n ${navController.backQueue.joinToString("  -  ") { it.destination.route ?: "sin_nombre" }}")
+            "Back stack changed ${currentRoute?.destination?.route} \n ${navController.backQueue.joinToString("  -  ") { it.destination.route ?: "root_path" }}")
     }
 }
 
